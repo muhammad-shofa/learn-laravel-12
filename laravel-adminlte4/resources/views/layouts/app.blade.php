@@ -9,12 +9,14 @@
 </head>
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <div class="app-wrapper">
 
-    @include('components.navbar')
-    @include('components.sidebar')
+        @include('layouts.navbar')
+        @include('layouts.sidebar')
 
-    <div class="content-wrapper p-4">
-        @yield('content')
+        <div class="content-wrapper p-4 border">
+            @yield('content')
+        </div>
     </div>
 
 </body>

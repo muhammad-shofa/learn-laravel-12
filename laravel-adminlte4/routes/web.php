@@ -1,10 +1,9 @@
 <?php
 
+use App\Http\Controllers\PagesController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('pages/login');
-});
-Route::get('/dashboard', function () {
-    return view('pages/dashboard');
-});
+
+// Pages endpoint
+Route::get('/', [PagesController::class, 'login']);
+Route::get('/dashboard', [PagesController::class, 'dashboard']);
