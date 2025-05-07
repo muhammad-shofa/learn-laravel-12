@@ -16,5 +16,13 @@ class PagesController extends Controller
         return view('pages/dashboard');
     }
 
-    
+    public function userManagement()
+    {
+        return view('pages/user-management');
+    }
+
+    public function employeeManagement()
+    {
+        return view('pages/employee-management');
+    }
 }

@@ -18,4 +18,9 @@ class UserModel extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function employee()
+    {
+        return $this->belongsTo(EmployeeModel::class, 'employee_id', 'id');
+    }
 }

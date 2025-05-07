@@ -7,34 +7,28 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    protected $userModel;
-
-    public function __construct()
+    public function getUsers()
     {
-        $this->userModel = new UserModel();
+        // $data = $this->userModel::all();
+        $data = UserModel::with('employee')->get();
+        return response()->json([
+            'success' => true,
+            'message' => 'Data retrieved successfully',
+            'data' => $data,
+        ], 200);
     }
 
-    public function addUser()
+    public function addUser(Request $request)
     {
-        // if (userModel::create($request)) {
-        //     return response()->json(['message' => 'User created successfully'], 201);
-        // }
-        // Validate the request
-        // $request->validate([
-        //     'employee_id' => 'required|exists:employees,id',
-        //     'username' => 'required|string|max:255|unique:users,username',
-        //     'password' => 'required|string|min:8',
-        //     'role' => 'required|in:admin,employee',
-        // ]);
+        // Tambahkan validasi nanti
 
         // Create a new user
-        $user = $this->userModel;
-        $user->username = 'admin';
-        $user->password = bcrypt('admin123');
-        $user->try_login = 5; // Default value
-        $user->status_login = 'active'; // Default value
-        $user->role = 'admin';
-        $user->save();
+        UserModel::create([
+            'employee_id' => $request->input('employee_id'),
+            'username' => $request->input('username'),
+            'password' => bcrypt($request->input('password')),
+            'role' => $request->input('role')
+        ]);
 
         return response()->json(['message' => 'User created successfully'], 201);
     }

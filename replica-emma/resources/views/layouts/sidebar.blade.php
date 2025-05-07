@@ -27,19 +27,19 @@
                     role="menu"
                     data-accordion="false">
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="/dashboard" class="nav-link">
                             <i class="nav-icon fa-solid fa-chart-simple"></i>
                             <p>Dashboard</p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="/user-management" class="nav-link">
                             <i class="nav-icon fa-solid fa-user"></i>
                             <p>User Management</p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="/employee-management" class="nav-link">
                             <i class="nav-icon fa-solid fa-user-tie"></i>
                             <p>Employee Management</p>
                         </a>

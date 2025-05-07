@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     @vite(['resources/css/app.css'])
     @vite(['resources/js/app.js'])
@@ -20,6 +21,7 @@
         </div>
     </div>
 
+    @yield('scripts')
 </body>
 
 </html>
