@@ -27,6 +27,9 @@ class AuthController extends Controller
         $user = $this->userModel::where('username', $request->username)->first();
 
         if ($user && password_verify($request->password, $user->password)) {
+
+            // save user data to session
+            session(['user' => $user]);
             // Authentication passed
             return response()->json(['success' => true, 'message' => 'Login successful'], 200);
         }

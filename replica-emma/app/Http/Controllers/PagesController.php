@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 
 class PagesController extends Controller
 {
+    public function unauthorized()
+    {
+        return view('pages/unauthorized');
+    }
     public function login()
     {
         return view('auth/login');
@@ -24,5 +28,10 @@ class PagesController extends Controller
     public function employeeManagement()
     {
         return view('pages/employee-management');
+    }
+
+    public function attendance()
+    {
+        return view('pages/attendance');
     }
 }

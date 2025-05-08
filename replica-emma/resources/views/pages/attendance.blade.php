@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'User Management')
-@vite(['resources/js/employee-management.js'])
+@section('title', 'Attendance')
+@vite(['resources/js/attendance.js'])
 
 @section('content')
 <main class="app-main">
@@ -11,7 +11,7 @@
             <!--begin::Row-->
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="mb-0">Employee Management</h3>
+                    <h3 class="mb-0">Attendance</h3>
                 </div>
             </div>
             <!--end::Row-->
@@ -116,7 +116,7 @@
             <x-modal id="editModal" title="Edit Employee" :footer="$modalFooter">
                 <form id="addEmployeeForm">
                     <!-- Employee code digenerate otomatis dari backend -->
-                     <input type="hidden" name="employee_id" id="edit_employee_id">
+                    <input type="hidden" name="employee_id" id="edit_employee_id">
                     <div class="mb-3">
                         <label for="edit_full_name" class="form-label">Full name</label>
                         <input type="text" class="form-control" id="edit_full_name" />
