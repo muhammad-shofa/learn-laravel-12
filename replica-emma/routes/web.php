@@ -16,12 +16,6 @@ Route::get('/user-management', [PagesController::class, 'userManagement'])->midd
 Route::get('/employee-management', [PagesController::class, 'employeeManagement']);
 Route::get('/attendance', [PagesController::class, 'attendance']);
 
-// Middleware for authentication and role-based access control
-// Route::middleware(['auth', 'role:admin'])->group(function () {
-//     Route::get('/user-management', [PagesController::class, 'userManagement']);
-// });
-
-
 // Auth endpoint
 Route::post('/api/auth/login', [AuthController::class, 'loginAuth']);
 

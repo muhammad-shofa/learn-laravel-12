@@ -17,6 +17,8 @@ $(document).ready(function () {
             },
             success: function (response) {
                 if (response.success) {
+                    console.log("Login successful");
+                    // console.log(response.datauser);
                     window.location.href = "/dashboard";
                 } else {
                     console.log(response.error);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\UserModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -29,7 +30,8 @@ class AuthController extends Controller
         if ($user && password_verify($request->password, $user->password)) {
 
             // save user data to session
-            session(['user' => $user]);
+            // session(['user' => $user]);
+            Auth::login($user);
             // Authentication passed
             return response()->json(['success' => true, 'message' => 'Login successful'], 200);
         }

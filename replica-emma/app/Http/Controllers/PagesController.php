@@ -10,6 +10,7 @@ class PagesController extends Controller
     {
         return view('pages/unauthorized');
     }
+    
     public function login()
     {
         return view('auth/login');
