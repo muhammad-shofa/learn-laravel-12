@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PagesController;
@@ -13,11 +14,12 @@ Route::get('/unauthorized', [PagesController::class, 'unauthorized']);
 Route::get('/', [PagesController::class, 'login']);
 Route::get('/dashboard', [PagesController::class, 'dashboard']);
 Route::get('/user-management', [PagesController::class, 'userManagement'])->middleware('role:admin');
-Route::get('/employee-management', [PagesController::class, 'employeeManagement']);
-Route::get('/attendance', [PagesController::class, 'attendance']);
+Route::get('/employee-management', [PagesController::class, 'employeeManagement'])->middleware('role:admin');
+Route::get('/attendance', [PagesController::class, 'attendance'])->middleware('role:admin,employee');
 
 // Auth endpoint
 Route::post('/api/auth/login', [AuthController::class, 'loginAuth']);
+Route::get('/api/auth/logout', [AuthController::class, 'logoutAuth']);
 
 // User Management endpoint
 Route::get('/api/user/get-users', [UserController::class, 'getUsers']);
@@ -32,3 +34,9 @@ Route::post('/api/employee/add-employee', [EmployeeController::class, 'addEmploy
 Route::get('/api/employee/get-employee/{id}', [EmployeeController::class, 'getEmployee']);
 Route::put('/api/employee/update-employee/{id}', [EmployeeController::class, 'updateEmployee']);
 Route::delete('/api/employee/delete-employee/{id}', [EmployeeController::class, 'deleteEmployee']);
+
+// Attendance endpoint
+Route::get('/api/attendance/get-attendances', [AttendanceController::class, 'getAttendances']);
+Route::get('/api/attendance/get-clock-io-attendance/{employee_id}', [AttendanceController::class, 'checkBtnClockIO']);
+Route::put('/api/attendance/clock-out/{employee_id}', [AttendanceController::class, 'clockOut']);
+Route::post('/api/attendance/add-attendance', [AttendanceController::class, 'clockIn']);

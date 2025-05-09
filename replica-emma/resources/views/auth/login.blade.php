@@ -12,6 +12,14 @@
 </head>
 
 <body class="login-page">
+    <!-- Preloader -->
+    <div id="preloader" style="position: fixed; top:0; left:0; width:100%; height:100%; background:#fff; z-index:9999; display:flex; align-items:center; justify-content:center;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    
     <div class="card card-outline card-primary">
         <div class="card-header">
             <h1 class="mb-2 text-center">Emma</h1>

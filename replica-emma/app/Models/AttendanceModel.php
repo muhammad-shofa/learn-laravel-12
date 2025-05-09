@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class AttendanceModel extends Model
+{
+    protected $table = 'attendances';
+    protected $primaryKey = 'id';
+    protected $fillable = [
+        'employee_id',
+        'date',
+        'clock_in',
+        'clock_out',
+        'status',
+        'created_at',
+        'updated_at',
+    ];
+
+    public function employee()
+    {
+        return $this->belongsTo(EmployeeModel::class, 'employee_id', 'id');
+    }
+}
