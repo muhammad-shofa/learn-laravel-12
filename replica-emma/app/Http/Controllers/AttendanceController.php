@@ -39,29 +39,6 @@ class AttendanceController extends Controller
         ]);
     }
 
-    // get data attendance and check clock_in & clock_out
-    public function checkBtnClockIO($employee_id)
-    {
-        $today = now()->toDateString(); // format: Y-m-d
-
-        // cek apakah user sudah clock in hari ini
-        $alreadyClockedIn = AttendanceModel::where('employee_id', $employee_id)
-            ->whereDate('clock_in', $today)
-            ->exists();
-
-        // cek apakah user sudah logout hari ini
-        $alreadyClockedOut = AttendanceModel::where('employee_id', $employee_id)
-            ->whereDate('clock_out', $today)
-            ->exists();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Attendance data retrieved successfully',
-            'already_clocked_in' => $alreadyClockedIn,
-            'already_clocked_out' => $alreadyClockedOut
-        ]);
-    }
-
     // update clock_out data
     public function clockOut(Request $request, $employee_id)
     {
@@ -94,6 +71,43 @@ class AttendanceController extends Controller
             'success' => true,
             'message' => 'Clock Out berhasil',
             'data' => $attendance
+        ]);
+    }
+
+    public function getStatus($employee_id)
+    {
+        $today = now()->toDateString(); // format: Y-m-d
+        $attendanceStatus = AttendanceModel::where('employee_id', $employee_id)->whereDate('date', $today)->pluck('status')->first();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status data retieved  successfully',
+            'attendanceStatus' => $attendanceStatus
+        ]);
+    }
+
+    // get data attendance and check clock_in & clock_out
+    public function checkBtnClockIO($employee_id)
+    {
+        $today = now()->toDateString(); // format: Y-m-d
+
+        // cek apakah user sudah clock in hari ini
+        $alreadyClockedIn = AttendanceModel::where('employee_id', $employee_id)
+            ->whereDate('date', $today)
+            ->whereNotNull('clock_in') // agar hanya menghitung jika sudah clock out
+            ->exists();
+
+        // cek apakah user sudah logout hari ini
+        $alreadyClockedOut = AttendanceModel::where('employee_id', $employee_id)
+            ->whereDate('date', $today)
+            ->whereNotNull('clock_out') // agar hanya menghitung jika sudah clock out
+            ->exists();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Attendance data retrieved successfully',
+            'already_clocked_in' => $alreadyClockedIn,
+            'already_clocked_out' => $alreadyClockedOut
         ]);
     }
 }

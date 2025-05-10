@@ -119,23 +119,36 @@ $(document).ready(function () {
             type: "GET",
             dataType: "json",
             success: (response) => {
-                if (response.already_clocked_in) {
-                    $(".btn-clock-in")
-                        .prop("disabled", true)
-                        .text("Already Clock In");
-                } else {
-                    console.log(response.message);
-                }
+                console.log(response.already_clocked_in);
+                console.log(response.already_clocked_out);
 
                 if (
-                    response.already_clocked_in &&
-                    response.already_clocked_out
+                    !response.already_clocked_in &&
+                    !response.already_clocked_out
                 ) {
+                    // Kondisi ketika employee belum clock in dan belum clock out
+                    $(".btn-clock-in").prop("disabled", false).text("Clock In");
+
                     $(".btn-clock-out")
                         .prop("disabled", true)
-                        .text("Already Clock Out");
+                        .text("Clock Out");
+                } else if (
+                    response.already_clocked_in &&
+                    !response.already_clocked_out
+                ) {
+                    // Kondisi ketika employee sudah clock in dan belum clock out
+                    $(".btn-clock-in").prop("disabled", true).text("Clock In");
+
+                    $(".btn-clock-out")
+                        .prop("disabled", false)
+                        .text("Clock Out");
                 } else {
-                    console.log(response.message);
+                    // Kondisi ketika employee sudah clock in dan sudah clock out
+                    $(".btn-clock-in").prop("disabled", true).text("Clock In");
+
+                    $(".btn-clock-out")
+                        .prop("disabled", true)
+                        .text("Clock Out");
                 }
             },
             error: function (xhr, status, error) {
@@ -152,43 +165,47 @@ $(document).ready(function () {
 
     checkDisableClockIO();
 
+    // tampilkan status employee pada card
+    function statusEmployee() {
+        let employee_id = $("#attendance_employee_id").val();
+
+        $.ajax({
+            url: "/api/attendance/get-status/" + employee_id,
+            type: "GET",
+            dataType: "json",
+            success: (response) => {
+                if (response.success) {
+                    console.log(response.attendanceStatus);
+                    $("#text-status-attendance").text(response.attendanceStatus);
+                } else {
+                    console.log(response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error: " + status + error);
+                Swal.fire({
+                    title: "Error!",
+                    text: "Your attendance failed to be recorded.",
+                    icon: "Error",
+                    confirmButtonText: "Oke",
+                });
+            },
+        });
+    }
+
+    statusEmployee();
+
+    // ketika tombol clock in diklik
     $(document).on("click", ".btn-clock-in", () => {
         let dateText = $(".realtime-date").text();
         let clockIn = $(".realtime-clock").text();
-
-        // Pisahkan date
-        // let parts = dateText.split(",")[1].trim().split(" "); // hasil: ["8", "Mei", "2025"]
-
-        // let day = parts[0];
-        // let monthName = parts[1];
-        // let year = parts[2];
-
-        // Konversi nama month ke angka
-        // const monthMap = {
-        //     Januari: "01",
-        //     Februari: "02",
-        //     Maret: "03",
-        //     April: "04",
-        //     Mei: "05",
-        //     Juni: "06",
-        //     Juli: "07",
-        //     Agustus: "08",
-        //     September: "09",
-        //     Oktober: "10",
-        //     November: "11",
-        //     Desember: "12",
-        // };
-
-        //
-        // let month = monthMap[monthName];
-        // let formattedDate = `${year}-${month}-${day.padStart(2, "0")}`;
 
         // cek status clock in employee
         let maxClock = "08:15:00";
         let status = clockIn <= maxClock ? "ontime" : "late";
 
         // Debug
-        console.log(formattedDate);
+        // console.log(formattedDate);
         console.log(clockIn);
 
         $.ajax({
@@ -211,6 +228,7 @@ $(document).ready(function () {
                         confirmButtonText: "Oke",
                     });
                     checkDisableClockIO();
+                    statusEmployee();
                 } else {
                     console.log(response.message);
                 }
@@ -257,6 +275,7 @@ $(document).ready(function () {
                         confirmButtonText: "Oke",
                     });
                     checkDisableClockIO();
+                    statusEmployee();
                 } else {
                     console.log(response.message);
                 }
