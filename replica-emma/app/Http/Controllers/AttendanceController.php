@@ -30,7 +30,8 @@ class AttendanceController extends Controller
             'date' => now()->format('Y-m-d'),
             'clock_in' => $request->input('clock_in') ?? null,
             'clock_out' => $request->input('clock_out') ?? null,
-            'status' => $request->input('status')
+            'clock_in_status' => $request->input('clock_in_status') ?? null,
+            'clock_out_status' => $request->input('clock_out_status') ?? null
         ]);
 
         return response()->json([
@@ -39,7 +40,7 @@ class AttendanceController extends Controller
         ]);
     }
 
-    // update clock_out data
+    // update clock_out && clock_out_status data
     public function clockOut(Request $request, $employee_id)
     {
         $today = now()->toDateString();
@@ -63,8 +64,9 @@ class AttendanceController extends Controller
             ], 400);
         }
 
-        // Ambil clock_out dari request
+        // Ambil dari request
         $attendance->clock_out = $request->clock_out;
+        $attendance->clock_out_status = $request->clock_out_status;
         $attendance->save();
 
         return response()->json([
@@ -77,7 +79,7 @@ class AttendanceController extends Controller
     public function getStatus($employee_id)
     {
         $today = now()->toDateString(); // format: Y-m-d
-        $attendanceStatus = AttendanceModel::where('employee_id', $employee_id)->whereDate('date', $today)->pluck('status')->first();
+        $attendanceStatus = AttendanceModel::where('employee_id', $employee_id)->whereDate('date', $today)->pluck('clock_in_status')->first();
 
         return response()->json([
             'success' => true,

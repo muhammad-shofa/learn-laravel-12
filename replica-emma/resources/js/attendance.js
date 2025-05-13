@@ -176,7 +176,9 @@ $(document).ready(function () {
             success: (response) => {
                 if (response.success) {
                     console.log(response.attendanceStatus);
-                    $("#text-status-attendance").text(response.attendanceStatus);
+                    $("#text-status-attendance").text(
+                        response.attendanceStatus ?? "-"
+                    );
                 } else {
                     console.log(response.message);
                 }
@@ -214,7 +216,7 @@ $(document).ready(function () {
             dataType: "json",
             data: {
                 clock_in: clockIn,
-                status: status,
+                clock_in_status: status,
             },
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -245,7 +247,7 @@ $(document).ready(function () {
         });
     });
 
-    // clock out, update kolom clock_out pada database
+    // clock out, update kolom clock_out dan clock_out_status pada database
     // ambil waktu saat ini ketika tombol diklik jquery
     $(document).on("click", ".btn-clock-out", () => {
         let employee_id = $("#attendance_employee_id").val();
@@ -254,14 +256,38 @@ $(document).ready(function () {
         let minutes = String(now.getMinutes()).padStart(2, "0");
         let seconds = String(now.getSeconds()).padStart(2, "0");
         let clock_out = `${hours}:${minutes}:${seconds}`;
+        let clock_out_status = "";
 
-        console.log(clock_out);
+        // Cek apakah employee clock out sebelum atau sesudah waktu yang ditentukan
+        /*
+        - ontime : employee clock out pada pukul 16:00
+        - early : employee clock out sebelum pukul 16:00 (mungkin bisa dibuat agar tombolnya hanya bisa diklik ketika pukul 16:00)
+        - late : ketika employee clock out lebih dari jam 17:00
+        - no_clock_out : ketika employee tidak clock out sampai hari berganti
+        */
+
+        console.log("waktu clockout" + clock_out);
+        if (clock_out >= "16:00:00" && clock_out <= "17:00:00") {
+            clock_out_status = "ontime";
+            console.log("ontime" + clock_out);
+        } else if (clock_out > "17:00:00") {
+            clock_out_status = "late";
+            console.log("late" + clock_out);
+        } else if (clock_out >= "00:00:00") {
+            clock_out_status = "absent";
+            console.log("absent" + clock_out);
+        } else {
+            clock_out_status = "early";
+            console.log("early" + clock_out);
+        }
+
         $.ajax({
             url: "/api/attendance/clock-out/" + employee_id,
             type: "PUT",
             dataType: "json",
             data: {
                 clock_out: clock_out,
+                clock_out_status: clock_out_status,
             },
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
