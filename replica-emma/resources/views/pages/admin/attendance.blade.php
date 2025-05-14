@@ -23,7 +23,7 @@
         <div class="container-fluid">
             <div class="card mb-4">
                 <div class="card-header">
-                    <h3 class="card-title">Attendace Table</h3>
+                    <h3 class="card-title">Attendance Table</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body p-0">
@@ -35,9 +35,10 @@
                                 <th>Date</th>
                                 <th>Clock In</th>
                                 <th>Clock Out</th>
-                                <th>Status</th>
+                                <th>Clock In Status</th>
+                                <th>Clock Out Status</th>
                                 <th style="width: 150px">Action</th>
-                                
+
                             </tr>
                         </thead>
                         <tbody>
@@ -56,51 +57,33 @@
             @php
             $modalFooter = '<button type="button" class="save-edit btn btn-success">Save Edit</button>';
             @endphp
-            <x-modal id="editModal" title="Edit Employee" :footer="$modalFooter">
-                <form id="addEmployeeForm">
-                    <!-- Employee code digenerate otomatis dari backend -->
-                    <input type="hidden" name="employee_id" id="edit_employee_id">
+            <x-modal id="editModal" title="Edit Attendance" :footer="$modalFooter">
+                <form id="editAttendanceForm">
+                    <input type="hidden" id="attendance_id">
                     <div class="mb-3">
-                        <label for="edit_full_name" class="form-label">Full name</label>
-                        <input type="text" class="form-control" id="edit_full_name" />
+                        <label for="edit_clock_in" class="form-label">Clock In</label>
+                        <input type="time" step="1" class="form-control" id="edit_clock_in" />
                     </div>
                     <div class="mb-3">
-                        <label for="edit_email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="edit_email" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="edit_phone" class="form-label">Phone</label>
-                        <input type="number" class="form-control" id="edit_phone" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="edit_position" class="form-label">Position</label>
-                        <select class="form-select" id="edit_position">
-                            <!--
-                                    Pengembangan : tambahkan table position di database untuk menampung data position yang
-                                    nantinya akan ditampilkan di dropdown ini     
-                                        -->
-                            <option value="hr">HR</option>
-                            <option value="senior_programmer">Senior Programmer</option>
-                            <option value="junior_programmer">Junior Programmer</option>
-                            <option value="office_boy">Office Boy</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="edit_gender" class="form-label">gender</label>
-                        <select class="form-select" id="edit_gender">
-                            <option selected value="M">M</option>
-                            <option value="F">F</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="edit_join_date" class="form-label">Join Date</label>
-                        <input type="date" class="form-control" id="edit_join_date" />
+                        <label for="edit_clock_out" class="form-label">Clock Out</label>
+                        <input type="time" step="1" class="form-control" id="edit_clock_out" />
                     </div>
                     <div class="md-3">
-                        <label for="edit_status" class="form-label">Status</label>
-                        <select class="form-select" id="edit_status">
-                            <option selected value="active">Active</option>
-                            <option value="inactive">inactive</option>
+                        <label for="edit_clock_in_status" class="form-label">Clock In Status</label>
+                        <select class="form-select" id="edit_clock_in_status" require>
+                            <option value="ontime">Ontime</option>
+                            <option value="late">Late</option>
+                            <option value="absent">Absent</option>
+                            <option value="leave">Leave</option>
+                        </select>
+                    </div>
+                    <div class="md-3">
+                        <label for="edit_clock_out_status" class="form-label">Clock Out Status</label>
+                        <select class="form-select" id="edit_clock_out_status" require>
+                            <option value="ontime">Ontime</option>
+                            <option value="early">Early</option>
+                            <option value="late">Late</option>
+                            <option value="no_clock_out">No Clock Out</option>
                         </select>
                     </div>
                 </form>

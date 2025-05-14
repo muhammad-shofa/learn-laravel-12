@@ -25,7 +25,8 @@ $(document).ready(function () {
                                 <td>${attendance.date}</td>
                                 <td>${attendance.clock_in ?? "-"}</td>
                                 <td>${attendance.clock_out ?? "-"}</td>
-                                <td>${attendance.status ?? "-"}</td>
+                                <td>${attendance.clock_in_status ?? "-"}</td>
+                                <td>${attendance.clock_out_status ?? "-"}</td>
                                 <td>
                                     <button class="btn-edit btn btn-primary" data-attendance_id="${
                                         attendance.id
@@ -46,6 +47,79 @@ $(document).ready(function () {
 
     loadAttendancesData();
 
+    // ketika tombol edit diklik
+    $(document).on("click", ".btn-edit", function () {
+        let attendance_id = $(this).data("attendance_id");
+        $.ajax({
+            url: "/api/attendance/get-attendance/" + attendance_id,
+            type: "GET",
+            dataType: "json",
+            success: (response) => {
+                if (response.success) {
+                    console.log(response.message);
+                    $("#attendance_id").val(response.data.id);
+                    $("#edit_clock_in").val(response.data.clock_in);
+                    $("#edit_clock_out").val(response.data.clock_out);
+                    $("#edit_clock_in_status").val(
+                        response.data.clock_in_status
+                    );
+                    $("#edit_clock_out_status").val(
+                        response.data.clock_out_status
+                    );
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error: " + status + error);
+            },
+        });
+    });
+
+    // ketika tombol save edit diklik
+    $(document).on("click", ".save-edit", function () {
+        let attendance_id = $("#attendance_id").val();
+        let edit_clock_in = $("#edit_clock_in").val();
+        let edit_clock_out = $("#edit_clock_out").val();
+        let edit_clock_in_status = $("#edit_clock_in_status").val();
+        let edit_clock_out_status = $("#edit_clock_out_status").val();
+
+        console.log("btn edit clicked");
+        console.log("clock in " + edit_clock_in);
+        console.log("clock out " + edit_clock_out);
+        console.log("clock in status " + edit_clock_in_status);
+        console.log("clock out status " + edit_clock_out_status);
+
+        $.ajax({
+            url: "/api/attendance/update-attendance/" + attendance_id,
+            type: "PUT",
+            dataType: "json",
+            data: {
+                clock_in: edit_clock_in,
+                clock_out: edit_clock_out,
+                clock_in_status: edit_clock_in_status,
+                clock_out_status: edit_clock_out_status,
+            },
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: (response) => {
+                if (response.success) {
+                    console.log(response.message);
+                    $("#editModal").modal("hide");
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Attendance data has been updated successfully.",
+                        icon: "success",
+                        confirmButtonText: "Oke",
+                    });
+                    loadAttendancesData();
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error: " + status + error);
+            },
+        });
+    });
+
     // tampilkan date dan jam pada clock-in card
     function updateDateTime() {
         const now = new Date();
@@ -65,10 +139,10 @@ $(document).ready(function () {
             currentTime <= startClockInbtn ? "nonactive" : "active";
 
         if (statusClockInBtn == "nonactive") {
-            $(".btn-clock-in").attr("disabled", true);
+            $("#btn-clock-in").attr("disabled", true);
         }
         // else {
-        //     $('.btn-clock-in').attr('disabled', true);
+        //     $('#btn-clock-in').attr('disabled', true);
         // }
 
         // Format date: Senin, 8 Mei 2025
@@ -127,28 +201,44 @@ $(document).ready(function () {
                     !response.already_clocked_out
                 ) {
                     // Kondisi ketika employee belum clock in dan belum clock out
-                    $(".btn-clock-in").prop("disabled", false).text("Clock In");
+                    $("#btn-clock-in")
+                        .prop("disabled", false)
+                        .text("Clock In")
+                        .addClass("btn-clock-in");
 
-                    $(".btn-clock-out")
+                    $("#btn-clock-out")
                         .prop("disabled", true)
-                        .text("Clock Out");
+                        .text("Clock Out")
+                        .addClass("btn-nonactive");
                 } else if (
                     response.already_clocked_in &&
                     !response.already_clocked_out
                 ) {
                     // Kondisi ketika employee sudah clock in dan belum clock out
-                    $(".btn-clock-in").prop("disabled", true).text("Clock In");
+                    $("#btn-clock-in")
+                        .prop("disabled", true)
+                        .text("Clock In")
+                        .removeClass("btn-clock-in")
+                        .addClass("btn-nonactive");
 
-                    $(".btn-clock-out")
+                    $("#btn-clock-out")
                         .prop("disabled", false)
-                        .text("Clock Out");
+                        .text("Clock Out")
+                        .removeClass("btn-nonactive")
+                        .addClass("btn-clock-out");
                 } else {
                     // Kondisi ketika employee sudah clock in dan sudah clock out
-                    $(".btn-clock-in").prop("disabled", true).text("Clock In");
-
-                    $(".btn-clock-out")
+                    $("#btn-clock-in")
                         .prop("disabled", true)
-                        .text("Clock Out");
+                        .text("Clock In")
+                        .removeClass("btn-clock-in")
+                        .addClass("btn-nonactive");
+
+                    $("#btn-clock-out")
+                        .prop("disabled", true)
+                        .text("Clock Out")
+                        .removeClass("btn-clock-out")
+                        .addClass("btn-nonactive");
                 }
             },
             error: function (xhr, status, error) {
@@ -175,9 +265,15 @@ $(document).ready(function () {
             dataType: "json",
             success: (response) => {
                 if (response.success) {
-                    console.log(response.attendanceStatus);
-                    $("#text-status-attendance").text(
-                        response.attendanceStatus ?? "-"
+                    console.log("clock in status :" + response.clockInStatus);
+                    $("#text-clock-in-status-attendance").text(
+                        response.clockInStatus ?? "-"
+                    );
+                    $("#text-clock-out-status-attendance").text(
+                        response.clockOutStatus &&
+                            response.clockOutStatus != "no_clock_out"
+                            ? response.clockOutStatus
+                            : "-"
                     );
                 } else {
                     console.log(response.message);
@@ -198,25 +294,39 @@ $(document).ready(function () {
     statusEmployee();
 
     // ketika tombol clock in diklik
-    $(document).on("click", ".btn-clock-in", () => {
-        let dateText = $(".realtime-date").text();
-        let clockIn = $(".realtime-clock").text();
+    $(document).on("click", "#btn-clock-in", () => {
+        let now = new Date();
+        let hours = String(now.getHours()).padStart(2, "0");
+        let minutes = String(now.getMinutes()).padStart(2, "0");
+        let seconds = String(now.getSeconds()).padStart(2, "0");
+        let clock_in = `${hours}:${minutes}:${seconds}`;
+        let clock_in_status = "";
 
         // cek status clock in employee
-        let maxClock = "08:15:00";
-        let status = clockIn <= maxClock ? "ontime" : "late";
+        // let maxClockIn = "08:15:00";
+        // let clock_in_status = clockIn <= maxClock ? "ontime" : "late";
 
         // Debug
         // console.log(formattedDate);
-        console.log(clockIn);
+        console.log(clock_in);
+        if (clock_in >= "07:45:00" && clock_in <= "08:15:00") {
+            console.log("ontime");
+            clock_in_status = "ontime";
+        } else if (clock_in > "08:15:00" && clock_in < "16:00:00") {
+            console.log("late");
+            clock_in_status = "late";
+        } else {
+            console.log("absent");
+            clock_in_status = "absent";
+        }
 
         $.ajax({
             url: "/api/attendance/add-attendance",
             type: "POST",
             dataType: "json",
             data: {
-                clock_in: clockIn,
-                clock_in_status: status,
+                clock_in: clock_in,
+                clock_in_status: clock_in_status,
             },
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -249,7 +359,7 @@ $(document).ready(function () {
 
     // clock out, update kolom clock_out dan clock_out_status pada database
     // ambil waktu saat ini ketika tombol diklik jquery
-    $(document).on("click", ".btn-clock-out", () => {
+    $(document).on("click", "#btn-clock-out", () => {
         let employee_id = $("#attendance_employee_id").val();
         let now = new Date();
         let hours = String(now.getHours()).padStart(2, "0");
@@ -267,15 +377,15 @@ $(document).ready(function () {
         */
 
         console.log("waktu clockout" + clock_out);
-        if (clock_out >= "16:00:00" && clock_out <= "17:00:00") {
+        if (!clock_out) {
+            clock_out_status = "no_clock_out";
+            console.log("no_clock_out");
+        } else if (clock_out >= "16:00:00" && clock_out <= "17:00:00") {
             clock_out_status = "ontime";
             console.log("ontime" + clock_out);
         } else if (clock_out > "17:00:00") {
             clock_out_status = "late";
             console.log("late" + clock_out);
-        } else if (clock_out >= "00:00:00") {
-            clock_out_status = "absent";
-            console.log("absent" + clock_out);
         } else {
             clock_out_status = "early";
             console.log("early" + clock_out);

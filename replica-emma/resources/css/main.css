@@ -25,12 +25,12 @@
   touch-action: manipulation;
 }
 
-/* .btn-nonactive {
-    background-color: #fbeee0;
+.btn-nonactive {
+    background-color: #4e4e4e;
     border: 2px solid #422800;
     border-radius: 30px;
     box-shadow: #422800 0px 2px 0 0;
-    color: #422800;
+    color: #c5c5c5;
     cursor: pointer;
     display: inline-block;
     font-weight: 600;
@@ -42,7 +42,11 @@
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
-} */
+}
+
+.btn-nonactive:hover {
+  cursor: default;
+}
 
 .btn-clock-in:hover, .btn-clock-out:hover {
   background-color: #fff;
@@ -63,3 +67,4 @@
     padding: 0 25px;
   }
 }
+

@@ -34,10 +34,10 @@
                         <p class="pt-3">Clock In</p>
                         <h3 class="realtime-date" style="font-size: 20px; font-weight: bold;" class="my-5"></h3>
                         <h1 class="realtime-clock" style="font-weight: bold;"></h1>
-                        <button class="btn-clock-in mb-5">Clock In</button>
+                        <button id="btn-clock-in" class="mb-5">Clock In</button>
                         <div class="rounded">
                             <p>Clock in status</p>
-                            <h5 id="text-status-attendance" class="p-3 bg-secondary text-white rounded"></h5>
+                            <h5 id="text-clock-in-status-attendance" class="p-3 bg-secondary text-white rounded"></h5>
                         </div>
                     </div>
                     <div class="col p-0 m-0">
@@ -50,10 +50,10 @@
                         <p class="pt-3">Clock Out</p>
                         <h3 class="realtime-date" style="font-size: 20px; font-weight: bold;" class="my-5"></h3>
                         <h1 class="" style="font-weight: bold;">16:00:00</h1>
-                        <button class="btn-clock-out mb-5">Clock Out</button>
+                        <button id="btn-clock-out" class="mb-5">Clock Out</button>
                         <div class="rounded">
                             <p>Clock in status</p>
-                            <h5 class="p-3 bg-secondary text-white rounded">Clocked Out</h5>
+                            <h5 id="text-clock-out-status-attendance" class="p-3 bg-secondary text-white rounded"></h5>
                         </div>
                     </div>
                     <div class="col p-0 m-0">

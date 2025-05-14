@@ -19,11 +19,42 @@ class AttendanceController extends Controller
         ]);
     }
 
+    // get attendance data based attendance_id
+    public function getAttendance($attendance_id)
+    {
+        $attendance = AttendanceModel::where('id', $attendance_id)->first();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Attendance data retrieved successfully',
+            'data' => $attendance
+        ]);
+    }
+
+    // 
+    public function updateAttendance(Request $request, $attendance_id)
+    {
+        $attendance = AttendanceModel::findOrFail($attendance_id);
+
+        $attendance->update([
+            'clock_in' => $request->input("clock_in"),
+            'clock_out' => $request->input("clock_out"),
+            'clock_in_status' => $request->input("clock_in_status"),
+            'clock_out_status' => $request->input("clock_out_status"),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Attendance updated successfully'
+        ]);
+    }
+
     // add new data attendance
     public function clockIn(Request $request)
     {
         $user = Auth::user();
         $employee_id = $user->employee_id;
+        $clock_out_status = "no_clock_out";
 
         AttendanceModel::create([
             'employee_id' => $employee_id,
@@ -31,7 +62,7 @@ class AttendanceController extends Controller
             'clock_in' => $request->input('clock_in') ?? null,
             'clock_out' => $request->input('clock_out') ?? null,
             'clock_in_status' => $request->input('clock_in_status') ?? null,
-            'clock_out_status' => $request->input('clock_out_status') ?? null
+            'clock_out_status' => $clock_out_status
         ]);
 
         return response()->json([
@@ -79,12 +110,14 @@ class AttendanceController extends Controller
     public function getStatus($employee_id)
     {
         $today = now()->toDateString(); // format: Y-m-d
-        $attendanceStatus = AttendanceModel::where('employee_id', $employee_id)->whereDate('date', $today)->pluck('clock_in_status')->first();
+        $clockInStatus = AttendanceModel::where('employee_id', $employee_id)->whereDate('date', $today)->pluck('clock_in_status')->first();
+        $clockOutStatus = AttendanceModel::where('employee_id', $employee_id)->whereDate('date', $today)->pluck('clock_out_status')->first();
 
         return response()->json([
             'success' => true,
             'message' => 'Status data retieved  successfully',
-            'attendanceStatus' => $attendanceStatus
+            'clockInStatus' => $clockInStatus,
+            'clockOutStatus' => $clockOutStatus
         ]);
     }
 
