@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\UserController;
@@ -20,6 +21,9 @@ Route::get('/attendance', [PagesController::class, 'attendance'])->middleware('r
 // Auth endpoint
 Route::post('/api/auth/login', [AuthController::class, 'loginAuth']);
 Route::get('/api/auth/logout', [AuthController::class, 'logoutAuth']);
+
+// Dashboard Management Endpoint
+Route::get('/api/dashboard/get-all-dashboard-data', [DashboardController::class, 'getAllDashboardData']);
 
 // User Management endpoint
 Route::get('/api/user/get-users', [UserController::class, 'getUsers']);

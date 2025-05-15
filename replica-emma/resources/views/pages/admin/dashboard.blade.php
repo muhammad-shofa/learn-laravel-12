@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Dashboard')
+@vite(['resources/js/dashboard.js'])
 
 @section('content')
 <main class="app-main">
@@ -12,7 +13,7 @@
                 <div class="col-sm-6">
                     <h3 class="mb-0">Dashboard</h3>
                 </div>
-           
+
             </div>
             <!--end::Row-->
         </div>
@@ -30,8 +31,8 @@
                         </span>
                         <div class="info-box-content">
                             <span class="info-box-text">Employees</span>
-                            <span class="info-box-number">
-                                14
+                            <span class="info-box-number" id="employee_counts">
+
                             </span>
                         </div>
                         <!-- /.info-box-content -->
@@ -46,7 +47,7 @@
                         </span>
                         <div class="info-box-content">
                             <span class="info-box-text">Late Today</span>
-                            <span class="info-box-number">2</span>
+                            <span class="info-box-number" id="late_counts"></span>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
@@ -61,7 +62,7 @@
                         </span>
                         <div class="info-box-content">
                             <span class="info-box-text">Time Off Request</span>
-                            <span class="info-box-number">5</span>
+                            <span class="info-box-number" id="time_off_counts">5 (dummy)</span>
                         </div>
                         <!-- /.info-box-content -->
                     </div>

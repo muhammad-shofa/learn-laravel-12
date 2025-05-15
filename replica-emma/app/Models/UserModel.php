@@ -18,6 +18,7 @@ class UserModel extends Authenticatable
         'status_login',
         'created_at',
         'updated_at',
+        'cooldown_until'
     ];
 
     public function employee()

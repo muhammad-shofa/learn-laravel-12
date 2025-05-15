@@ -1,3 +1,5 @@
+import Swal from "sweetalert2";
+
 $(document).ready(function () {
     // Handle the form submission
     $("#loginForm").on("submit", function (event) {
@@ -21,7 +23,12 @@ $(document).ready(function () {
                     // console.log(response.datauser);
                     window.location.href = "/dashboard";
                 } else {
-                    console.log(response.error);
+                    Swal.fire({
+                        title: "Login Failed!",
+                        text: response.message,
+                        icon: "error",
+                        confirmButtonText: "Try again",
+                    });
                 }
             },
             error: function (xhr, status, error) {
