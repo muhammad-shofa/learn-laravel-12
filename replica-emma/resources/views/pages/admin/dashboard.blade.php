@@ -93,65 +93,16 @@
                         <!-- /.card-header -->
                         <div class="card-body p-0">
                             <div class="table-responsive">
-                                <table class="table m-0">
+                                <table class="table m-0" id="attendanceDashboardTableData">
                                     <thead>
                                         <tr>
+                                            <th>No</th>
                                             <th>Name</th>
-                                            <th>Clock-in</th>
-                                            <th>Status</th>
+                                            <th>Clock in</th>
+                                            <th>Status Clock In</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>
-                                                <p>Madam</p>
-                                            </td>
-                                            <td>09:17</td>
-                                            <td><span class="badge text-bg-danger">late</span></td>
-                                            <td>
-                                                <div id="table-sparkline-7"></div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <p>Bagas</p>
-                                            </td>
-                                            <td>08:42</td>
-                                            <td><span class="badge text-bg-danger">late</span></td>
-                                            <td>
-                                                <div id="table-sparkline-7"></div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <p>Pororo</p>
-                                            </td>
-                                            <td>08:07</td>
-                                            <td><span class="badge text-bg-success">ontime</span></td>
-                                            <td>
-                                                <div id="table-sparkline-1"></div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <p>Andreas</p>
-                                            </td>
-                                            <td>08:05</td>
-                                            <td><span class="badge text-bg-success">ontime</span></td>
-                                            <td>
-                                                <div id="table-sparkline-1"></div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <p>Kasi</p>
-                                            </td>
-                                            <td>07:57</td>
-                                            <td><span class="badge text-bg-success">ontime</span></td>
-                                            <td>
-                                                <div id="table-sparkline-1"></div>
-                                            </td>
-                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
