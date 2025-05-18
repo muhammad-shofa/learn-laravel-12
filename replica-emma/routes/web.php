@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PagesController;
+use App\Http\Controllers\TimeOffController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,6 +18,7 @@ Route::get('/dashboard', [PagesController::class, 'dashboard']);
 Route::get('/user-management', [PagesController::class, 'userManagement'])->middleware('role:admin');
 Route::get('/employee-management', [PagesController::class, 'employeeManagement'])->middleware('role:admin');
 Route::get('/attendance', [PagesController::class, 'attendance'])->middleware('role:admin,employee');
+Route::get('/time-off', [PagesController::class, 'timeOff'])->middleware('role:admin,employee');
 
 // Auth endpoint
 Route::post('/api/auth/login', [AuthController::class, 'loginAuth']);
@@ -24,6 +26,8 @@ Route::get('/api/auth/logout', [AuthController::class, 'logoutAuth']);
 
 // Dashboard Management Endpoint
 Route::get('/api/dashboard/get-all-dashboard-data', [DashboardController::class, 'getAllDashboardData']);
+Route::get('/api/dashboard/filter-dashboard-data', [DashboardController::class, 'filterDashboardData']);
+Route::get('/api/dashboard/monthly-chart', [DashboardController::class, 'getMonthlyChart']);
 
 // User Management endpoint
 Route::get('/api/user/get-users', [UserController::class, 'getUsers']);
@@ -47,3 +51,7 @@ Route::get('/api/attendance/get-status/{employee_id}', [AttendanceController::cl
 Route::get('/api/attendance/get-clock-io-attendance/{employee_id}', [AttendanceController::class, 'checkBtnClockIO']);
 Route::put('/api/attendance/clock-out/{employee_id}', [AttendanceController::class, 'clockOut']);
 Route::post('/api/attendance/add-attendance', [AttendanceController::class, 'clockIn']);
+
+// Time Off endpoint
+Route::get('/api/time-off/get-time-off-request/{employee_id}', [TimeOffController::class, 'getTimeOffRequest']);
+Route::post('/api/time-off/new-time-off', [TimeOffController::class, 'newTimeOff']);

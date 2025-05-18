@@ -12,7 +12,6 @@
                 <div class="col-sm-6">
                     <h3 class="mb-0">Dashboard</h3>
                 </div>
-           
             </div>
             <!--end::Row-->
         </div>
@@ -23,152 +22,74 @@
         <div class="container-fluid">
             <!-- Info boxes -->
             <div class="row">
-                <div class="col-12 col-sm-6 col-md-3">
-                    <div class="info-box">
-                        <span class="info-box-icon text-bg-primary shadow-sm">
-                            <i class="fa-solid fa-user-tie"></i>
-                        </span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Employees</span>
-                            <span class="info-box-number">
-                                14
-                            </span>
-                        </div>
-                        <!-- /.info-box-content -->
+                <!-- <div class="col-md-6"> -->
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h2>Welcome <b class="bg-warning px-2 text-white">{{ $user->username }}</b>, let's work with your team!</h2>
                     </div>
-                    <!-- /.info-box -->
                 </div>
-                <!-- /.col -->
-                <div class="col-12 col-sm-6 col-md-3">
-                    <div class="info-box">
-                        <span class="info-box-icon text-bg-danger shadow-sm">
-                            <i class="fa-solid fa-user-clock" style="color: #ffffff;"></i>
-                        </span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Late Today</span>
-                            <span class="info-box-number">2</span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
-                </div>
-                <!-- /.col -->
-                <!-- /.col -->
-                <div class="col-12 col-sm-6 col-md-3">
-                    <div class="info-box">
-                        <span class="info-box-icon text-bg-warning shadow-sm">
-                            <i class="fa-solid fa-calendar" style="color: #ffffff;"></i>
-                        </span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Time Off Request</span>
-                            <span class="info-box-number">5</span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
-                </div>
-                <!-- /.col -->
+                <!-- </div> -->
             </div>
             <!-- /.row -->
 
-            <!--begin::Row-->
-            <div class="row">
+            <!-- card employee start -->
+            <div class="row mt-5">
                 <!-- Start col -->
-                <div class="col-md">
-                    <!--begin::Latest Order Widget-->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Today's Attendance</h3>
-                            <div class="card-tools">
-                                <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
-                                    <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
-                                    <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
-                                </button>
-                                <button type="button" class="btn btn-tool" data-lte-toggle="card-remove">
-                                    <i class="bi bi-x-lg"></i>
-                                </button>
-                            </div>
+                <div class="col-md-6">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">Employee Profile</h5>
                         </div>
-                        <!-- /.card-header -->
-                        <div class="card-body p-0">
+                        <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table m-0">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Clock-in</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
+                                <table class="table table-borderless align-middle">
                                     <tbody>
                                         <tr>
-                                            <td>
-                                                <p>Madam</p>
-                                            </td>
-                                            <td>09:17</td>
-                                            <td><span class="badge text-bg-danger">late</span></td>
-                                            <td>
-                                                <div id="table-sparkline-7"></div>
-                                            </td>
+                                            <td><strong>Employee Code</strong></td>
+                                            <td>{{ $employee->employee_code }}</td>
                                         </tr>
                                         <tr>
-                                            <td>
-                                                <p>Bagas</p>
-                                            </td>
-                                            <td>08:42</td>
-                                            <td><span class="badge text-bg-danger">late</span></td>
-                                            <td>
-                                                <div id="table-sparkline-7"></div>
-                                            </td>
+                                            <td><strong>Full Name</strong></td>
+                                            <td>{{ $employee->full_name }}</td>
                                         </tr>
                                         <tr>
-                                            <td>
-                                                <p>Pororo</p>
-                                            </td>
-                                            <td>08:07</td>
-                                            <td><span class="badge text-bg-success">ontime</span></td>
-                                            <td>
-                                                <div id="table-sparkline-1"></div>
-                                            </td>
+                                            <td><strong>Email</strong></td>
+                                            <td>{{ $employee->email }}</td>
                                         </tr>
                                         <tr>
-                                            <td>
-                                                <p>Andreas</p>
-                                            </td>
-                                            <td>08:05</td>
-                                            <td><span class="badge text-bg-success">ontime</span></td>
-                                            <td>
-                                                <div id="table-sparkline-1"></div>
-                                            </td>
+                                            <td><strong>No. HP</strong></td>
+                                            <td>{{ $employee->phone }}</td>
                                         </tr>
                                         <tr>
+                                            <td><strong>Position</strong></td>
+                                            <td>{{ $employee->position }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Gender</strong></td>
+                                            <td>{{ ucfirst($employee->gender) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Join Date</strong></td>
+                                            <td>{{ \Carbon\Carbon::parse($employee->join_date)->translatedFormat('d F Y') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Status</strong></td>
                                             <td>
-                                                <p>Kasi</p>
-                                            </td>
-                                            <td>07:57</td>
-                                            <td><span class="badge text-bg-success">ontime</span></td>
-                                            <td>
-                                                <div id="table-sparkline-1"></div>
+                                                @if($employee->status === 'active')
+                                                <span class="badge bg-success">Active</span>
+                                                @else
+                                                <span class="badge bg-danger">Nonactive</span>
+                                                @endif
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-                            <!-- /.table-responsive -->
                         </div>
-                        <!-- /.card-body -->
-                        <div class="card-footer clearfix">
-                            <a href="#0" class="btn btn-sm btn-primary float-start">
-                                View All Attendances
-                            </a>
-                        </div>
-                        <!-- /.card-footer -->
                     </div>
-                    <!-- /.card -->
                 </div>
-
             </div>
-            <!--end::Row-->
+
         </div>
         <!--end::Container-->
     </div>

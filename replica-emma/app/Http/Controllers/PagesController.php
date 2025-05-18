@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EmployeeModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,13 +21,14 @@ class PagesController extends Controller
     public function dashboard()
     {
         $user = Auth::user();
+        $employee = EmployeeModel::where('id', $user->employee_id)->first();
 
         // Check if the user role is an admin
         if ($user->role == 'admin') {
             return view('pages.admin.dashboard', ['user' => $user]);
         }
 
-        return view('pages.employee.dashboard', ['user' => $user]);
+        return view('pages.employee.dashboard', ['user' => $user, 'employee' => $employee]);
     }
 
     public function userManagement()
@@ -49,5 +51,18 @@ class PagesController extends Controller
         }
 
         return view('pages.employee.attendance', ['user' => $user]);
+    }
+
+    public function timeOff()
+    {
+        $user = Auth::user();
+        $employee = EmployeeModel::where('id', $user->employee_id)->first();
+
+        // Check if the user role is an admin
+        if ($user->role == 'admin') {
+            return view('pages.admin.time-off', ['user' => $user]);
+        }
+
+        return view('pages.employee.time-off', ['user' => $user, 'employee' => $employee]);
     }
 }

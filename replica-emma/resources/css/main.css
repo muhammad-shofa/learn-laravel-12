@@ -61,10 +61,27 @@
   -o-transform: translate(0px, 2px);
 }
 
+/* time off */
+.card-time-off {
+  width: 650px;
+}
+.reason-textarea {
+  resize: none;
+  height: 200px;
+}
+
 @media (min-width: 768px) {
   .btn-clock-in, .btn-clock-out {
     min-width: 120px;
     padding: 0 25px;
   }
+
 }
 
+@media (max-width: 768px) {
+  /* time off */
+
+  .card-time-off{
+    width: 300px;
+  }
+}

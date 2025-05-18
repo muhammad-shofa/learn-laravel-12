@@ -82,11 +82,11 @@ $(document).ready(function () {
         let edit_clock_in_status = $("#edit_clock_in_status").val();
         let edit_clock_out_status = $("#edit_clock_out_status").val();
 
-        console.log("btn edit clicked");
-        console.log("clock in " + edit_clock_in);
-        console.log("clock out " + edit_clock_out);
-        console.log("clock in status " + edit_clock_in_status);
-        console.log("clock out status " + edit_clock_out_status);
+        // console.log("btn edit clicked");
+        // console.log("clock in " + edit_clock_in);
+        // console.log("clock out " + edit_clock_out);
+        // console.log("clock in status " + edit_clock_in_status);
+        // console.log("clock out status " + edit_clock_out_status);
 
         $.ajax({
             url: "/api/attendance/update-attendance/" + attendance_id,

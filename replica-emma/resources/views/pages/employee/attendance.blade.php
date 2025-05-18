@@ -21,13 +21,7 @@
     <div class="app-content">
         <!--begin::Container-->
         <div class="container-fluid">
-            <div class="d-flex gap-5 justify-content-evenly">
-                <!-- <div class="card mb-4 w-50" style="min-height: 400px;">
-                    <div class="card-header">
-                        <h3 class="card-title">Clock In</h3>
-                    </div>
-                    <div class="card-body text-start"> -->
-
+            <div class="d-flex gap-5 justify-content-evenly flex-wrap">
                 <div class="row border border-5 border-dark rounded p-0">
                     <div class="p-3 col">
                         <input type="hidden" id="attendance_employee_id" value="{{ $user->employee_id }}">
@@ -60,18 +54,6 @@
                         <img src="/img/clock-out-1.jpg" alt="clock" class="rounded p-0 m-0" width="400px" height="400px">
                     </div>
                 </div>
-                <!-- </div>
-                </div> -->
-                <!-- <div class="card mb-4 w-50">
-                    <div class="card-header">
-                        <h3 class="card-title">Clock Out</h3>
-                    </div>
-                    <div class="card-body p-3 text-center mt-5">
-                        <h3 class="realtime-date" style="font-size: 20px; font-weight: bold;"></h3>
-                        <h2>16:00</h2>
-                        <button class="btn-clock-out">Cloc.btn-clock-outk In</button>
-                    </div>
-                </div> -->
             </div>
 
         </div>

@@ -12,8 +12,15 @@
             <div class="row">
                 <div class="col-sm-6">
                     <h3 class="mb-0">Dashboard</h3>
+                    <div class="d-flex gap-3 mt-3">
+                        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#filterModal">
+                            <i class="fa-solid fa-filter"></i> Filter
+                        </button>
+                        <button class="btn-reset-filter btn btn-success">
+                            <i class="fa-solid fa-rotate"></i>
+                        </button>
+                    </div>
                 </div>
-
             </div>
             <!--end::Row-->
         </div>
@@ -46,7 +53,7 @@
                             <i class="fa-solid fa-user-clock" style="color: #ffffff;"></i>
                         </span>
                         <div class="info-box-content">
-                            <span class="info-box-text">Late Today</span>
+                            <span class="info-box-text">Late</span>
                             <span class="info-box-number" id="late_counts"></span>
                         </div>
                         <!-- /.info-box-content -->
@@ -62,7 +69,7 @@
                         </span>
                         <div class="info-box-content">
                             <span class="info-box-text">Time Off Request</span>
-                            <span class="info-box-number" id="time_off_counts">5 (dummy)</span>
+                            <span class="info-box-number" id="time_off_counts"></span>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
@@ -76,10 +83,9 @@
             <div class="row">
                 <!-- Start col -->
                 <div class="col-md">
-                    <!--begin::Latest Order Widget-->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Today's Attendance</h3>
+                            <h3 class="card-title">Attendance</h3>
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
                                     <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
@@ -110,7 +116,7 @@
                         </div>
                         <!-- /.card-body -->
                         <div class="card-footer clearfix">
-                            <a href="#0" class="btn btn-sm btn-primary float-start">
+                            <a href="/attendance" class="btn btn-sm btn-primary float-start">
                                 View All Attendances
                             </a>
                         </div>
@@ -121,6 +127,62 @@
 
             </div>
             <!--end::Row-->
+
+            <!--begin::Row-->
+            <div class="row mt-4">
+                <!-- Start col -->
+                <div class="col-md">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Attendance</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                                    <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                                    <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-lte-toggle="card-remove">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body p-0">
+                            <div id="monthlyAttendanceChart"></div>
+                            <!-- <canvas id="monthlyAttendanceChart" height="100"></canvas> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end::Row-->
+
+
+            <!-- filter modal start -->
+            @php
+            $modalFooter = '<button type="button" class="btn-apply-filter btn btn-primary">Apply Filter</button>';
+            @endphp
+            <x-modal id="filterModal" title="Filter" :footer="$modalFooter">
+                <form id="filterForm">
+                    <div class="mb-3">
+                        <label for="filter_month" class="form-label">Month</label>
+                        <select class="form-select" id="filter_month" name="month" required>
+                            <option value="">-- Select Month --</option>
+                            <!-- Buat dari 1–12 -->
+                            @for ($i = 1; $i <= 12; $i++)
+                                <option value="{{ $i }}">{{ DateTime::createFromFormat('!m', $i)->format('F') }}</option>
+                                @endfor
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="filter_year" class="form-label">Year</label>
+                        <select class="form-select" id="filter_year" name="year" required>
+                            <option value="">-- Select Year --</option>
+                            @for ($year = 2020; $year <= now()->year; $year++)
+                                <option value="{{ $year }}">{{ $year }}</option>
+                                @endfor
+                        </select>
+                    </div>
+                </form>
+            </x-modal>
         </div>
         <!--end::Container-->
     </div>
