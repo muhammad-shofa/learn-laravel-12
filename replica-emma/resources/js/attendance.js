@@ -2,46 +2,118 @@ import Swal from "sweetalert2";
 
 $(document).ready(function () {
     // function to get all attendances data
+    // v1
+    // function loadAttendancesData() {
+    //     $.ajax({
+    //         url: "/api/attendance/get-attendances",
+    //         type: "GET",
+    //         dataType: "json",
+    //         success: (response) => {
+    //             if (response.success) {
+    //                 let attendacesTable = $("#attendanceTableData tbody");
+    //                 let no = 0;
+    //                 attendacesTable.empty();
+    //                 $.each(response.data, (index, attendance) => {
+    //                     no++;
+    //                     attendacesTable.append(`
+    //                         <tr>
+    //                             <td>${no}</td>
+    //                             <td>${
+    //                                 attendance.employee
+    //                                     ? attendance.employee.employee_code
+    //                                     : "EMP Not Found"
+    //                             }</td>
+    //                             <td>${attendance.date}</td>
+    //                             <td>${attendance.clock_in ?? "-"}</td>
+    //                             <td>${attendance.clock_out ?? "-"}</td>
+    //                             <td>${attendance.clock_in_status ?? "-"}</td>
+    //                             <td>${attendance.clock_out_status ?? "-"}</td>
+    //                             <td>
+    //                                 <button class="btn-edit btn btn-primary" data-attendance_id="${
+    //                                     attendance.id
+    //                                 }" data-bs-toggle="modal" data-bs-target="#editModal"><i class="fa-solid fa-pen"></i></button>
+    //                             </td>
+    //                         <tr>
+    //                         `);
+    //                 });
+    //             } else {
+    //                 console.log(response.error);
+    //             }
+    //         },
+    //         error: function (xhr, status, error) {
+    //             console.error("AJAX Error: " + status + error);
+    //         },
+    //     });
+    // }
+
+    // v2
     function loadAttendancesData() {
-        $.ajax({
-            url: "/api/attendance/get-attendances",
-            type: "GET",
-            dataType: "json",
-            success: (response) => {
-                if (response.success) {
-                    let attendacesTable = $("#attendanceTableData tbody");
-                    let no = 0;
-                    attendacesTable.empty();
-                    $.each(response.data, (index, attendance) => {
-                        no++;
-                        attendacesTable.append(`
-                            <tr>
-                                <td>${no}</td>
-                                <td>${
-                                    attendance.employee
-                                        ? attendance.employee.employee_code
-                                        : "EMP Not Found"
-                                }</td>
-                                <td>${attendance.date}</td>
-                                <td>${attendance.clock_in ?? "-"}</td>
-                                <td>${attendance.clock_out ?? "-"}</td>
-                                <td>${attendance.clock_in_status ?? "-"}</td>
-                                <td>${attendance.clock_out_status ?? "-"}</td>
-                                <td>
-                                    <button class="btn-edit btn btn-primary" data-attendance_id="${
-                                        attendance.id
-                                    }" data-bs-toggle="modal" data-bs-target="#editModal"><i class="fa-solid fa-pen"></i></button>
-                                </td>
-                            <tr>
-                            `);
-                    });
-                } else {
-                    console.log(response.error);
-                }
+        $("#attendanceTableData").DataTable({
+            destroy: true, // agar bisa reload ulang
+            paging: true,
+            info: true,
+            ordering: false,
+            ajax: {
+                url: "/api/attendance/get-attendances",
+                type: "GET",
+                dataSrc: function (response) {
+                    if (response.success) {
+                        return response.data;
+                    } else {
+                        console.error(response.error);
+                        return [];
+                    }
+                },
             },
-            error: function (xhr, status, error) {
-                console.error("AJAX Error: " + status + error);
-            },
+            columns: [
+                {
+                    data: null,
+                    render: (data, type, row, meta) => meta.row + 1,
+                },
+                {
+                    data: "employee",
+                    render: function (data) {
+                        return data ? data.employee_code : "EMP Not Found";
+                    },
+                },
+                { data: "date" },
+                {
+                    data: "clock_in",
+                    render: (data) => data ?? "-",
+                },
+                {
+                    data: "clock_out",
+                    render: (data) => data ?? "-",
+                },
+                {
+                    data: "clock_in_status",
+                    render: (data) => data ?? "-",
+                },
+                {
+                    data: "clock_out_status",
+                    render: (data) => data ?? "-",
+                },
+                {
+                    data: "work_duration",
+                    render: (data) => data ?? "-",
+                },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        return `
+                            <button class="btn-edit btn btn-primary" data-attendance_id="${row.id}" data-bs-toggle="modal" data-bs-target="#editModal">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                        `;
+                    },
+                },
+            ],
+            columnDefs: [
+                {
+                    targets: "_all", // semua kolom
+                    className: "text-start align-middle",
+                },
+            ],
         });
     }
 

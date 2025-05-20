@@ -29,6 +29,38 @@ class EmployeeController extends Controller
         ], 200);
     }
 
+    // search employee
+    public function searchEmployees(Request $request)
+    {
+        $search = $request->query('q');
+
+        $employees = EmployeeModel::where('has_account', false)
+            ->when($search, function ($query, $search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('employee_code', 'like', "%{$search}%")
+                        ->orWhere('full_name', 'like', "%{$search}%");
+                });
+            })
+            ->limit(5)
+            ->get();
+
+        // return response()->json([
+        //     'success' => true,
+        //     'data' => $employees
+        // ]);
+
+        return response()->json([
+            'results' => $employees->map(function ($emp) {
+                return [
+                    'id' => $emp->id,
+                    'text' => $emp->employee_code . ' - ' . $emp->full_name,
+                    'disabled' => $emp->has_account == 1
+                ];
+            })
+        ]);
+    }
+
+
     // add employee
     public function addEmployee(Request $request)
     {

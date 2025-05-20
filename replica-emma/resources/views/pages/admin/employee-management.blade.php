@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'User Management')
+@section('title', 'Employee Management')
 @vite(['resources/js/employee-management.js'])
 
 @section('content')
@@ -28,8 +28,8 @@
                     <h3 class="card-title">Employee Table</h3>
                 </div>
                 <!-- /.card-header -->
-                <div class="card-body p-0">
-                    <table class="table" id="employeeTableData">
+                <div class="card-body p-0 px-4">
+                    <table class="display" id="employeeTableData">
                         <thead>
                             <tr>
                                 <th style="width: 10px">No</th>
@@ -41,16 +41,9 @@
                                 <th>Gender</th>
                                 <th>Join Date</th>
                                 <th>Status</th>
-                                <th style="width: 150px">Action</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td colspan="10" class="text-center border">
-                                    <p class="fw-bold no-data-yet">No employee data yet</p>
-                                </td>
-                            </tr>
-                        </tbody>
                     </table>
                 </div>
                 <!-- /.card-body -->

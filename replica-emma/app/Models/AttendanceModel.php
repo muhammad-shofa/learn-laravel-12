@@ -15,6 +15,7 @@ class AttendanceModel extends Model
         'clock_out',
         'clock_in_status',
         'clock_out_status',
+        'work_duration',
         'created_at',
         'updated_at',
     ];

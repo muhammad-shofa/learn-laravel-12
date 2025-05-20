@@ -2,43 +2,98 @@ import Swal from "sweetalert2";
 
 $(document).ready(function () {
     // function to get all employees data
+    // v1
+    // function loadEmployeesData() {
+    //     $.ajax({
+    //         url: "/api/employee/get-employees",
+    //         type: "GET",
+    //         dataType: "json",
+    //         success: (response) => {
+    //             if (response.success) {
+    //                 let employeesTable = $("#employeeTableData tbody");
+    //                 let no = 0;
+    //                 employeesTable.empty();
+    //                 $.each(response.data, (index, employee) => {
+    //                     no++;
+    //                     employeesTable.append(`
+    //                         <tr>
+    //                             <td>${no}</td>
+    //                             <td>${employee.employee_code}</td>
+    //                             <td>${employee.full_name}</td>
+    //                             <td>${employee.email}</td>
+    //                             <td>${employee.phone}</td>
+    //                             <td>${employee.position}</td>
+    //                             <td>${employee.gender}</td>
+    //                             <td>${employee.join_date}</td>
+    //                             <td>${employee.status}</td>
+    //                             <td>
+    //                                 <button class="btn-edit btn btn-primary" data-employee_id="${employee.id}" data-bs-toggle="modal" data-bs-target="#editModal"><i class="fa-solid fa-pen"></i></button>
+    //                                 <button class="btn-delete btn btn-danger" data-employee_id="${employee.id}"><i class="fa-solid fa-trash"></i></button>
+    //                             </td>
+    //                         <tr>
+    //                         `);
+    //                 });
+    //             } else {
+    //                 console.log(response.error);
+    //             }
+    //         },
+    //         error: function (xhr, status, error) {
+    //             console.error("AJAX Error: " + status + error);
+    //         },
+    //     });
+    // }
+
     function loadEmployeesData() {
-        $.ajax({
-            url: "/api/employee/get-employees",
-            type: "GET",
-            dataType: "json",
-            success: (response) => {
-                if (response.success) {
-                    let employeesTable = $("#employeeTableData tbody");
-                    let no = 0;
-                    employeesTable.empty();
-                    $.each(response.data, (index, employee) => {
-                        no++;
-                        employeesTable.append(`
-                            <tr>
-                                <td>${no}</td>
-                                <td>${employee.employee_code}</td>
-                                <td>${employee.full_name}</td>
-                                <td>${employee.email}</td>
-                                <td>${employee.phone}</td>
-                                <td>${employee.position}</td>
-                                <td>${employee.gender}</td>
-                                <td>${employee.join_date}</td>
-                                <td>${employee.status}</td>
-                                <td>
-                                    <button class="btn-edit btn btn-primary" data-employee_id="${employee.id}" data-bs-toggle="modal" data-bs-target="#editModal"><i class="fa-solid fa-pen"></i></button>
-                                    <button class="btn-delete btn btn-danger" data-employee_id="${employee.id}"><i class="fa-solid fa-trash"></i></button>
-                                </td>
-                            <tr>
-                            `);
-                    });
-                } else {
-                    console.log(response.error);
-                }
+        $("#employeeTableData").DataTable({
+            destroy: true, // agar bisa reload ulang
+            paging: true,
+            info: true,
+            ordering: false,
+            ajax: {
+                url: "/api/employee/get-employees",
+                type: "GET",
+                dataSrc: function (response) {
+                    if (response.success) {
+                        return response.data;
+                    } else {
+                        console.error(response.error);
+                        return [];
+                    }
+                },
             },
-            error: function (xhr, status, error) {
-                console.error("AJAX Error: " + status + error);
-            },
+            columns: [
+                {
+                    data: null,
+                    render: (data, type, row, meta) => meta.row + 1,
+                },
+                { data: "employee_code" },
+                { data: "full_name" },
+                { data: "email" },
+                { data: "phone" },
+                { data: "position" },
+                { data: "gender" },
+                { data: "join_date" },
+                { data: "status" },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        return `
+                            <button class="btn-edit btn btn-primary" data-employee_id="${row.id}" data-bs-toggle="modal" data-bs-target="#editModal">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button class="btn-delete btn btn-danger" data-employee_id="${row.id}">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        `;
+                    },
+                },
+            ],
+            columnDefs: [
+                {
+                    targets: "_all", // semua kolom
+                    className: "text-start align-middle",
+                },
+            ],
         });
     }
 

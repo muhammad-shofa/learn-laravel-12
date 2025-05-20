@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EmployeeModel;
 use App\Models\UserModel;
 use Illuminate\Http\Request;
 
@@ -37,13 +38,23 @@ class UserController extends Controller
         // Tambahkan validasi nanti
         // Tambahkan validasi nanti
 
+        $employee_id = $request->input('employee_id');
+
         // Create a new user
         UserModel::create([
-            'employee_id' => $request->input('employee_id'),
+            'employee_id' => $employee_id,
             'username' => $request->input('username'),
             'password' => bcrypt($request->input('password')),
             'role' => $request->input('role')
         ]);
+
+        if (isset($employee_id)) {   
+            // update has_account di table employees katika berhasil menambahkan akun employee
+            $employee = EmployeeModel::findOrFail($employee_id);
+            $employee->update([
+                'has_account' => 1,
+            ]);
+        }
 
         return response()->json([
             'success' => true,

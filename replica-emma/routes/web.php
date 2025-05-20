@@ -38,8 +38,9 @@ Route::delete('/api/user/delete-user/{id}', [UserController::class, 'deleteUser'
 
 // Employee Management endpoint
 Route::get('/api/employee/get-employees', [EmployeeController::class, 'getEmployees']);
-Route::post('/api/employee/add-employee', [EmployeeController::class, 'addEmployee']);
 Route::get('/api/employee/get-employee/{id}', [EmployeeController::class, 'getEmployee']);
+Route::get('/api/employee/search', [EmployeeController::class, 'searchEmployees']);
+Route::post('/api/employee/add-employee', [EmployeeController::class, 'addEmployee']);
 Route::put('/api/employee/update-employee/{id}', [EmployeeController::class, 'updateEmployee']);
 Route::delete('/api/employee/delete-employee/{id}', [EmployeeController::class, 'deleteEmployee']);
 
@@ -53,5 +54,6 @@ Route::put('/api/attendance/clock-out/{employee_id}', [AttendanceController::cla
 Route::post('/api/attendance/add-attendance', [AttendanceController::class, 'clockIn']);
 
 // Time Off endpoint
+Route::get('/api/time-off/get-time-off-requests', [TimeOffController::class, 'getTimeOffRequests']);
 Route::get('/api/time-off/get-time-off-request/{employee_id}', [TimeOffController::class, 'getTimeOffRequest']);
 Route::post('/api/time-off/new-time-off', [TimeOffController::class, 'newTimeOff']);

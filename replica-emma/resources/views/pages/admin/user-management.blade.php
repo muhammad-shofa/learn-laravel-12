@@ -27,8 +27,8 @@
                     <h3 class="card-title">User Table</h3>
                 </div>
                 <!-- /.card-header -->
-                <div class="card-body p-0">
-                    <table class="table" id="userTableData">
+                <div class="card-body p-0 px-4">
+                    <table class="display text-start" id="userTableData">
                         <thead>
                             <tr>
                                 <th style="width: 10px">No</th>
@@ -37,16 +37,16 @@
                                 <th>Role</th>
                                 <th>Try Login</th>
                                 <th>Status Login</th>
-                                <th style="width: 150px">Action</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <!-- <tbody>
                             <tr>
                                 <td colspan="6" class="text-center border">
                                     <p class="fw-bold no-data-yet">No users yet</p>
                                 </td>
                             </tr>
-                        </tbody>
+                        </tbody> -->
                     </table>
                 </div>
                 <!-- /.card-body -->
@@ -60,8 +60,8 @@
                 <form id="addUserForm">
                     <div class="mb-3">
                         <label for="employee_code" class="form-label">Employee Code</label>
-                        <select class="form-select" id="employee_code">
-                            <option selected value="#">- None -</option>
+                        <select id="employee_code">
+                            <!-- <option selected value="#">- None -</option> -->
                         </select>
                     </div>
                     <div class="mb-3">

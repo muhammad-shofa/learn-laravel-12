@@ -1,6 +1,77 @@
 import Swal from "sweetalert2";
 
 $(document).ready(function () {
+    // load all time off request data
+    function loadTimeOffRequestsData() {
+        $("#timeOffTableData").DataTable({
+            destroy: true, // agar bisa reload ulang
+            paging: true,
+            info: true,
+            ordering: false,
+            ajax: {
+                url: "/api/time-off/get-time-off-requests",
+                type: "GET",
+                dataSrc: function (response) {
+                    if (response.success) {
+                        return response.data;
+                    } else {
+                        console.error(response.error);
+                        return [];
+                    }
+                },
+            },
+            columns: [
+                {
+                    data: null,
+                    render: (data, type, row, meta) => meta.row + 1,
+                },
+                {
+                    data: "employee",
+                    render: function (data) {
+                        return data ? data.employee_code : "EMP Not Found";
+                    },
+                },
+                { data: "request_date" },
+                { data: "start_date" },
+                { data: "end_date" },
+                { data: "reason" },
+                {
+                    data: 'status',
+                    render: function (data, type, row) {
+                        if (type === 'display') {
+                            // Tentukan warna badge berdasar isi status
+                            let badgeClass = 'text-bg-secondary';   // default abu-abu
+                            if (data === 'ontime') badgeClass  = 'text-bg-success';
+                            if (data === 'late')   badgeClass  = 'text-bg-danger';
+                            if (data === 'pending')badgeClass  = 'text-bg-warning';
+        
+                            return `<span class="badge ${badgeClass}">${data}</span>`;
+                        }
+                        // untuk sorting / searching gunakan nilai mentah
+                        return data;
+                    }
+                },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        return `
+                            <button class="btn-edit btn btn-primary" data-attendance_id="${row.id}" data-bs-toggle="modal" data-bs-target="#editModal">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                        `;
+                    },
+                },
+            ],
+            columnDefs: [
+                {
+                    targets: "_all", // semua kolom
+                    className: "text-start align-middle",
+                },
+            ],
+        });
+    }
+
+    // tampilkan data history time off request untuk employee tertentu
     function loadHistoryTimeOffRequestData() {
         let employee_id = $("#time_off_employee_id_hidden").val();
 
@@ -48,6 +119,7 @@ $(document).ready(function () {
         });
     }
 
+    loadTimeOffRequestsData();
     loadHistoryTimeOffRequestData();
 
     $(".submit-time-off-request").on("click", () => {

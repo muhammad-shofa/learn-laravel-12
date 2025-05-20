@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Attendance')
-@vite(['resources/js/attendance.js'])
+@section('title', 'Time Off')
+@vite(['resources/js/time-off.js'])
 
 @section('content')
 <main class="app-main">
@@ -11,7 +11,7 @@
             <!--begin::Row-->
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="mb-0">Attendance</h3>
+                    <h3 class="mb-0">Time Off</h3>
                 </div>
             </div>
             <!--end::Row-->
@@ -23,21 +23,20 @@
         <div class="container-fluid">
             <div class="card mb-4">
                 <div class="card-header">
-                    <h3 class="card-title">Attendance Table</h3>
+                    <h3 class="card-title">Time Off Requests Table</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body p-0 px-4">
-                    <table class="display nowrap" id="attendanceTableData">
+                    <table class="display nowrap" id="timeOffTableData">
                         <thead>
                             <tr>
                                 <th style="width: 10px">No</th>
                                 <th>Employee Code</th>
-                                <th>Date</th>
-                                <th>Clock In</th>
-                                <th>Clock Out</th>
-                                <th>Clock In Status</th>
-                                <th>Clock Out Status</th>
-                                <th>Work Duration</th>
+                                <th>Request Date</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Reason</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -47,7 +46,7 @@
             </div>
 
             <!-- edit modal -->
-            @php
+            {{-- @php
             $modalFooter = '<button type="button" class="save-edit btn btn-success">Save Edit</button>';
             @endphp
             <x-modal id="editModal" title="Edit Attendance" :footer="$modalFooter">
@@ -80,7 +79,7 @@
                         </select>
                     </div>
                 </form>
-            </x-modal>
+            </x-modal> --}}
 
         </div>
     </div>

@@ -17,6 +17,7 @@ class EmployeeModel extends Model
         'gender',
         'join_date',
         'status',
+        'has_account',
         'created_at',
         'updated_at',
     ];

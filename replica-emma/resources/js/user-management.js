@@ -3,47 +3,57 @@ import Swal from "sweetalert2";
 $(document).ready(function () {
     // function to get all users data
     function loadUsersData() {
-        $.ajax({
-            url: "/api/user/get-users",
-            type: "GET",
-            dataType: "json",
-            success: (response) => {
-                if (response.success) {
-                    let usersTable = $("#userTableData tbody");
-                    let no = 0;
-                    usersTable.empty();
-                    $.each(response.data, (index, user) => {
-                        no++;
-                        usersTable.append(`
-                            <tr>
-                                <td>${no}</td>
-                                <td>${
-                                    user.employee
-                                        ? user.employee.employee_code
-                                        : "EMP Not Found"
-                                }</td>
-                                <td>${user.username}</td>
-                                <td>${user.role}</td>
-                                <td>${user.try_login}</td>
-                                <td>${user.status_login}</td>
-                                <td>
-                                    <button class="btn-edit btn btn-primary" data-user_id="${
-                                        user.id
-                                    }" data-bs-toggle="modal" data-bs-target="#editModal"><i class="fa-solid fa-pen"></i></button>
-                                    <button class="btn-delete btn btn-danger" data-user_id="${
-                                        user.id
-                                    }" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="fa-solid fa-trash"></i></button>
-                                </td>
-                            <tr>
-                            `);
-                    });
-                } else {
-                    console.log(response.error);
-                }
+        $("#userTableData").DataTable({
+            destroy: true,
+            paging: true,
+            info: true,
+            ordering: false,
+            ajax: {
+                url: "/api/user/get-users",
+                type: "GET",
+                dataSrc: function (response) {
+                    if (response.success) {
+                        return response.data;
+                    } else {
+                        console.error(response.error);
+                        return [];
+                    }
+                },
             },
-            error: function (xhr, status, error) {
-                console.error("AJAX Error: " + status + error);
-            },
+            columns: [
+                {
+                    data: null,
+                    render: (data, type, row, meta) => meta.row + 1,
+                },
+                {
+                    data: "employee",
+                    render: (data) =>
+                        data ? data.employee_code : "EMP Not Found",
+                },
+                { data: "username" },
+                { data: "role" },
+                { data: "try_login" },
+                { data: "status_login" },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        return `
+                            <button class="btn-edit btn btn-primary" data-user_id="${row.id}" data-bs-toggle="modal" data-bs-target="#editModal">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button class="btn-delete btn btn-danger" data-user_id="${row.id}" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        `;
+                    },
+                },
+            ],
+            columnDefs: [
+                {
+                    targets: "_all",
+                    className: "text-start align-middle",
+                },
+            ],
         });
     }
 
@@ -51,32 +61,154 @@ $(document).ready(function () {
     loadUsersData();
 
     // ambil data employee code untuk ditampilkan pada select
+    // v2
     function selectEmployeeCode(select_id) {
-        $.ajax({
-            url: "/api/employee/get-employees",
-            type: "GET",
-            dataType: "json",
-            success: (response) => {
-                if (response.success) {
-                    let employeeCodeSelect = $(select_id);
-                    employeeCodeSelect.empty();
-                    employeeCodeSelect.append(`
-                    <option selected value="">-- Select Employee --</option>
-                `);
-                    $.each(response.data, (index, employee) => {
-                        employeeCodeSelect.append(`
-                        <option value="${employee.id}">${employee.employee_code} - ${employee.full_name}</option>
-                    `);
-                    });
-                } else {
-                    console.log(response.error);
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("AJAX Error: " + status + error);
+        // let employeeCodeSelect = $(select_id);
+        let employeeCodeSelect = $("#employee_code");
+
+        // Inisialisasi Select2 langsung dengan AJAX
+        employeeCodeSelect.select2({
+            theme: "bootstrap4",
+            placeholder: "-- Select Employee --",
+            allowClear: true,
+            width: "100%",
+            dropdownParent: $("#addModal"), 
+            ajax: {
+                url: "/api/employee/search",
+                dataType: "json",
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term, // kata kunci pencarian
+                    };
+                },
+                processResults: function (response) {
+                    return response;
+                    // return {
+                    //     results: response.data.map((employee) => ({
+                    //         id: employee.id,
+                    //         text: `${employee.employee_code} - ${employee.full_name}`,
+                    //         disabled: employee.has_account == 1,
+                    //     })),
+                    // };
+                },
+                cache: true,
             },
         });
     }
+
+    // v1
+    // function selectEmployeeCode(select_id) {
+    //     $.ajax({
+    //         url: "/api/employee/get-employees",
+    //         type: "GET",
+    //         dataType: "json",
+    //         success: (response) => {
+    //             if (response.success) {
+    //                 let employeeCodeSelect = $(select_id);
+    //                 // let employeeCodeSelect = $("#employee_code");
+    //                 employeeCodeSelect.empty();
+    //                 employeeCodeSelect.append(
+    //                     `<option value="">-- Select Employee --</option>`
+    //                 );
+
+    //                 let visibleCount = 0;
+
+    //                 $.each(response.data, (index, employee) => {
+    //                     let disabled =
+    //                         employee.has_account == 1 ? "disabled" : "";
+
+    //                     let option = `<option value="${employee.id}" ${disabled}>
+    //                                     ${employee.employee_code} - ${employee.full_name}
+    //                                   </option>`;
+
+    //                     employeeCodeSelect.append(option);
+
+    //                     visibleCount++;
+    //                     if (!employee.has_account && visibleCount === 5) {
+    //                         // Stop after 5 non-disabled
+    //                         return false;
+    //                     }
+    //                 });
+
+    //                 // Inisialisasi Select2 setelah data dimasukkan
+    //                 employeeCodeSelect.select2({
+    //                     placeholder: "-- Select Employee --",
+    //                     allowClear: true,
+    //                     width: "100%",
+    //                     ajax: {
+    //                         url: "/api/employee/search",
+    //                         dataType: "json",
+    //                         delay: 250,
+    //                         data: function (params) {
+    //                             return {
+    //                                 q: params.term, // kata kunci dari input user
+    //                             };
+    //                         },
+    //                         processResults: function (response) {
+    //                             return {
+    //                                 results: response.data.map((employee) => ({
+    //                                     id: employee.id,
+    //                                     text: `${employee.employee_code} - ${employee.full_name}`,
+    //                                     disabled: employee.has_account === 1,
+    //                                 })),
+    //                             };
+    //                         },
+    //                         cache: true,
+    //                     },
+    //                 });
+    //             }
+    //         },
+    //     });
+    // }
+
+    // employeeCodeSelect.select2({
+    //     placeholder: "-- Select Employee --",
+    //     allowClear: true,
+    //     width: "100%",
+    // });
+
+    // $.ajax({
+    //     url: "/api/employee/get-employees",
+    //     type: "GET",
+    //     dataType: "json",
+    //     success: (response) => {
+    //         if (response.success) {
+    //             // let employeeCodeSelect = $(select_id);
+    //             let employeeCodeSelect = $("#employee_code");
+    //             employeeCodeSelect.empty();
+    //             employeeCodeSelect.append(`
+    //             <option selected value="">-- Select Employee --</option>
+    //             `);
+
+    //             // Tampilkan hanya 5 data pertama (gunakan slice)
+    //             let dataToShow = response.data.slice(0, 5);
+
+    //             $.each(dataToShow, (index, employee) => {
+    //             // $.each(response.data, (index, employee) => {
+    //                 let disabled = employee.has_account == 1 ? "disabled" : "";
+    //                 employeeCodeSelect.append(`
+    //                 <option value="${employee.id}" ${disabled}>
+    //                     ${employee.employee_code} - ${employee.full_name}
+    //                 </option>
+    //             `);
+    //             });
+
+    //             // Aktifkan Select2 agar searchable
+    //             employeeCodeSelect.select2({
+    //                 dropdownParent: $('#addModal'), // sesuaikan dengan id modal
+    //                 placeholder: "-- Select Employee --",
+    //                 width: "100%",
+    //                 allowClear: true,
+    //             });
+    //         } else {
+    //             console.log(response.error);
+    //         }
+    //     },
+    //     error: function (xhr, status, error) {
+    //         console.error("AJAX Error: " + status + error);
+    //     },
+    // });
 
     // ketika tombol btn-add diklik maka
     // ambil data employee code untuk ditampilkan pada select
@@ -151,9 +283,7 @@ $(document).ready(function () {
                 if (response.success) {
                     $("#edit_user_id").val(response.data.id);
                     $("#edit_employee_code").val(
-                        response.data.employee
-                            ? response.data.employee.id
-                            : ""
+                        response.data.employee ? response.data.employee.id : ""
                     );
                     $("#edit_username").val(response.data.username);
                     $("#edit_role").val(response.data.role);

@@ -124,7 +124,6 @@
                     </div>
                     <!-- /.card -->
                 </div>
-
             </div>
             <!--end::Row-->
 
@@ -134,7 +133,7 @@
                 <div class="col-md">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Attendance</h3>
+                            <h3 class="card-title">Chart</h3>
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
                                     <i data-lte-icon="expand" class="bi bi-plus-lg"></i>

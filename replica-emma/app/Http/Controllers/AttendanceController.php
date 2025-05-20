@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AttendanceModel;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -95,10 +96,18 @@ class AttendanceController extends Controller
             ], 400);
         }
 
-        // Ambil dari request
+        // Hitung durasi kerja dalam menit
+        $clock_in_carbon = Carbon::parse($attendance->clock_in);
+        $clock_out_carbon = Carbon::parse($request->clock_out);
+        $work_duration = $clock_in_carbon->diffInMinutes($clock_out_carbon);
+
+        // Ambil dari request dan update data clock_out dan clock_out_status
         $attendance->clock_out = $request->clock_out;
         $attendance->clock_out_status = $request->clock_out_status;
+        $attendance->work_duration = $work_duration;
         $attendance->save();
+
+
 
         return response()->json([
             'success' => true,
