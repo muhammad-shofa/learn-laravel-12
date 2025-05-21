@@ -12,7 +12,7 @@ class AttendanceController extends Controller
     // get all attendance data
     public function getAttendances()
     {
-        $attendance = AttendanceModel::with('employee')->get();
+        $attendance = AttendanceModel::with('employee')->orderBy('created_at', 'DESC')->get();
         return response()->json([
             'success' => true,
             'message' => 'Data retrieved successfully',
@@ -32,16 +32,22 @@ class AttendanceController extends Controller
         ]);
     }
 
-    // 
+    // update attendace
     public function updateAttendance(Request $request, $attendance_id)
     {
         $attendance = AttendanceModel::findOrFail($attendance_id);
+
+        // Hitung durasi kerja dalam menit
+        $clock_in_carbon = Carbon::parse($request->clock_in);
+        $clock_out_carbon = Carbon::parse($request->clock_out);
+        $work_duration = $clock_in_carbon->diffInMinutes($clock_out_carbon);
 
         $attendance->update([
             'clock_in' => $request->input("clock_in"),
             'clock_out' => $request->input("clock_out"),
             'clock_in_status' => $request->input("clock_in_status"),
             'clock_out_status' => $request->input("clock_out_status"),
+            'work_duration' => $work_duration,
         ]);
 
         return response()->json([

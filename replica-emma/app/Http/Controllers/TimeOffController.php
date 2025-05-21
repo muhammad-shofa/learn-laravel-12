@@ -21,8 +21,19 @@ class TimeOffController extends Controller
         ]);
     }
 
-    // get history time off request based employee_id
-    public function getTimeOffRequest($employee_id)
+    public function getTimeOffRequestById($time_off_id)
+    {
+        $timeOffRequest = TimeOffModel::where('id', $time_off_id)->first();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Time off request retrieved successfully',
+            'data' => $timeOffRequest
+        ]);
+    }
+
+    // get history time off request by employee_id
+    public function getTimeOffRequestByEmployeeId($employee_id)
     {
         $timeOffRequestsData = TimeOffModel::where('employee_id', $employee_id)->get();
 
@@ -50,6 +61,36 @@ class TimeOffController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Time off request created successfully'
+        ]);
+    }
+
+    // approve time off request
+    public function approveTimeOff(Request $request)
+    {
+        $timeOffRequest = TimeOffModel::findOrFail($request->time_off_id);
+
+        $timeOffRequest->update([
+            'status' => 'approved',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Time off request approved successfully'
+        ]);
+    }
+
+    // reject time off request
+    public function rejectTimeOff(Request $request,)
+    {
+        $timeOffRequest = TimeOffModel::findOrFail($request->time_off_id);
+
+        $timeOffRequest->update([
+            'status' => 'rejected',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Time off request approved successfully'
         ]);
     }
 }

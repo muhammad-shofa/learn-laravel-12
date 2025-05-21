@@ -55,5 +55,8 @@ Route::post('/api/attendance/add-attendance', [AttendanceController::class, 'clo
 
 // Time Off endpoint
 Route::get('/api/time-off/get-time-off-requests', [TimeOffController::class, 'getTimeOffRequests']);
-Route::get('/api/time-off/get-time-off-request/{employee_id}', [TimeOffController::class, 'getTimeOffRequest']);
+Route::get('/api/time-off/get-time-off-request/{time_off_id}', [TimeOffController::class, 'getTimeOffRequestById']);
+Route::get('/api/time-off/get-time-off-request-employee-id/{employee_id}', [TimeOffController::class, 'getTimeOffRequestByEmployeeId']);
 Route::post('/api/time-off/new-time-off', [TimeOffController::class, 'newTimeOff']);
+Route::put('/api/time-off/approve-time-off', [TimeOffController::class, 'approveTimeOff']);
+Route::put('/api/time-off/reject-time-off', [TimeOffController::class, 'rejectTimeOff']);

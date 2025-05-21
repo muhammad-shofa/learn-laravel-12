@@ -32,6 +32,7 @@
                             <tr>
                                 <th style="width: 10px">No</th>
                                 <th>Employee Code</th>
+                                <th>Full Name</th>
                                 <th>Request Date</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
@@ -40,47 +41,17 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
+                        
                     </table>
                 </div>
                 <!-- /.card-body -->
             </div>
 
-            <!-- edit modal -->
-            {{-- @php
-            $modalFooter = '<button type="button" class="save-edit btn btn-success">Save Edit</button>';
-            @endphp
-            <x-modal id="editModal" title="Edit Attendance" :footer="$modalFooter">
-                <form id="editAttendanceForm">
-                    <input type="hidden" id="attendance_id">
-                    <div class="mb-3">
-                        <label for="edit_clock_in" class="form-label">Clock In</label>
-                        <input type="time" step="1" class="form-control" id="edit_clock_in" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="edit_clock_out" class="form-label">Clock Out</label>
-                        <input type="time" step="1" class="form-control" id="edit_clock_out" />
-                    </div>
-                    <div class="md-3">
-                        <label for="edit_clock_in_status" class="form-label">Clock In Status</label>
-                        <select class="form-select" id="edit_clock_in_status" require>
-                            <option value="ontime">Ontime</option>
-                            <option value="late">Late</option>
-                            <option value="absent">Absent</option>
-                            <option value="leave">Leave</option>
-                        </select>
-                    </div>
-                    <div class="md-3">
-                        <label for="edit_clock_out_status" class="form-label">Clock Out Status</label>
-                        <select class="form-select" id="edit_clock_out_status" require>
-                            <option value="ontime">Ontime</option>
-                            <option value="early">Early</option>
-                            <option value="late">Late</option>
-                            <option value="no_clock_out">No Clock Out</option>
-                        </select>
-                    </div>
-                </form>
-            </x-modal> --}}
-
+            {{-- time off reason detail --}}
+      
+            <x-modal id="detailReasonModal" title="Reason Detail">
+                <p id="time-off-reason-field"></p>
+            </x-modal>
         </div>
     </div>
 </main>

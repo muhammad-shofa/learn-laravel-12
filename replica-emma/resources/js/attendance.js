@@ -2,54 +2,9 @@ import Swal from "sweetalert2";
 
 $(document).ready(function () {
     // function to get all attendances data
-    // v1
-    // function loadAttendancesData() {
-    //     $.ajax({
-    //         url: "/api/attendance/get-attendances",
-    //         type: "GET",
-    //         dataType: "json",
-    //         success: (response) => {
-    //             if (response.success) {
-    //                 let attendacesTable = $("#attendanceTableData tbody");
-    //                 let no = 0;
-    //                 attendacesTable.empty();
-    //                 $.each(response.data, (index, attendance) => {
-    //                     no++;
-    //                     attendacesTable.append(`
-    //                         <tr>
-    //                             <td>${no}</td>
-    //                             <td>${
-    //                                 attendance.employee
-    //                                     ? attendance.employee.employee_code
-    //                                     : "EMP Not Found"
-    //                             }</td>
-    //                             <td>${attendance.date}</td>
-    //                             <td>${attendance.clock_in ?? "-"}</td>
-    //                             <td>${attendance.clock_out ?? "-"}</td>
-    //                             <td>${attendance.clock_in_status ?? "-"}</td>
-    //                             <td>${attendance.clock_out_status ?? "-"}</td>
-    //                             <td>
-    //                                 <button class="btn-edit btn btn-primary" data-attendance_id="${
-    //                                     attendance.id
-    //                                 }" data-bs-toggle="modal" data-bs-target="#editModal"><i class="fa-solid fa-pen"></i></button>
-    //                             </td>
-    //                         <tr>
-    //                         `);
-    //                 });
-    //             } else {
-    //                 console.log(response.error);
-    //             }
-    //         },
-    //         error: function (xhr, status, error) {
-    //             console.error("AJAX Error: " + status + error);
-    //         },
-    //     });
-    // }
-
-    // v2
     function loadAttendancesData() {
         $("#attendanceTableData").DataTable({
-            destroy: true, // agar bisa reload ulang
+            destroy: true,
             paging: true,
             info: true,
             ordering: false,
@@ -76,6 +31,12 @@ $(document).ready(function () {
                         return data ? data.employee_code : "EMP Not Found";
                     },
                 },
+                {
+                    data: "employee",
+                    render: function (data) {
+                        return data ? data.full_name : "-";
+                    }
+                },
                 { data: "date" },
                 {
                     data: "clock_in",
@@ -86,12 +47,38 @@ $(document).ready(function () {
                     render: (data) => data ?? "-",
                 },
                 {
-                    data: "clock_in_status",
-                    render: (data) => data ?? "-",
+                    data: 'clock_in_status',
+                    render: function (data, type, row) {
+                        if (type === 'display') {
+                            // Tentukan warna badge berdasar isi status
+                            let badgeClass = 'text-bg-secondary';   // default abu-abu
+                            if (data === 'ontime') badgeClass  = 'text-bg-success';
+                            if (data === 'late')   badgeClass  = 'text-bg-danger';
+                            if (data === 'absent')badgeClass  = 'text-bg-danger';
+                            if (data === 'leave')badgeClass  = 'text-bg-warning';
+        
+                            return `<span class="badge ${badgeClass}">${data}</span>`;
+                        }
+                        // untuk sorting / searching gunakan nilai mentah
+                        return data;
+                    }
                 },
                 {
-                    data: "clock_out_status",
-                    render: (data) => data ?? "-",
+                    data: 'clock_out_status',
+                    render: function (data, type, row) {
+                        if (type === 'display') {
+                            // Tentukan warna badge berdasar isi status
+                            let badgeClass = 'text-bg-secondary';   // default abu-abu
+                            if (data === 'ontime') badgeClass  = 'text-bg-success';
+                            if (data === 'early')   badgeClass  = 'text-bg-warning';
+                            if (data === 'late')badgeClass  = 'text-bg-danger';
+                            if (data === 'no_clock_out')badgeClass  = 'text-bg-danger';
+        
+                            return `<span class="badge ${badgeClass}">${data}</span>`;
+                        }
+                        // untuk sorting / searching gunakan nilai mentah
+                        return data;
+                    }
                 },
                 {
                     data: "work_duration",

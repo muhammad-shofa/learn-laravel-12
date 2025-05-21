@@ -31,32 +31,56 @@ $(document).ready(function () {
                         return data ? data.employee_code : "EMP Not Found";
                     },
                 },
+                {
+                    data: "employee",
+                    render: function (data) {
+                        return data ? data.full_name : "-";
+                    },
+                },
                 { data: "request_date" },
                 { data: "start_date" },
                 { data: "end_date" },
-                { data: "reason" },
-                {
-                    data: 'status',
-                    render: function (data, type, row) {
-                        if (type === 'display') {
-                            // Tentukan warna badge berdasar isi status
-                            let badgeClass = 'text-bg-secondary';   // default abu-abu
-                            if (data === 'ontime') badgeClass  = 'text-bg-success';
-                            if (data === 'late')   badgeClass  = 'text-bg-danger';
-                            if (data === 'pending')badgeClass  = 'text-bg-warning';
-        
-                            return `<span class="badge ${badgeClass}">${data}</span>`;
-                        }
-                        // untuk sorting / searching gunakan nilai mentah
-                        return data;
-                    }
-                },
                 {
                     data: null,
                     render: function (data, type, row) {
                         return `
-                            <button class="btn-edit btn btn-primary" data-attendance_id="${row.id}" data-bs-toggle="modal" data-bs-target="#editModal">
-                                <i class="fa-solid fa-pen"></i>
+                            <button class="btn-detail-reason btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#detailReasonModal" data-time_off_id="${row.id}">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>`;
+                    },
+                },
+                {
+                    data: "status",
+                    render: function (data, type, row) {
+                        if (type === "display") {
+                            // Tentukan warna badge berdasar isi status
+                            let badgeClass = "text-bg-secondary"; // default abu-abu
+                            if (data === "approved")
+                                badgeClass = "text-bg-success";
+                            if (data === "rejected")
+                                badgeClass = "text-bg-danger";
+                            if (data === "pending")
+                                badgeClass = "text-bg-warning";
+
+                            return `<span class="badge ${badgeClass}">${data}</span>`;
+                        }
+                        // untuk sorting / searching gunakan nilai mentah
+                        return data;
+                    },
+                },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        // jika status bukan pending, sembunyikan tombol
+                        let $isdisable =
+                            row.status !== "pending" ? "d-none" : "";
+
+                        return `
+                            <button class="btn-approve btn btn-success ${$isdisable}" data-time_off_id="${row.id}">
+                                <i class="fa-solid fa-check"></i>
+                            </button>
+                            <button class="btn-reject btn btn-danger ${$isdisable}" data-time_off_id="${row.id}">
+                             <i class="fa-solid fa-xmark"></i>
                             </button>
                         `;
                     },
@@ -76,7 +100,8 @@ $(document).ready(function () {
         let employee_id = $("#time_off_employee_id_hidden").val();
 
         $.ajax({
-            url: "/api/time-off/get-time-off-request/" + employee_id,
+            url:
+                "/api/time-off/get-time-off-request-employee-id/" + employee_id,
             type: "GET",
             dataType: "json",
             success: (response) => {
@@ -122,6 +147,114 @@ $(document).ready(function () {
     loadTimeOffRequestsData();
     loadHistoryTimeOffRequestData();
 
+    // ketika tombol detail di klik
+    $(document).on("click", ".btn-detail-reason", function () {
+        let time_off_id = $(this).data("time_off_id");
+        $.ajax({
+            url: "/api/time-off/get-time-off-request/" + time_off_id,
+            type: "GET",
+            dataType: "json",
+            success: (response) => {
+                if (response.success) {
+                    // let time_off = response.data;
+                    $("#time-off-reason-field").text(response.data.reason);
+                } else {
+                    console.log(response.error);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error: " + status + error);
+            },
+        });
+    });
+
+    // ketika tombol approve di klik
+    $(document).on("click", ".btn-approve", function () {
+        let time_off_id = $(this).data("time_off_id");
+        Swal.fire({
+            title: "Comfirmation",
+            text: "Are you sure you want to approve this leave request?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes!",
+            cancelButtonText: "Cancel",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/api/time-off/approve-time-off",
+                    type: "PUT",
+                    dataType: "json",
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content"
+                        ),
+                    },
+                    data: {
+                        time_off_id: time_off_id,
+                    },
+                    success: (response) => {
+                        if (response.success) {
+                            Swal.fire({
+                                title: "Success!",
+                                text: response.message,
+                                icon: "success",
+                                confirmButtonText: "Oke",
+                            });
+                            loadTimeOffRequestsData();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX Error: " + status + error);
+                    },
+                });
+            }
+        });
+    });
+
+    // ketika tombol reject di klik
+    $(document).on("click", ".btn-reject", function () {
+        let time_off_id = $(this).data("time_off_id");
+        Swal.fire({
+            title: "Comfirmation",
+            text: "Are you sure you want to reject this leave request?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes!",
+            cancelButtonText: "Cancel",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/api/time-off/reject-time-off",
+                    type: "PUT",
+                    dataType: "json",
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content"
+                        ),
+                    },
+                    data: {
+                        time_off_id: time_off_id,
+                    },
+                    success: (response) => {
+                        if (response.success) {
+                            Swal.fire({
+                                title: "Success!",
+                                text: response.message,
+                                icon: "success",
+                                confirmButtonText: "Oke",
+                            });
+                            loadTimeOffRequestsData();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX Error: " + status + error);
+                    },
+                });
+            }
+        });
+    });
+
+    // submit form untuk menambah time off request dari employee
     $(".submit-time-off-request").on("click", () => {
         let employee_id = $("#time_off_employee_id_hidden").val();
         let start_date = $("#start_date").val();
