@@ -28,6 +28,7 @@ Route::get('/api/auth/logout', [AuthController::class, 'logoutAuth']);
 Route::get('/api/dashboard/get-all-dashboard-data', [DashboardController::class, 'getAllDashboardData']);
 Route::get('/api/dashboard/filter-dashboard-data', [DashboardController::class, 'filterDashboardData']);
 Route::get('/api/dashboard/monthly-chart', [DashboardController::class, 'getMonthlyChart']);
+Route::put('/api/dashboard/edit-employee-data', [DashboardController::class, 'editEmployeeData']);
 
 // User Management endpoint
 Route::get('/api/user/get-users', [UserController::class, 'getUsers']);

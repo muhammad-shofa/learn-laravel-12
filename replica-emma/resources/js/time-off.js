@@ -72,14 +72,18 @@ $(document).ready(function () {
                     data: null,
                     render: function (data, type, row) {
                         // jika status bukan pending, sembunyikan tombol
-                        let $isdisable =
+                        let isdisable =
                             row.status !== "pending" ? "d-none" : "";
 
+                        if (isdisable == "d-none") {
+                            return `<p>-</p>`;
+                        }
+
                         return `
-                            <button class="btn-approve btn btn-success ${$isdisable}" data-time_off_id="${row.id}">
+                            <button class="btn-approve btn btn-success ${isdisable}" data-time_off_id="${row.id}">
                                 <i class="fa-solid fa-check"></i>
                             </button>
-                            <button class="btn-reject btn btn-danger ${$isdisable}" data-time_off_id="${row.id}">
+                            <button class="btn-reject btn btn-danger ${isdisable}" data-time_off_id="${row.id}">
                              <i class="fa-solid fa-xmark"></i>
                             </button>
                         `;
@@ -286,6 +290,16 @@ $(document).ready(function () {
                         title: "Success!",
                         text: response.message,
                         icon: "success",
+                        confirmButtonText: "Oke",
+                    });
+                    loadHistoryTimeOffRequestData();
+                    $("#addTimeOffForm")[0].reset();
+                } else {
+                    console.log(response.message);
+                    Swal.fire({
+                        title: "Failed!",
+                        text: response.message,
+                        icon: "error",
                         confirmButtonText: "Oke",
                     });
                     loadHistoryTimeOffRequestData();

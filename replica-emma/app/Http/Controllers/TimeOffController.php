@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\EmployeeModel;
 use App\Models\TimeOffModel;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class TimeOffController extends Controller
@@ -47,20 +48,60 @@ class TimeOffController extends Controller
     // add new time off request
     public function newTimeOff(Request $request)
     {
-        $employee = EmployeeModel::where('id', $request->employee_id)->first();
-        $request_date = now();
+        // Validasi input
+        // $validator = Validator::make($request->all(), [
+        //     'employee_id' => 'required|exists:employees,id',
+        //     'start_date'  => 'required|date',
+        //     'end_date'    => 'required|date|after_or_equal:start_date',
+        //     'reason'      => 'required|string|max:255',
+        // ]);
 
-        TimeOffModel::create([
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'Validation failed.',
+        //         'errors'  => $validator->errors()
+        //     ], 422);
+        // }
+
+        // Ambil data employee
+        $employee = EmployeeModel::findOrFail($request->employee_id);
+
+        // Hitung jumlah hari yang diajukan
+        $startDate = Carbon::parse($request->start_date);
+        $endDate = Carbon::parse($request->end_date);
+        $requestedDays = $startDate->diffInDays($endDate) + 1;
+
+        // Cek apakah kuota mencukupi
+        if ($requestedDays > $employee->time_off_remaining) {
+            return response()->json([
+                'success' => false,
+                'message' => "Not enough quota. You have only {$employee->time_off_remaining} day(s) left.",
+            ]);
+        }
+
+        // Simpan time off request
+        $timeOff = TimeOffModel::create([
             'employee_id' => $employee->id,
-            'request_date' => $request_date,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
+            'request_date' => now(),
+            'start_date' => $startDate,
+            'end_date' => $endDate,
             'reason' => $request->reason,
         ]);
 
+        // // Update kuota employee hanya jika status approved
+        // if ($timeOff && $timeOff->status === 'approved') {
+        //     $employee->increment('time_off_used', $requestedDays);
+        //     $employee->decrement('time_off_remaining', $requestedDays);
+        // }
+
+        // Berikan response sukses
         return response()->json([
             'success' => true,
-            'message' => 'Time off request created successfully'
+            'message' => 'Time off request created successfully.',
+            'data' => $timeOff,
+            'used_days' => $employee->time_off_used,
+            'remaining_days' => $employee->time_off_remaining,
         ]);
     }
 
@@ -68,6 +109,17 @@ class TimeOffController extends Controller
     public function approveTimeOff(Request $request)
     {
         $timeOffRequest = TimeOffModel::findOrFail($request->time_off_id);
+
+        // ambil data employee
+        $employee = EmployeeModel::findOrFail($timeOffRequest->employee_id);
+
+        // Hitung jumlah hari yang diajukan
+        $startDate = Carbon::parse($timeOffRequest->start_date);
+        $endDate = Carbon::parse($timeOffRequest->end_date);
+        $requestedDays = $startDate->diffInDays($endDate) + 1;
+
+        $employee->increment('time_off_used', $requestedDays);
+        $employee->decrement('time_off_remaining', $requestedDays);
 
         $timeOffRequest->update([
             'status' => 'approved',

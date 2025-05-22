@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Dashboard')
+@vite(['resources/js/dashboard.js'])
 
 @section('content')
 <main class="app-main">
@@ -22,31 +23,89 @@
         <div class="container-fluid">
             <!-- Info boxes -->
             <div class="row">
-                <!-- <div class="col-md-6"> -->
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h2>Welcome <b class="bg-warning px-2 text-white">{{ $user->username }}</b>, let's work with your team!</h2>
-                    </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                    <a href="/attendance" class="info-box text-decoration-none">
+                        <span class="info-box-icon bg-success shadow-lg">
+                            <i
+                                class="fa-solid fa-users-viewfinder"
+                                style="color: #ffffff"
+                            ></i>
+                        </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Attendance</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </a>
+                    <!-- /.info-box -->
                 </div>
-                <!-- </div> -->
+                <!-- /.col -->
+                <div class="col-12 col-sm-6 col-md-3">
+                    <a href="/time-off" class="info-box text-decoration-none">
+                        <span class="info-box-icon bg-warning shadow-lg">
+                            <i
+                                class="fa-solid fa-calendar"
+                                style="color: #ffffff"
+                            ></i>
+                        </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Time Off</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </a>
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+                <div class="col-12 col-sm-6 col-md-3">
+                    <a href="/salary" class="info-box text-decoration-none">
+                        <span class="info-box-icon bg-primary shadow-lg">
+                            <i
+                                class="fa-solid fa-credit-card"
+                                style="color: #ffffff"
+                            ></i>
+                        </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Salary</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </a>
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
             </div>
             <!-- /.row -->
 
-            <!-- card employee start -->
+            <!-- Start cards row -->
             <div class="row mt-5">
-                <!-- Start col -->
-                <div class="col-md-6">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-success text-white">
-                            <h5 class="mb-0">Employee Profile</h5>
+                <!-- Employee Profile Card -->
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header">
+                            <div
+                                class="d-flex justify-content-between align-items-center"
+                            >
+                                <h5 class="mb-0">Employee Profile</h5>
+                                <button
+                                    class="btn btn-secondary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editModal"
+                                >
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-borderless align-middle">
+                                <table
+                                    class="table table-borderless align-middle"
+                                >
                                     <tbody>
                                         <tr>
-                                            <td><strong>Employee Code</strong></td>
-                                            <td>{{ $employee->employee_code }}</td>
+                                            <td>
+                                                <strong>Employee Code</strong>
+                                            </td>
+                                            <td>
+                                                {{ $employee->employee_code }}
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td><strong>Full Name</strong></td>
@@ -54,11 +113,11 @@
                                         </tr>
                                         <tr>
                                             <td><strong>Email</strong></td>
-                                            <td>{{ $employee->email }}</td>
+                                            <td id="employee_email_data">{{ $employee->email }}</td>
                                         </tr>
                                         <tr>
                                             <td><strong>No. HP</strong></td>
-                                            <td>{{ $employee->phone }}</td>
+                                            <td id="employee_phone_data">{{ $employee->phone }}</td>
                                         </tr>
                                         <tr>
                                             <td><strong>Position</strong></td>
@@ -66,19 +125,28 @@
                                         </tr>
                                         <tr>
                                             <td><strong>Gender</strong></td>
-                                            <td>{{ ucfirst($employee->gender) }}</td>
+                                            <td>
+                                                {{ ucfirst($employee->gender) }}
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td><strong>Join Date</strong></td>
-                                            <td>{{ \Carbon\Carbon::parse($employee->join_date)->translatedFormat('d F Y') }}</td>
+                                            <td>
+                                                {{ \Carbon\Carbon::parse($employee->join_date)->translatedFormat('d F Y') }}
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td><strong>Status</strong></td>
                                             <td>
-                                                @if($employee->status === 'active')
-                                                <span class="badge bg-success">Active</span>
+                                                @if($employee->status ===
+                                                'active')
+                                                <span class="badge bg-success"
+                                                    >Active</span
+                                                >
                                                 @else
-                                                <span class="badge bg-danger">Nonactive</span>
+                                                <span class="badge bg-danger"
+                                                    >Nonactive</span
+                                                >
                                                 @endif
                                             </td>
                                         </tr>
@@ -88,8 +156,59 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
+                <!-- Attendance Card -->
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">Attendance</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End cards row -->
+
+            <!-- Start Edit Modal -->
+            @php $modalFooter = '<button
+                type="button"
+                class="btn-edit-employee-data btn btn-primary"
+            >
+                Save</button
+            >'; @endphp
+            <x-modal id="editModal" title="Edit your data" :footer="$modalFooter">
+                <form id="editEmployeeForm">
+                    <input type="hidden" id="edit_employee_id" value="{{ $employee->id }}" />
+                    <div class="mb-3">
+                        <label for="edit_employee_email" class="form-label"
+                            >Email</label
+                        >
+                        <input
+                            type="email"
+                            class="form-control"
+                            id="edit_employee_email"
+                            name="edit_employee_email"
+                            value="{{ $employee->email }}"
+                            required
+                        />
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_employee_phone" class="form-label"
+                            >Phone</label
+                        >
+                        <input
+                            type="number"
+                            class="form-control"
+                            id="edit_employee_phone"
+                            name="edit_employee_phone"
+                            value="{{ $employee->phone }}"
+                            required
+                        />
+                    </div>
+                </form>
+            </x-modal>
         </div>
         <!--end::Container-->
     </div>

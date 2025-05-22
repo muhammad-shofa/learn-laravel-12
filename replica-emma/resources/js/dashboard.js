@@ -1,3 +1,5 @@
+import Swal from "sweetalert2";
+
 $(document).ready(function () {
     function loadDashboardData() {
         $.ajax({
@@ -177,6 +179,45 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 console.error("Filter AJAX Error: " + status + error);
+            },
+        });
+    });
+
+    $(document).on("click", ".btn-edit-employee-data", () => {
+        let edit_employee_id = $("#edit_employee_id").val();
+        let edit_employee_email = $("#edit_employee_email").val();
+        let edit_employee_phone = String($("#edit_employee_phone").val());
+
+        console.log(edit_employee_email);
+        console.log(edit_employee_phone);
+        $.ajax({
+            url: "/api/dashboard/edit-employee-data",
+            type: "PUT",
+            dataType: "json",
+            data: {
+                id: edit_employee_id,
+                email: edit_employee_email,
+                phone: edit_employee_phone,
+            },
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: (response) => {
+                if (response.success) {
+                    console.log(response.message);
+                    Swal.fire({
+                        title: "Success!",
+                        text: response.message,
+                        icon: "success",
+                        confirmButtonText: "Oke",
+                    });
+                    $("#editModal").modal("hide");
+                    $("#employee_email_data").text(edit_employee_email);
+                    $("#employee_phone_data").text(edit_employee_phone);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Edit Employee AJAX Error: " + status + error);
             },
         });
     });

@@ -102,4 +102,27 @@ class DashboardController extends Controller
             'data' => $data
         ]);
     }
+
+    // edit employee data
+    public function editEmployeeData(Request $request)
+    {
+        $employee = EmployeeModel::findOrFail($request->id);;
+
+        // Validate
+        $request->validate([
+            'email' => 'required|email|min:5',
+            'phone' => 'required|min:5',
+        ]);
+
+        // Update employee data
+        $employee->update([
+            'email' => $request->input('email'),
+            'phone' => $request->input('phone'),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Your employee data updated successfully',
+        ]);
+    }
 }
