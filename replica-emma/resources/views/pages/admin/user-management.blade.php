@@ -40,13 +40,6 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <!-- <tbody>
-                            <tr>
-                                <td colspan="6" class="text-center border">
-                                    <p class="fw-bold no-data-yet">No users yet</p>
-                                </td>
-                            </tr>
-                        </tbody> -->
                     </table>
                 </div>
                 <!-- /.card-body -->

@@ -1,9 +1,5 @@
-@extends('layouts.app')
-
-@section('title', 'Dashboard')
-@vite(['resources/js/dashboard.js'])
-
-@section('content')
+@extends('layouts.app') @section('title', 'Dashboard')
+@vite(['resources/js/dashboard.js']) @section('content')
 <main class="app-main">
     <div class="app-content-header">
         <!--begin::Container-->
@@ -85,9 +81,8 @@
                             >
                                 <h5 class="mb-0">Employee Profile</h5>
                                 <button
-                                    class="btn btn-secondary"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#editModal"
+                                    class="btn-show-edit-employee-modal btn btn-secondary"
+                                    data-employee_id="{{ $employee->id }}"
                                 >
                                     <i class="fa-solid fa-pen"></i>
                                 </button>
@@ -113,11 +108,15 @@
                                         </tr>
                                         <tr>
                                             <td><strong>Email</strong></td>
-                                            <td id="employee_email_data">{{ $employee->email }}</td>
+                                            <td id="employee_email_data">
+                                                {{ $employee->email }}
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td><strong>No. HP</strong></td>
-                                            <td id="employee_phone_data">{{ $employee->phone }}</td>
+                                            <td id="employee_phone_data">
+                                                {{ $employee->phone }}
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td><strong>Position</strong></td>
@@ -161,10 +160,73 @@
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-sm h-100">
                         <div class="card-header">
-                            <h5 class="mb-0">Attendance</h5>
+                            <h5 class="mb-0">Your Attendance</h5>
                         </div>
                         <div class="card-body">
-                            <div class="table-responsive"></div>
+                            <div class="table-responsive">
+                                <table
+                                    class="display text-start"
+                                    id="dashboardAttendanceTableData"
+                                >
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 10px">No</th>
+                                            <th>Date</th>
+                                            <th>Clock In</th>
+                                            <th>Clock Out</th>
+                                            <th>Clock In Status</th>
+                                            <th>Clock Out Status</th>
+                                            <th>Work Duration (Min)</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Time Off Summary Card -->
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">Time Off Summary</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table
+                                    class="table table-borderless align-middle"
+                                >
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <strong>Total Quota</strong>
+                                            </td>
+                                            <td id="employee_total_quota"></td>
+                                    
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Used</strong></td>
+                                            <td id="employee_used_quota"></td>
+                                            <!-- dummy -->
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Remaining</strong></td>
+                                            <td>
+                                                <span
+                                                    class="badge bg-info text-dark" id="employee_remaining_quota"
+                                                >
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong>Last Time Off</strong>
+                                            </td>
+                                            <td id="employee_last_time_off"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -178,9 +240,17 @@
             >
                 Save</button
             >'; @endphp
-            <x-modal id="editModal" title="Edit your data" :footer="$modalFooter">
+            <x-modal
+                id="editModal"
+                title="Edit your data"
+                :footer="$modalFooter"
+            >
                 <form id="editEmployeeForm">
-                    <input type="hidden" id="edit_employee_id" value="{{ $employee->id }}" />
+                    <input
+                        type="hidden"
+                        id="edit_employee_id"
+                        value="{{ $employee->id }}"
+                    />
                     <div class="mb-3">
                         <label for="edit_employee_email" class="form-label"
                             >Email</label

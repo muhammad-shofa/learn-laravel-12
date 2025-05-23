@@ -32,6 +32,18 @@ class AttendanceController extends Controller
         ]);
     }
 
+    // get attendance data based employee_id
+    public function getEmployeeAttendance($employee_id)
+    {
+        $attendance = AttendanceModel::where('employee_id', $employee_id)->orderBy('created_at', 'DESC')->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Attendance data retrieved successfully',
+            'data' => $attendance
+        ]);
+    }
+
     // update attendace
     public function updateAttendance(Request $request, $attendance_id)
     {

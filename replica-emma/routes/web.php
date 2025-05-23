@@ -48,6 +48,7 @@ Route::delete('/api/employee/delete-employee/{id}', [EmployeeController::class, 
 // Attendance endpoint
 Route::get('/api/attendance/get-attendances', [AttendanceController::class, 'getAttendances']);
 Route::get('/api/attendance/get-attendance/{attendance_id}', [AttendanceController::class, 'getAttendance']);
+Route::get('/api/attendance/get-employee-attendance/{employee_id}', [AttendanceController::class, 'getEmployeeAttendance']);
 Route::put('/api/attendance/update-attendance/{attendance_id}', [AttendanceController::class, 'updateAttendance']);
 Route::get('/api/attendance/get-status/{employee_id}', [AttendanceController::class, 'getStatus']);
 Route::get('/api/attendance/get-clock-io-attendance/{employee_id}', [AttendanceController::class, 'checkBtnClockIO']);

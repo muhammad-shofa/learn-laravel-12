@@ -118,8 +118,120 @@ $(document).ready(function () {
         });
     }
 
+    // load attendance in employee dashboard
+    function loadEmployeeAttendanceData() {
+        let employee_id = $("#edit_employee_id").val();
+        $("#dashboardAttendanceTableData").DataTable({
+            destroy: true,
+            paging: true,
+            info: true,
+            ordering: false,
+            ajax: {
+                url: "/api/attendance/get-employee-attendance/" + employee_id,
+                type: "GET",
+                dataSrc: function (response) {
+                    if (response.success) {
+                        return response.data;
+                    } else {
+                        console.error(response.error);
+                        return [];
+                    }
+                },
+            },
+            columns: [
+                {
+                    data: null,
+                    render: (data, type, row, meta) => meta.row + 1,
+                },
+                { data: "date" },
+                {
+                    data: "clock_in",
+                    render: (data) => data ?? "-",
+                },
+                {
+                    data: "clock_out",
+                    render: (data) => data ?? "-",
+                },
+                {
+                    data: "clock_in_status",
+                    render: function (data, type, row) {
+                        if (type === "display") {
+                            // Tentukan warna badge berdasar isi status
+                            let badgeClass = "text-bg-secondary"; // default abu-abu
+                            if (data === "ontime")
+                                badgeClass = "text-bg-success";
+                            if (data === "late") badgeClass = "text-bg-danger";
+                            if (data === "absent")
+                                badgeClass = "text-bg-danger";
+                            if (data === "leave")
+                                badgeClass = "text-bg-warning";
+
+                            return `<span class="badge ${badgeClass}">${data}</span>`;
+                        }
+                        // untuk sorting / searching gunakan nilai mentah
+                        return data;
+                    },
+                },
+                {
+                    data: "clock_out_status",
+                    render: function (data, type, row) {
+                        if (type === "display") {
+                            // Tentukan warna badge berdasar isi status
+                            let badgeClass = "text-bg-secondary"; // default abu-abu
+                            if (data === "ontime")
+                                badgeClass = "text-bg-success";
+                            if (data === "early")
+                                badgeClass = "text-bg-warning";
+                            if (data === "late") badgeClass = "text-bg-danger";
+                            if (data === "no_clock_out")
+                                badgeClass = "text-bg-danger";
+
+                            return `<span class="badge ${badgeClass}">${data}</span>`;
+                        }
+                        // untuk sorting / searching gunakan nilai mentah
+                        return data;
+                    },
+                },
+                {
+                    data: "work_duration",
+                    render: (data) => data ?? "-",
+                },
+            ],
+            columnDefs: [
+                {
+                    targets: "_all",
+                    className: "text-start align-middle",
+                },
+            ],
+        });
+    }
+
+    function loadEmployeeTimeOffData() {
+        let employee_id = $("#edit_employee_id").val();
+        $.ajax({
+            url: "/api/time-off/get-time-off-request-employee-id/" + employee_id,
+            type: "GET",
+            dataType: "json",
+            success: (response) => {
+                if (response.success) {
+                    console.log(response.message);
+                    $("#employee_total_quota").text(
+                        response.data[0].employee.time_off_quota
+                    );
+                    $("#employee_used_quota").text(response.data[0].employee.time_off_used);
+                    $("#employee_remaining_quota").text(
+                        response.data[0].employee.time_off_remaining
+                    );
+                    $('#employee_last_time_off').text(response.data[0].end_date);
+                }
+            },
+        });
+    }
+
     loadDashboardData();
     loadMonthlyChart();
+    loadEmployeeAttendanceData();
+    loadEmployeeTimeOffData();
 
     // reset filter
     $(document).on("click", ".btn-reset-filter", () => {
@@ -183,6 +295,31 @@ $(document).ready(function () {
         });
     });
 
+    // ketika edit employee data diklik
+    $(document).on("click", ".btn-show-edit-employee-modal", function () {
+        let employee_id = $(this).data("employee_id");
+        $.ajax({
+            url: "/api/employee/get-employee/" + employee_id,
+            type: "GET",
+            dataType: "json",
+            success: (response) => {
+                if (response.success) {
+                    $("#editModal").modal("show");
+                    // $("#addModal").modal("hide");
+
+                    $("#edit_employee_email").val(response.data.email);
+                    $("#edit_employee_phone").val(response.data.phone);
+                } else {
+                    console.log(response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error: " + status + error);
+            },
+        });
+    });
+
+    // ketika save edit employee data diklik
     $(document).on("click", ".btn-edit-employee-data", () => {
         let edit_employee_id = $("#edit_employee_id").val();
         let edit_employee_email = $("#edit_employee_email").val();
@@ -214,6 +351,7 @@ $(document).ready(function () {
                     $("#editModal").modal("hide");
                     $("#employee_email_data").text(edit_employee_email);
                     $("#employee_phone_data").text(edit_employee_phone);
+                    $("#editEmployeeForm")[0].reset();
                 }
             },
             error: function (xhr, status, error) {

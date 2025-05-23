@@ -265,6 +265,17 @@ $(document).ready(function () {
         let end_date = $("#end_date").val();
         let reason = $("#reason").val();
 
+        // end date tidak boleh lebih kecil dari start date
+        if (new Date(end_date) < new Date(start_date)) {
+            Swal.fire({
+                title: "Failed!",
+                text: "End date cannot be less than start date",
+                icon: "error",
+                confirmButtonText: "Oke",
+            });
+            return;
+        }
+
         // console.log(id);
         // console.log(start_date);
         // console.log(end_date);

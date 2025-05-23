@@ -36,7 +36,7 @@ class TimeOffController extends Controller
     // get history time off request by employee_id
     public function getTimeOffRequestByEmployeeId($employee_id)
     {
-        $timeOffRequestsData = TimeOffModel::where('employee_id', $employee_id)->get();
+        $timeOffRequestsData = TimeOffModel::with('employee')->where('employee_id', $employee_id)->get();
 
         return response()->json([
             'success' => true,
