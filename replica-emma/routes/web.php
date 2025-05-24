@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PagesController;
+use App\Http\Controllers\PositionController;
 use App\Http\Controllers\TimeOffController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -19,46 +20,66 @@ Route::get('/user-management', [PagesController::class, 'userManagement'])->midd
 Route::get('/employee-management', [PagesController::class, 'employeeManagement'])->middleware('role:admin');
 Route::get('/attendance', [PagesController::class, 'attendance'])->middleware('role:admin,employee');
 Route::get('/time-off', [PagesController::class, 'timeOff'])->middleware('role:admin,employee');
+Route::get('/position', [PagesController::class, 'position'])->middleware('role:admin,employee');
 
 // Auth endpoint
-Route::post('/api/auth/login', [AuthController::class, 'loginAuth']);
-Route::get('/api/auth/logout', [AuthController::class, 'logoutAuth']);
+Route::prefix('/api/auth')->controller(AuthController::class)->group(function () {
+    Route::post('/login', 'loginAuth');
+    Route::get('/logout', 'logoutAuth');
+});
 
 // Dashboard Management Endpoint
-Route::get('/api/dashboard/get-all-dashboard-data', [DashboardController::class, 'getAllDashboardData']);
-Route::get('/api/dashboard/filter-dashboard-data', [DashboardController::class, 'filterDashboardData']);
-Route::get('/api/dashboard/monthly-chart', [DashboardController::class, 'getMonthlyChart']);
-Route::put('/api/dashboard/edit-employee-data', [DashboardController::class, 'editEmployeeData']);
+Route::prefix('/api/dashboard')->controller(DashboardController::class)->group(function () {
+    Route::get('/get-all-dashboard-data', 'getAllDashboardData');
+    Route::get('/filter-dashboard-data', 'filterDashboardData');
+    Route::get('/monthly-chart', 'getMonthlyChart');
+    Route::put('/edit-employee-data', 'editEmployeeData');
+});
 
 // User Management endpoint
-Route::get('/api/user/get-users', [UserController::class, 'getUsers']);
-Route::get('/api/user/get-user/{id}', [UserController::class, 'getUser']);
-Route::post('/api/user/add-user', [UserController::class, 'addUser']);
-Route::put('/api/user/update-user/{id}', [UserController::class, 'updateUser']);
-Route::delete('/api/user/delete-user/{id}', [UserController::class, 'deleteUser']);
+Route::prefix('/api/user')->controller(UserController::class)->group(function () {
+    Route::get('/get-users', 'getUsers');
+    Route::get('/get-user/{id}', 'getUser');
+    Route::post('/add-user', 'addUser');
+    Route::put('/update-user/{id}', 'updateUser');
+    Route::delete('/delete-user/{id}', 'deleteUser');
+});
 
 // Employee Management endpoint
-Route::get('/api/employee/get-employees', [EmployeeController::class, 'getEmployees']);
-Route::get('/api/employee/get-employee/{id}', [EmployeeController::class, 'getEmployee']);
-Route::get('/api/employee/search', [EmployeeController::class, 'searchEmployees']);
-Route::post('/api/employee/add-employee', [EmployeeController::class, 'addEmployee']);
-Route::put('/api/employee/update-employee/{id}', [EmployeeController::class, 'updateEmployee']);
-Route::delete('/api/employee/delete-employee/{id}', [EmployeeController::class, 'deleteEmployee']);
+Route::prefix('/api/employee')->controller(EmployeeController::class)->group(function () {
+    Route::get('/get-employees', 'getEmployees');
+    Route::get('/get-employee/{id}', 'getEmployee');
+    Route::get('/search', 'searchEmployees');
+    Route::post('/add-employee', 'addEmployee');
+    Route::put('/update-employee/{id}', 'updateEmployee');
+    Route::delete('/delete-employee/{id}', 'deleteEmployee');
+});
 
 // Attendance endpoint
-Route::get('/api/attendance/get-attendances', [AttendanceController::class, 'getAttendances']);
-Route::get('/api/attendance/get-attendance/{attendance_id}', [AttendanceController::class, 'getAttendance']);
-Route::get('/api/attendance/get-employee-attendance/{employee_id}', [AttendanceController::class, 'getEmployeeAttendance']);
-Route::put('/api/attendance/update-attendance/{attendance_id}', [AttendanceController::class, 'updateAttendance']);
-Route::get('/api/attendance/get-status/{employee_id}', [AttendanceController::class, 'getStatus']);
-Route::get('/api/attendance/get-clock-io-attendance/{employee_id}', [AttendanceController::class, 'checkBtnClockIO']);
-Route::put('/api/attendance/clock-out/{employee_id}', [AttendanceController::class, 'clockOut']);
-Route::post('/api/attendance/add-attendance', [AttendanceController::class, 'clockIn']);
+Route::prefix('/api/attendance')->controller(AttendanceController::class)->group(function () {
+    Route::get('/get-attendances', 'getAttendances');
+    Route::get('/get-attendance/{attendance_id}', 'getAttendance');
+    Route::get('/get-employee-attendance/{employee_id}', 'getEmployeeAttendance');
+    Route::put('/update-attendance/{attendance_id}', 'updateAttendance');
+    Route::get('/get-status/{employee_id}', 'getStatus');
+    Route::get('/get-clock-io-attendance/{employee_id}', 'checkBtnClockIO');
+    Route::put('/clock-out/{employee_id}', 'clockOut');
+    Route::post('/add-attendance', 'clockIn');
+});
 
 // Time Off endpoint
-Route::get('/api/time-off/get-time-off-requests', [TimeOffController::class, 'getTimeOffRequests']);
-Route::get('/api/time-off/get-time-off-request/{time_off_id}', [TimeOffController::class, 'getTimeOffRequestById']);
-Route::get('/api/time-off/get-time-off-request-employee-id/{employee_id}', [TimeOffController::class, 'getTimeOffRequestByEmployeeId']);
-Route::post('/api/time-off/new-time-off', [TimeOffController::class, 'newTimeOff']);
-Route::put('/api/time-off/approve-time-off', [TimeOffController::class, 'approveTimeOff']);
-Route::put('/api/time-off/reject-time-off', [TimeOffController::class, 'rejectTimeOff']);
+Route::prefix('/api/time-off')->controller(TimeOffController::class)->group(function () {
+    Route::get('/get-time-off-requests', 'getTimeOffRequests');
+    Route::get('/get-time-off-request/{time_off_id}', 'getTimeOffRequestById');
+    Route::get('/get-time-off-request-employee-id/{employee_id}', 'getTimeOffRequestByEmployeeId');
+    Route::post('/new-time-off', 'newTimeOff');
+    Route::put('/approve-time-off', 'approveTimeOff');
+    Route::put('/reject-time-off', 'rejectTimeOff');
+});
+
+// Position endpoint
+Route::prefix('/api/position')->controller(PositionController::class)->group(function () {
+    Route::get('/get-positions', 'getPositions');
+    Route::get('/get-position/{position_id}', 'getPosition');
+    Route::post('/add-position', 'addPosition');
+});

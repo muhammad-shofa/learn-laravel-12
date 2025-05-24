@@ -48,7 +48,6 @@
             </div>
 
             {{-- time off reason detail --}}
-      
             <x-modal id="detailReasonModal" title="Reason Detail">
                 <p id="time-off-reason-field"></p>
             </x-modal>

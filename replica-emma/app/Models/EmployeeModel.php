@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class EmployeeModel extends Model
 {
-    protected $table = 'employees'; 
+    protected $table = 'employees';
     protected $primaryKey = 'id';
     protected $fillable = [
+        'position_id',
         'employee_code',
         'full_name',
         'email',
@@ -21,4 +22,9 @@ class EmployeeModel extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function position()
+    {
+        return $this->belongsTo(PositionModel::class, 'position_id', 'id');
+    }
 }

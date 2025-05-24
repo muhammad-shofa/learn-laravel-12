@@ -3,21 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\EmployeeModel;
+use App\Models\PositionModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PagesController extends Controller
 {
+    // unauthorized
     public function unauthorized()
     {
         return view('pages.unauthorized.unauthorized');
     }
 
+    // login
     public function login()
     {
         return view('auth.login');
     }
 
+    // dashboard
     public function dashboard()
     {
         $user = Auth::user();
@@ -31,6 +35,7 @@ class PagesController extends Controller
         return view('pages.employee.dashboard', ['user' => $user, 'employee' => $employee]);
     }
 
+    // user management
     public function userManagement()
     {
         return view('pages.admin.user-management');
@@ -41,6 +46,7 @@ class PagesController extends Controller
         return view('pages.admin.employee-management');
     }
 
+    // attendance
     public function attendance()
     {
         $user = Auth::user();
@@ -53,6 +59,7 @@ class PagesController extends Controller
         return view('pages.employee.attendance', ['user' => $user]);
     }
 
+    // time off
     public function timeOff()
     {
         $user = Auth::user();
@@ -64,5 +71,19 @@ class PagesController extends Controller
         }
 
         return view('pages.employee.time-off', ['user' => $user, 'employee' => $employee]);
+    }
+
+    // position
+    public function position()
+    {
+        $user = Auth::user();
+        // $employee = PositionModel::where('id', $user->employee_id)->first();
+
+        // Check if the user role is an admin
+        if ($user->role == 'admin') {
+            return view('pages.admin.position', ['user' => $user]);
+        }
+
+        return view('pages.employee.position', ['user' => $user]);
     }
 }

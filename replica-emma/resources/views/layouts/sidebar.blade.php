@@ -6,6 +6,7 @@ $menus = [
 ['label' => 'Employee Management', 'url' => '/employee-management', 'icon' => 'fa-solid fa-user-tie'],
 ['label' => 'Attendance', 'url' => '/attendance', 'icon' => 'fa-solid fa-users-viewfinder'],
 ['label' => 'Time Off', 'url' => '/time-off', 'icon' => 'fa-solid fa-calendar'],
+['label' => 'Position', 'url' => '/position', 'icon' => 'fa-solid fa-sitemap'],
 ['label' => 'Salary Settings', 'url' => '/salary-settings', 'icon' => 'fa-solid fa-money-bill-wave'],
 ['label' => 'Salary', 'url' => '/salary', 'icon' => 'fa-solid fa-credit-card'],
 ['label' => 'Report', 'url' => '/report', 'icon' => 'fa-solid fa-file-lines'],
