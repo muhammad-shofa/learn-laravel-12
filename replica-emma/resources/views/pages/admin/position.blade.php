@@ -1,9 +1,5 @@
-@extends('layouts.app')
-
-@section('title', 'Position')
-@vite(['resources/js/position.js'])
-
-@section('content')
+@extends('layouts.app') @section('title', 'Position')
+@vite(['resources/js/position.js']) @section('content')
 <main class="app-main">
     <div class="app-content-header">
         <!--begin::Container-->
@@ -21,7 +17,14 @@
     <div class="app-content">
         <!--begin::Container-->
         <div class="container-fluid">
-            <button type="button" class="btn btn-success my-3" data-bs-toggle="modal" data-bs-target="#addModal">Add Position</button>
+            <button
+                type="button"
+                class="btn btn-success my-3"
+                data-bs-toggle="modal"
+                data-bs-target="#addModal"
+            >
+                Add Position
+            </button>
 
             <div class="card mb-4">
                 <div class="card-header">
@@ -42,42 +45,83 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        
                     </table>
                 </div>
                 <!-- /.card-body -->
             </div>
-            
+
             {{-- position detail modal --}}
             <x-modal id="detailDescriptionModal" title="Description Detail">
                 <p id="position-description-field"></p>
             </x-modal>
 
-            {{-- add modal start --}}       
-            @php
-            $modalFooter = '<button type="button" class="save-add btn btn-success">Save User</button>';
-            @endphp
+            {{-- add modal start --}}
+            @php $modalFooter = '<button
+                type="button"
+                class="save-add btn btn-success"
+            >
+                Save User</button
+            >'; @endphp
             <x-modal id="addModal" title="Add Position" :footer="$modalFooter">
                 <form id="addPositionForm">
                     <div class="mb-3">
-                        <label for="position_name" class="form-label">Position Name</label>
-                        <input type="text" class="form-control" id="position_name" require />
+                        <label for="position_name" class="form-label"
+                            >Position Name</label
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="position_name"
+                            require
+                        />
                     </div>
                     <div class="mb-3">
-                        <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" id="description" rows="3" require></textarea>
+                        <label for="description" class="form-label"
+                            >Description</label
+                        >
+                        <textarea
+                            class="form-control"
+                            id="description"
+                            rows="3"
+                            require
+                        ></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="hourly_rate" class="form-label">Hourly Rate</label>
-                        <input type="number" class="form-control" id="hourly_rate" placeholder="" require />
+                        <label for="hourly_rate" class="form-label"
+                            >Hourly Rate</label
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="hourly_rate"
+                            placeholder=""
+                            require
+                        />
                     </div>
                     <div class="mb-3">
-                        <label for="annual_salary_increase" class="form-label">Annual Salary Increase</label>
-                        <input type="number" class="form-control" id="annual_salary_increase" require />
+                        <label for="annual_salary_increase" class="form-label"
+                            >Annual Salary Increase</label
+                        >
+                        <div class="input-group mb-3">
+                            <input
+                                type="number"
+                                class="form-control"
+                                id="annual_salary_increase"
+                                placeholder="10"
+                            />
+                            <span class="input-group-text">%</span>
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <label for="base_salary" class="form-label">Base Salary</label>
-                        <input type="number" class="form-control" id="base_salary" require />
+                        <label for="base_salary" class="form-label"
+                            >Base Salary</label
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="base_salary"
+                            require
+                        />
                     </div>
                     <div class="mb-3">
                         <label for="status" class="form-label">Status</label>
@@ -88,6 +132,27 @@
                     </div>
                 </form>
             </x-modal>
+
+            <!-- delete modal start -->
+            @php $modalFooter = '<button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+            >
+                No
+            </button>
+            <button type="button" class="confirmed-delete btn btn-danger">
+                Yes</button
+            >'; @endphp
+            <x-modal
+                id="deleteModal"
+                title="Delete Position"
+                :footer="$modalFooter"
+            >
+                <input type="hidden" id="delete_position_id" />
+                <p>Are you sure you want to remove this data?</p>
+            </x-modal>
+
         </div>
     </div>
 </main>

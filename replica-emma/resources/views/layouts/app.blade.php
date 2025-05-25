@@ -20,6 +20,8 @@
     <script src="https://cdn.datatables.net/2.3.1/js/dataTables.min.js"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    {{-- autonumeric --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.10.8/autoNumeric.js"></script>
     @vite(['resources/css/app.css'])
     @vite(['resources/js/app.js'])
 </head>
@@ -29,6 +31,7 @@
 
         @include('layouts.navbar')
         @include('layouts.sidebar')
+
 
         <!-- Preloader -->
         <div id="preloader" style="position: fixed; top:0; left:0; width:100%; height:100%; background:#fff; z-index:9999; display:flex; align-items:center; justify-content:center;">

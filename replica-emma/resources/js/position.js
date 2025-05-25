@@ -121,13 +121,32 @@ $(document).ready(function () {
         });
     });
 
+    // auto numeric library untuk inputan currency
+    const hourly_rate_numeric = new AutoNumeric("#hourly_rate", {
+        digitGroupSeparator: ".",
+        decimalCharacter: ",",
+        decimalPlaces: 0,
+        currencySymbol: "Rp ",
+        currencySymbolPlacement: "p",
+        modifyValueOnWheel: false,
+    });
+
+    const bsae_salary_numeric = new AutoNumeric("#base_salary", {
+        digitGroupSeparator: ".",
+        decimalCharacter: ",",
+        decimalPlaces: 0,
+        currencySymbol: "Rp ",
+        currencySymbolPlacement: "p",
+        modifyValueOnWheel: false,
+    });
+
     // simpan data position
     $(document).on("click", ".save-add", function () {
         let position_name = $("#position_name").val();
         let description = $("#description").val();
-        let hourly_rate = $("#hourly_rate").val();
+        let hourly_rate = hourly_rate_numeric.getNumber();
         let annual_salary_increase = $("#annual_salary_increase").val();
-        let base_salary = $("#base_salary").val();
+        let base_salary = bsae_salary_numeric.getNumber();
         let status = $("#status").val();
 
         $.ajax({
@@ -166,6 +185,52 @@ $(document).ready(function () {
                 Swal.fire({
                     title: "Failed!",
                     text: "Failed to add new data.",
+                    icon: "error",
+                    confirmButtonText: "Oke",
+                });
+                console.error("AJAX Error: " + status + error);
+            },
+        });
+    });
+
+    // ketika tombol hapus diklik
+    $(document).on("click", ".btn-delete", function () {
+        let position_id = $(this).data("position_id");
+        console.log(position_id);
+        $("#deleteModal").modal("show");
+        $("#delete_position_id").val(position_id);
+    });
+
+    // ketika tombol konfirmasi hapus diklik
+    $(document).on("click", ".confirmed-delete", function () {
+        let position_id = $("#delete_position_id").val();
+
+        $.ajax({
+            url: "/api/position/delete-position/" + position_id,
+            type: "DELETE",
+            dataType: "json",
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: (response) => {
+                if (response.success) {
+                    // console.log(response.message);
+                    $("#deleteModal").modal("hide");
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Data has been deleted successfully.",
+                        icon: "success",
+                        confirmButtonText: "Oke",
+                    });
+                    loadPositionsData();
+                } else {
+                    console.log(response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire({
+                    title: "Error!",
+                    text: "Failed to delete data.",
                     icon: "error",
                     confirmButtonText: "Oke",
                 });

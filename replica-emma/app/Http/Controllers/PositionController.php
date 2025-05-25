@@ -53,4 +53,24 @@ class PositionController extends Controller
             'message' => 'Position created successfully',
         ]);
     }
+
+    // delete position by id
+    public function deletePosition($id)
+    {
+        $position = PositionModel::find($id);
+
+        if (!$position) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Position not found',
+            ], 404);
+        }
+
+        $position->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Position deleted successfully',
+        ]);
+    }
 }

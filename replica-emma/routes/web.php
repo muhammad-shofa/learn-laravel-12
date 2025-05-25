@@ -82,4 +82,5 @@ Route::prefix('/api/position')->controller(PositionController::class)->group(fun
     Route::get('/get-positions', 'getPositions');
     Route::get('/get-position/{position_id}', 'getPosition');
     Route::post('/add-position', 'addPosition');
+    Route::delete('/delete-position/{position_id}', 'deletePosition');
 });
