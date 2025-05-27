@@ -38,7 +38,7 @@ Route::prefix('/api/dashboard')->controller(DashboardController::class)->group(f
 
 // User Management endpoint
 Route::prefix('/api/user')->controller(UserController::class)->group(function () {
-    Route::get('/get-users', 'getUsers');
+    Route::get('/get-users', 'getUsers')->name('users.get');
     Route::get('/get-user/{id}', 'getUser');
     Route::post('/add-user', 'addUser');
     Route::put('/update-user/{id}', 'updateUser');
@@ -81,6 +81,8 @@ Route::prefix('/api/time-off')->controller(TimeOffController::class)->group(func
 Route::prefix('/api/position')->controller(PositionController::class)->group(function () {
     Route::get('/get-positions', 'getPositions');
     Route::get('/get-position/{position_id}', 'getPosition');
+    Route::get('/search', 'searchPositions');
     Route::post('/add-position', 'addPosition');
+    Route::put('/update-position/{position_id}', 'updatePosition');
     Route::delete('/delete-position/{position_id}', 'deletePosition');
 });

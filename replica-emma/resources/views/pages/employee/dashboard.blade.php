@@ -120,7 +120,7 @@
                                         </tr>
                                         <tr>
                                             <td><strong>Position</strong></td>
-                                            <td>{{ $employee->position }}</td>
+                                            <td>{{ $employee->position->position_name }}</td>
                                         </tr>
                                         <tr>
                                             <td><strong>Gender</strong></td>

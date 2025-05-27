@@ -121,7 +121,7 @@ $(document).ready(function () {
         });
     });
 
-    // auto numeric library untuk inputan currency
+    // auto numeric library untuk inputan add currency
     const hourly_rate_numeric = new AutoNumeric("#hourly_rate", {
         digitGroupSeparator: ".",
         decimalCharacter: ",",
@@ -131,7 +131,26 @@ $(document).ready(function () {
         modifyValueOnWheel: false,
     });
 
-    const bsae_salary_numeric = new AutoNumeric("#base_salary", {
+    const base_salary_numeric = new AutoNumeric("#base_salary", {
+        digitGroupSeparator: ".",
+        decimalCharacter: ",",
+        decimalPlaces: 0,
+        currencySymbol: "Rp ",
+        currencySymbolPlacement: "p",
+        modifyValueOnWheel: false,
+    });
+
+    // auto numeric library untuk inputan edit currency
+    const edit_hourly_rate_numeric = new AutoNumeric("#edit_hourly_rate", {
+        digitGroupSeparator: ".",
+        decimalCharacter: ",",
+        decimalPlaces: 0,
+        currencySymbol: "Rp ",
+        currencySymbolPlacement: "p",
+        modifyValueOnWheel: false,
+    });
+
+    const edit_base_salary_numeric = new AutoNumeric("#edit_base_salary", {
         digitGroupSeparator: ".",
         decimalCharacter: ",",
         decimalPlaces: 0,
@@ -146,7 +165,7 @@ $(document).ready(function () {
         let description = $("#description").val();
         let hourly_rate = hourly_rate_numeric.getNumber();
         let annual_salary_increase = $("#annual_salary_increase").val();
-        let base_salary = bsae_salary_numeric.getNumber();
+        let base_salary = base_salary_numeric.getNumber();
         let status = $("#status").val();
 
         $.ajax({
@@ -189,6 +208,85 @@ $(document).ready(function () {
                     confirmButtonText: "Oke",
                 });
                 console.error("AJAX Error: " + status + error);
+            },
+        });
+    });
+
+    // ketika tombol edit diklik
+    $(document).on("click", ".btn-edit", function () {
+        let position_id = $(this).data("position_id");
+        $.ajax({
+            url: "/api/position/get-position/" + position_id,
+            type: "GET",
+            dataType: "json",
+            success: (response) => {
+                if (response.success) {
+                    $("#edit_position_id").val(response.data.id);
+                    $("#edit_position_name").val(response.data.position_name);
+                    $("#edit_description").val(response.data.description);
+                    edit_hourly_rate_numeric.set(response.data.hourly_rate);
+                    $("#edit_annual_salary_increase").val(
+                        response.data.annual_salary_increase
+                    );
+                    edit_base_salary_numeric.set(response.data.base_salary);
+                    $("#edit_status").val(response.data.status);
+                } else {
+                    console.log(response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error: " + status + error);
+            },
+        });
+    });
+
+    // ketika tombol save edit diklik
+    $(document).on("click", ".save-edit", function () {
+        let position_id = $("#edit_position_id").val();
+        let position_name = $("#edit_position_name").val();
+        let description = $("#edit_description").val();
+        let hourly_rate = edit_hourly_rate_numeric.getNumber();
+        let annual_salary_increase = $("#edit_annual_salary_increase").val();
+        let base_salary = edit_base_salary_numeric.getNumber();
+        let status = $("#edit_status").val();
+
+        $.ajax({
+            url: "/api/position/update-position/" + position_id,
+            type: "PUT",
+            dataType: "json",
+            data: {
+                position_name: position_name,
+                description: description,
+                hourly_rate: hourly_rate,
+                annual_salary_increase: annual_salary_increase,
+                base_salary: base_salary,
+                status: status,
+            },
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: (response) => {
+                if (response.success) {
+                    $("#editModal").modal("hide");
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Data has been updated successfully.",
+                        icon: "success",
+                        confirmButtonText: "Oke",
+                    });
+                    loadPositionsData();
+                } else {
+                    console.log(response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error: " + status + error);
+                Swal.fire({
+                    title: "Failed!",
+                    text: "Failed to update data.",
+                    icon: "error",
+                    confirmButtonText: "Oke",
+                });
             },
         });
     });

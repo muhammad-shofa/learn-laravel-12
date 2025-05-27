@@ -133,6 +133,89 @@
                 </form>
             </x-modal>
 
+            <!-- edit modal start -->
+            @php $modalFooter = '<button
+                type="button"
+                class="save-edit btn btn-success"
+            >
+                Save Edit</button
+            >'; @endphp
+            <x-modal
+                id="editModal"
+                title="Edit Position"
+                :footer="$modalFooter"
+            >
+                <form id="editPositionForm">
+                    <input type="hidden" id="edit_position_id" />
+                    <div class="mb-3">
+                        <label for="edit_position_name" class="form-label"
+                            >Position Name</label
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="edit_position_name"
+                            require
+                        />
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_description" class="form-label"
+                            >Description</label
+                        >
+                        <textarea
+                            class="form-control"
+                            id="edit_description"
+                            rows="3"
+                            require
+                        ></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_hourly_rate" class="form-label"
+                            >Hourly Rate</label
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="edit_hourly_rate"
+                            placeholder=""
+                            require
+                        />
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_annual_salary_increase" class="form-label"
+                            >Annual Salary Increase</label
+                        >
+                        <div class="input-group mb-3">
+                            <input
+                                type="number"
+                                class="form-control"
+                                id="edit_annual_salary_increase"
+                                placeholder="10"
+                            />
+                            <span class="input-group-text">%</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_base_salary" class="form-label"
+                            >Base Salary</label
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="edit_base_salary"
+                            require
+                        />
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_status" class="form-label">Status</label>
+                        <select class="form-select" id="edit_status" require>
+                            <option selected value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </form>
+            </x-modal>
+
             <!-- delete modal start -->
             @php $modalFooter = '<button
                 type="button"
@@ -152,7 +235,6 @@
                 <input type="hidden" id="delete_position_id" />
                 <p>Are you sure you want to remove this data?</p>
             </x-modal>
-
         </div>
     </div>
 </main>

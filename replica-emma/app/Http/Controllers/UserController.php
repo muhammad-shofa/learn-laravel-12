@@ -85,6 +85,11 @@ class UserController extends Controller
     public function deleteUser($id)
     {
         $user = UserModel::findOrFail($id);
+        $employee = EmployeeModel::findOrFail($user->employee_id);
+        // Set has_account to 0 in the employee table
+        $employee->update([
+            'has_account' => 0,
+        ]);
 
         $user->delete();
 

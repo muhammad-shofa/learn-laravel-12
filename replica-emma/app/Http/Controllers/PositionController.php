@@ -38,6 +38,28 @@ class PositionController extends Controller
         ]);
     }
 
+    // search position
+
+    // search employee
+    public function searchPositions(Request $request)
+    {
+        $search = $request->query('q');
+
+        $employees = PositionModel::when($search, function ($query, $search) {
+            return $query->where(function ($q) use ($search) {
+                $q->where('position_name', 'like', "%{$search}%");
+            });
+        })
+            ->limit(5)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $employees
+        ]);
+    }
+
+
     // add new position
     public function addPosition(Request $request)
     {
@@ -51,6 +73,31 @@ class PositionController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Position created successfully',
+        ]);
+    }
+
+    // update position by id
+    public function updatePosition(Request $request, $id)
+    {
+        // $request->validate([
+        //     'position_name' => 'required|string|max:255',
+        //     'description' => 'nullable|string|max:255',
+        // ]);
+
+        $position = PositionModel::find($id);
+
+        if (!$position) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Position not found',
+            ], 404);
+        }
+
+        $position->update($request->all());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Position updated successfully',
         ]);
     }
 

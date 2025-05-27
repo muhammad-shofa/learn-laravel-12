@@ -2,47 +2,6 @@ import Swal from "sweetalert2";
 
 $(document).ready(function () {
     // function to get all employees data
-    // v1
-    // function loadEmployeesData() {
-    //     $.ajax({
-    //         url: "/api/employee/get-employees",
-    //         type: "GET",
-    //         dataType: "json",
-    //         success: (response) => {
-    //             if (response.success) {
-    //                 let employeesTable = $("#employeeTableData tbody");
-    //                 let no = 0;
-    //                 employeesTable.empty();
-    //                 $.each(response.data, (index, employee) => {
-    //                     no++;
-    //                     employeesTable.append(`
-    //                         <tr>
-    //                             <td>${no}</td>
-    //                             <td>${employee.employee_code}</td>
-    //                             <td>${employee.full_name}</td>
-    //                             <td>${employee.email}</td>
-    //                             <td>${employee.phone}</td>
-    //                             <td>${employee.position}</td>
-    //                             <td>${employee.gender}</td>
-    //                             <td>${employee.join_date}</td>
-    //                             <td>${employee.status}</td>
-    //                             <td>
-    //                                 <button class="btn-edit btn btn-primary" data-employee_id="${employee.id}" data-bs-toggle="modal" data-bs-target="#editModal"><i class="fa-solid fa-pen"></i></button>
-    //                                 <button class="btn-delete btn btn-danger" data-employee_id="${employee.id}"><i class="fa-solid fa-trash"></i></button>
-    //                             </td>
-    //                         <tr>
-    //                         `);
-    //                 });
-    //             } else {
-    //                 console.log(response.error);
-    //             }
-    //         },
-    //         error: function (xhr, status, error) {
-    //             console.error("AJAX Error: " + status + error);
-    //         },
-    //     });
-    // }
-
     function loadEmployeesData() {
         $("#employeeTableData").DataTable({
             destroy: true, // agar bisa reload ulang
@@ -70,7 +29,12 @@ $(document).ready(function () {
                 { data: "full_name" },
                 { data: "email" },
                 { data: "phone" },
-                { data: "position" },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        return row.position ? row.position.position_name : "-";
+                    },
+                },
                 { data: "gender" },
                 { data: "join_date" },
                 { data: "status" },
@@ -97,8 +61,54 @@ $(document).ready(function () {
         });
     }
 
+    // function to initialize Select2 for position
+    function selectPosition(elmn_position_id, modal) {
+        // let position = $("#position");
+        let position = elmn_position_id;
+
+        // Inisialisasi Select2 langsung dengan AJAX
+        position.select2({
+            theme: "bootstrap4",
+            placeholder: "-- Select Position --",
+            allowClear: true,
+            width: "100%",
+            dropdownParent: modal,
+            ajax: {
+                url: "/api/position/search",
+                dataType: "json",
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term, // kata kunci pencarian
+                    };
+                },
+                processResults: function (response) {
+                    return {
+                        results: response.data.map((position) => ({
+                            id: position.id,
+                            text: `${position.position_name}`,
+                        })),
+                    };
+                },
+                cache: true,
+            },
+        });
+    }
+
     // load employees data
     loadEmployeesData();
+
+    // ambil data position untuk ditampilkan pada select
+    $(document).on("click", ".btn-add", function () {
+        $("#addModal").modal("show");
+        selectPosition($("#position"), $("#addModal"));
+    });
+
+    // $(document).on("click", ".btn-add", function () {
+    //     $("#addModal").modal("show");
+    //     let position = $("#position");
+    //     selectPosition(position);
+    // });
 
     $(document).on("click", ".save-add", function () {
         let full_name = $("#full_name").val();
@@ -116,7 +126,7 @@ $(document).ready(function () {
                 full_name: full_name,
                 email: email,
                 phone: phone,
-                position: position,
+                position_id: position,
                 gender: gender,
                 join_date: join_date,
                 status: status,
@@ -155,6 +165,9 @@ $(document).ready(function () {
     // ketika tombol edit diklik
     $(document).on("click", ".btn-edit", function () {
         let employee_id = $(this).data("employee_id");
+        let $editPosition = $("#edit_position");
+        let $editModal = $("#editModal");
+
         $.ajax({
             url: "/api/employee/get-employee/" + employee_id,
             type: "GET",
@@ -165,10 +178,21 @@ $(document).ready(function () {
                     $("#edit_full_name").val(response.data.full_name);
                     $("#edit_email").val(response.data.email);
                     $("#edit_phone").val(response.data.phone);
-                    $("#edit_position").val(response.data.position);
                     $("#edit_gender").val(response.data.gender);
                     $("#edit_join_date").val(response.data.join_date);
                     $("#edit_status").val(response.data.status);
+
+                    // Tambahkan opsi posisi saat ini secara manual
+                    const selectedOption = new Option(
+                        response.data.position.position_name, // text yang ditampilkan
+                        response.data.position_id, // value
+                        true, // selected
+                        true // default selected
+                    );
+                    $editPosition.append(selectedOption).trigger("change");
+
+                    // Inisialisasi ulang Select2 dengan AJAX dan dropdownParent
+                    selectPosition($editPosition, $editModal);
                 } else {
                     console.log(response.message);
                 }
@@ -198,7 +222,7 @@ $(document).ready(function () {
                 full_name: full_name,
                 email: email,
                 phone: phone,
-                position: position,
+                position_id: position,
                 gender: gender,
                 join_date: join_date,
                 status: status,

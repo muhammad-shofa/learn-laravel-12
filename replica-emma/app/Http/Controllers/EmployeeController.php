@@ -10,7 +10,7 @@ class EmployeeController extends Controller
     // get all employees data
     public function getEmployees()
     {
-        $data = EmployeeModel::all();
+        $data = EmployeeModel::with('position')->get();
         return response()->json([
             'success' => true,
             'message' => 'Data retrieved successfully',
@@ -21,7 +21,8 @@ class EmployeeController extends Controller
     // get employee by id
     public function getEmployee($id)
     {
-        $data = EmployeeModel::findOrFail($id);
+        $data = EmployeeModel::with('position')->findOrFail($id);
+        // $data = EmployeeModel::findOrFail($id);
         return response()->json([
             'success' => true,
             'message' => 'Data retrieved successfully',
@@ -44,20 +45,11 @@ class EmployeeController extends Controller
             ->limit(5)
             ->get();
 
-        // return response()->json([
-        //     'success' => true,
-        //     'data' => $employees
-        // ]);
-
         return response()->json([
-            'results' => $employees->map(function ($emp) {
-                return [
-                    'id' => $emp->id,
-                    'text' => $emp->employee_code . ' - ' . $emp->full_name,
-                    'disabled' => $emp->has_account == 1
-                ];
-            })
+            'success' => true,
+            'data' => $employees
         ]);
+
     }
 
 
@@ -71,11 +63,11 @@ class EmployeeController extends Controller
         $employee_code = 'EMP-' . NOW()->format('Ymd') . mt_rand(1000, 9999);
 
         EmployeeModel::create([
+            'position_id' => $request->input('position_id'),
             'employee_code' => $employee_code,
             'full_name' => $request->input('full_name'),
             'email' => $request->input('email'),
             'phone' => $request->input('phone'),
-            'position' => $request->input('position'),
             'gender' => $request->input('gender'),
             'join_date' => $request->input('join_date'),
             'status' => $request->input('status')
@@ -97,10 +89,10 @@ class EmployeeController extends Controller
         $employee = EmployeeModel::findOrFail($id);
 
         $employee->update([
+            'position_id' => $request->input('position_id'),
             'full_name' => $request->input('full_name'),
             'email' => $request->input('email'),
             'phone' => $request->input('phone'),
-            'position' => $request->input('position'),
             'gender' => $request->input('gender'),
             'join_date' => $request->input('join_date'),
             'status' => $request->input('status'),

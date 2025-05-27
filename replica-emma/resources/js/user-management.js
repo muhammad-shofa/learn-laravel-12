@@ -72,7 +72,7 @@ $(document).ready(function () {
             placeholder: "-- Select Employee --",
             allowClear: true,
             width: "100%",
-            dropdownParent: $("#addModal"), 
+            dropdownParent: $("#addModal"),
             ajax: {
                 url: "/api/employee/search",
                 dataType: "json",
@@ -83,20 +83,19 @@ $(document).ready(function () {
                     };
                 },
                 processResults: function (response) {
-                    return response;
-                    // return {
-                    //     results: response.data.map((employee) => ({
-                    //         id: employee.id,
-                    //         text: `${employee.employee_code} - ${employee.full_name}`,
-                    //         disabled: employee.has_account == 1,
-                    //     })),
-                    // };
+                    return {
+                        results: response.data.map((employee) => ({
+                            id: employee.id,
+                            text: `${employee.employee_code} - ${employee.full_name}`,
+                            disabled: employee.has_account == 1,
+                        })),
+                    };
                 },
                 cache: true,
             },
         });
     }
-    
+
     // ketika tombol btn-add diklik maka
     // ambil data employee code untuk ditampilkan pada select
     $(document).on("click", ".btn-add", function () {

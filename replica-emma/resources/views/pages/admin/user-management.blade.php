@@ -83,12 +83,12 @@
                 <form id="addUserForm">
                     <!-- Employee code digenerate otomatis dari backend -->
                     <input type="hidden" name="user_id" id="edit_user_id">
-                    <div class="mb-3">
+                    {{-- <div class="mb-3">
                         <label for="edit_employee_code" class="form-label">Employee Code</label>
                         <select class="form-select" id="edit_employee_code">
                             <option selected value="#">- None -</option>
                         </select>
-                    </div>
+                    </div> --}}
                     <div class="mb-3">
                         <label for="edit_username" class="form-label">Username</label>
                         <input type="text" class="form-control" id="edit_username" require />
@@ -106,7 +106,10 @@
                     </div>
                     <div class="mb-3">
                         <label for="edit_status_login" class="form-label">Status Login</label>
-                        <input type="text" class="form-control" id="edit_status_login" require />
+                        <select class="form-select" id="edit_status_login" require>
+                            <option selected value="active">Active</option>
+                            <option value="nonactive">Nonactive</option>
+                        </select>
                     </div>
 
                 </form>

@@ -71,14 +71,6 @@
                     <div class="mb-3">
                         <label for="position" class="form-label">Position</label>
                         <select class="form-select" id="position">
-                            <!--
-                                    Pengembangan : tambahkan table position di database untuk menampung data position yang
-                                    nantinya akan ditampilkan di dropdown ini     
-                                        -->
-                            <option value="hr">HR</option>
-                            <option value="senior_programmer">Senior Programmer</option>
-                            <option value="junior_programmer">Junior Programmer</option>
-                            <option value="office_boy">Office Boy</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -125,14 +117,6 @@
                     <div class="mb-3">
                         <label for="edit_position" class="form-label">Position</label>
                         <select class="form-select" id="edit_position">
-                            <!--
-                                    Pengembangan : tambahkan table position di database untuk menampung data position yang
-                                    nantinya akan ditampilkan di dropdown ini     
-                                        -->
-                            <option value="hr">HR</option>
-                            <option value="senior_programmer">Senior Programmer</option>
-                            <option value="junior_programmer">Junior Programmer</option>
-                            <option value="office_boy">Office Boy</option>
                         </select>
                     </div>
                     <div class="mb-3">
