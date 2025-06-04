@@ -36,7 +36,7 @@ class TimeOffController extends Controller
     // get history time off request by employee_id
     public function getTimeOffRequestByEmployeeId($employee_id)
     {
-        $timeOffRequestsData = TimeOffModel::with('employee')->where('employee_id', $employee_id)->get();
+        $timeOffRequestsData = TimeOffModel::with('employee')->where('employee_id', $employee_id)->orderBy('created_at', 'DESC')->get();
 
         return response()->json([
             'success' => true,
@@ -77,6 +77,17 @@ class TimeOffController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => "Not enough quota. You have only {$employee->time_off_remaining} day(s) left.",
+            ]);
+        }
+
+        // cek apakah ada time off request yang sedang pending, hanya satu yang boleh pending
+        $pendingRequest = TimeOffModel::where('employee_id', $employee->id)
+            ->whereIn('status', ['pending'])
+            ->exists();
+        if ($pendingRequest) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You already have a pending time off request, please wait until your request approved or rejected!.',
             ]);
         }
 

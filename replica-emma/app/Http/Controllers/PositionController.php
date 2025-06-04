@@ -68,7 +68,7 @@ class PositionController extends Controller
             'description' => 'nullable|string|max:255',
         ]);
 
-        $position = PositionModel::create($request->all());
+        PositionModel::create($request->all());
 
         return response()->json([
             'success' => true,

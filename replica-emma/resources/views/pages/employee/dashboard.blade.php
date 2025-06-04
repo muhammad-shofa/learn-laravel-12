@@ -1,4 +1,5 @@
-@extends('layouts.app') @section('title', 'Dashboard')
+@extends('layouts.app-employee')
+@section('title', 'Dashboard')
 @vite(['resources/js/dashboard.js']) @section('content')
 <main class="app-main">
     <div class="app-content-header">
@@ -6,8 +7,14 @@
         <div class="container-fluid">
             <!--begin::Row-->
             <div class="row">
-                <div class="col-sm-6">
+                {{-- <div class="col-sm-6"> --}}
+                <div class="col-sm">
                     <h3 class="mb-0">Dashboard</h3>
+                </div>
+                <div class="col-sm text-end">
+                    <a href="/api/auth/logout" class="btn btn-danger">
+                        <i class="nav-icon fa-solid fa-right-from-bracket"></i>
+                    </a>
                 </div>
             </div>
             <!--end::Row-->
@@ -17,58 +24,8 @@
     <div class="app-content">
         <!--begin::Container-->
         <div class="container-fluid">
-            <!-- Info boxes -->
-            <div class="row">
-                <div class="col-12 col-sm-6 col-md-3">
-                    <a href="/attendance" class="info-box text-decoration-none">
-                        <span class="info-box-icon bg-success shadow-lg">
-                            <i
-                                class="fa-solid fa-users-viewfinder"
-                                style="color: #ffffff"
-                            ></i>
-                        </span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Attendance</span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </a>
-                    <!-- /.info-box -->
-                </div>
-                <!-- /.col -->
-                <div class="col-12 col-sm-6 col-md-3">
-                    <a href="/time-off" class="info-box text-decoration-none">
-                        <span class="info-box-icon bg-warning shadow-lg">
-                            <i
-                                class="fa-solid fa-calendar"
-                                style="color: #ffffff"
-                            ></i>
-                        </span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Time Off</span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </a>
-                    <!-- /.info-box -->
-                </div>
-                <!-- /.col -->
-                <div class="col-12 col-sm-6 col-md-3">
-                    <a href="/salary" class="info-box text-decoration-none">
-                        <span class="info-box-icon bg-primary shadow-lg">
-                            <i
-                                class="fa-solid fa-credit-card"
-                                style="color: #ffffff"
-                            ></i>
-                        </span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Salary</span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </a>
-                    <!-- /.info-box -->
-                </div>
-                <!-- /.col -->
-            </div>
-            <!-- /.row -->
+         {{-- navigation menu --}}
+         <x-menu/>
 
             <!-- Start cards row -->
             <div class="row mt-5">

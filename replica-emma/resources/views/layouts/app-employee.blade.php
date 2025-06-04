@@ -22,18 +22,14 @@
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     {{-- autonumeric --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.10.8/autoNumeric.js"></script>
-    {{-- air datepicker --}}
-    <script src="https://cdn.jsdelivr.net/npm/air-datepicker@3.6.0/air-datepicker.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/air-datepicker@3.6.0/air-datepicker.min.css" rel="stylesheet">
     @vite(['resources/css/app.css'])
     @vite(['resources/js/app.js'])
 </head>
 
-<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
-    <div class="app-wrapper">
-
-        @include('layouts.navbar')
-        @include('layouts.sidebar')
+<body class="bg-body-tertiary">
+    <div>
+        {{-- @include('layouts.navbar') --}}
+        {{-- @include('layouts.sidebar') --}}
 
 
         <!-- Preloader -->
@@ -43,7 +39,7 @@
             </div>
         </div>
 
-        <div class="content-wrapper p-4 border">
+        <div class="p-4">
             @yield('content')
         </div>
     </div>

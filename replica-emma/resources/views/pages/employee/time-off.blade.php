@@ -1,4 +1,5 @@
-@extends('layouts.app')
+@extends('layouts.app-employee')
+
 
 @section('title', 'Time Off')
 @vite(['resources/js/time-off.js'])
@@ -21,7 +22,9 @@
     <div class="app-content">
         <!--begin::Container-->
         <div class="container-fluid">
-            <div class="d-flex gap-5 justify-content-evenly flex-wrap">
+            {{-- navigation menu --}}
+            <x-menu/>
+            <div class="d-flex gap-5 justify-content-evenly flex-wrap mt-5">
                 <div class="row">
                     <!-- Start col -->
                     <div class="col">

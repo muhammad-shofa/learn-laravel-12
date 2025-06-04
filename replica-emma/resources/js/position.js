@@ -48,6 +48,18 @@ $(document).ready(function () {
                     },
                 },
                 {
+                    data: "overtime_multiplier",
+                    render: function (data, type, row) {
+                        return data ?? "-";
+                    },
+                },
+                {
+                    data: "standard_monthly_hours",
+                    render: function (data, type, row) {
+                        return data ?? "-";
+                    },
+                },
+                {
                     data: "annual_salary_increase",
                     render: function (data, type, row) {
                         return data ?? "-";
@@ -122,26 +134,16 @@ $(document).ready(function () {
     });
 
     // auto numeric library untuk inputan add currency
-    const hourly_rate_numeric = new AutoNumeric("#hourly_rate", {
-        digitGroupSeparator: ".",
-        decimalCharacter: ",",
-        decimalPlaces: 0,
-        currencySymbol: "Rp ",
-        currencySymbolPlacement: "p",
-        modifyValueOnWheel: false,
-    });
+    // const hourly_rate_numeric = new AutoNumeric("#hourly_rate", {
+    //     digitGroupSeparator: ".",
+    //     decimalCharacter: ",",
+    //     decimalPlaces: 0,
+    //     currencySymbol: "Rp ",
+    //     currencySymbolPlacement: "p",
+    //     modifyValueOnWheel: false,
+    // });
 
     const base_salary_numeric = new AutoNumeric("#base_salary", {
-        digitGroupSeparator: ".",
-        decimalCharacter: ",",
-        decimalPlaces: 0,
-        currencySymbol: "Rp ",
-        currencySymbolPlacement: "p",
-        modifyValueOnWheel: false,
-    });
-
-    // auto numeric library untuk inputan edit currency
-    const edit_hourly_rate_numeric = new AutoNumeric("#edit_hourly_rate", {
         digitGroupSeparator: ".",
         decimalCharacter: ",",
         decimalPlaces: 0,
@@ -163,10 +165,25 @@ $(document).ready(function () {
     $(document).on("click", ".save-add", function () {
         let position_name = $("#position_name").val();
         let description = $("#description").val();
-        let hourly_rate = hourly_rate_numeric.getNumber();
+        // let hourly_rate = hourly_rate_numeric.getNumber();
+        let overtime_multiplier = $("#overtime_multiplier").val();
+        let standard_monthly_hours = $("#standard_monthly_hours").val();
         let annual_salary_increase = $("#annual_salary_increase").val();
         let base_salary = base_salary_numeric.getNumber();
         let status = $("#status").val();
+
+        let hourly_rate = base_salary / standard_monthly_hours;
+
+        // console.log({
+        //     position_name,
+        //     description,
+        //     hourly_rate,
+        //     overtime_multiplier,
+        //     standard_monthly_hours,
+        //     annual_salary_increase,
+        //     base_salary,
+        //     status,
+        // });
 
         $.ajax({
             url: "/api/position/add-position",
@@ -176,6 +193,8 @@ $(document).ready(function () {
                 position_name: position_name,
                 description: description,
                 hourly_rate: hourly_rate,
+                overtime_multiplier: overtime_multiplier,
+                standard_monthly_hours: standard_monthly_hours,
                 annual_salary_increase: annual_salary_increase,
                 base_salary: base_salary,
                 status: status,
@@ -224,7 +243,8 @@ $(document).ready(function () {
                     $("#edit_position_id").val(response.data.id);
                     $("#edit_position_name").val(response.data.position_name);
                     $("#edit_description").val(response.data.description);
-                    edit_hourly_rate_numeric.set(response.data.hourly_rate);
+                    $("#edit_overtime_multiplier").val(response.data.overtime_multiplier);
+                    $("#edit_standard_monthly_hours").val(response.data.standard_monthly_hours);
                     $("#edit_annual_salary_increase").val(
                         response.data.annual_salary_increase
                     );
@@ -245,10 +265,13 @@ $(document).ready(function () {
         let position_id = $("#edit_position_id").val();
         let position_name = $("#edit_position_name").val();
         let description = $("#edit_description").val();
-        let hourly_rate = edit_hourly_rate_numeric.getNumber();
+        let overtime_multiplier = $("#edit_overtime_multiplier").val();
+        let standard_monthly_hours = $("#edit_standard_monthly_hours").val();
         let annual_salary_increase = $("#edit_annual_salary_increase").val();
         let base_salary = edit_base_salary_numeric.getNumber();
         let status = $("#edit_status").val();
+
+        let hourly_rate = base_salary / standard_monthly_hours;
 
         $.ajax({
             url: "/api/position/update-position/" + position_id,
@@ -258,6 +281,8 @@ $(document).ready(function () {
                 position_name: position_name,
                 description: description,
                 hourly_rate: hourly_rate,
+                overtime_multiplier: overtime_multiplier,
+                standard_monthly_hours: standard_monthly_hours,
                 annual_salary_increase: annual_salary_increase,
                 base_salary: base_salary,
                 status: status,

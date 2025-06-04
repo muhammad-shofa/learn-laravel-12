@@ -6,6 +6,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\PositionController;
+use App\Http\Controllers\SalariesController;
+use App\Http\Controllers\SalarySettingController;
 use App\Http\Controllers\TimeOffController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -20,7 +22,9 @@ Route::get('/user-management', [PagesController::class, 'userManagement'])->midd
 Route::get('/employee-management', [PagesController::class, 'employeeManagement'])->middleware('role:admin');
 Route::get('/attendance', [PagesController::class, 'attendance'])->middleware('role:admin,employee');
 Route::get('/time-off', [PagesController::class, 'timeOff'])->middleware('role:admin,employee');
-Route::get('/position', [PagesController::class, 'position'])->middleware('role:admin,employee');
+Route::get('/position', [PagesController::class, 'position'])->middleware('role:admin');
+Route::get('/salary-settings', [PagesController::class, 'salarySetting'])->middleware('role:admin');
+Route::get('/salary', [PagesController::class, 'salary'])->middleware('role:admin');
 
 // Auth endpoint
 Route::prefix('/api/auth')->controller(AuthController::class)->group(function () {
@@ -42,6 +46,7 @@ Route::prefix('/api/user')->controller(UserController::class)->group(function ()
     Route::get('/get-user/{id}', 'getUser');
     Route::post('/add-user', 'addUser');
     Route::put('/update-user/{id}', 'updateUser');
+    Route::put('/reset-password/{user_id}', 'updateUserPassword');
     Route::delete('/delete-user/{id}', 'deleteUser');
 });
 
@@ -49,7 +54,10 @@ Route::prefix('/api/user')->controller(UserController::class)->group(function ()
 Route::prefix('/api/employee')->controller(EmployeeController::class)->group(function () {
     Route::get('/get-employees', 'getEmployees');
     Route::get('/get-employee/{id}', 'getEmployee');
+    Route::get('/get-employee-for-salary/{employee_id}', 'getEmployeeForSalary');
     Route::get('/search', 'searchEmployees');
+    Route::get('/search-for-salary-setting', 'searchEmployeesSalarySetting');
+    Route::get('/search-for-salary', 'searchEmployeesSalary');
     Route::post('/add-employee', 'addEmployee');
     Route::put('/update-employee/{id}', 'updateEmployee');
     Route::delete('/delete-employee/{id}', 'deleteEmployee');
@@ -85,4 +93,19 @@ Route::prefix('/api/position')->controller(PositionController::class)->group(fun
     Route::post('/add-position', 'addPosition');
     Route::put('/update-position/{position_id}', 'updatePosition');
     Route::delete('/delete-position/{position_id}', 'deletePosition');
+});
+
+// Salary Setting endpoint
+Route::prefix('/api/salary-setting')->controller(SalarySettingController::class)->group(function () {
+    Route::get('/get-salary-settings', 'getSalarySettings');
+    Route::get('/get-salary-setting/{salary_setting_id}', 'getSalarySetting');
+    Route::post('/add-salary-setting', 'addSalarySetting');
+    Route::put('/update-salary-setting/{salary_setting_id}', 'updateSalarySetting');
+    Route::delete('/delete-salary-setting/{salary_setting_id}', 'deleteSalarySetting');
+});
+
+// Salary endpoint
+Route::prefix('/api/salary')->controller(SalariesController::class)->group(function () {
+    Route::get('/get-salaries', 'getSalaries');
+    Route::get('/download-pdf/{salary_id}', 'downloadPdf');
 });

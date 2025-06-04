@@ -39,6 +39,8 @@
                                 <th>Position Name</th>
                                 <th>Description</th>
                                 <th>Hourly Rate</th>
+                                <th>Overtime Multiplier</th>
+                                <th>Standard Monthly Hours</th>
                                 <th>Annual Salary Increase</th>
                                 <th>Base Salary</th>
                                 <th>Status</th>
@@ -60,7 +62,7 @@
                 type="button"
                 class="save-add btn btn-success"
             >
-                Save User</button
+                Save Position</button
             >'; @endphp
             <x-modal id="addModal" title="Add Position" :footer="$modalFooter">
                 <form id="addPositionForm">
@@ -86,7 +88,7 @@
                             require
                         ></textarea>
                     </div>
-                    <div class="mb-3">
+                    {{-- <div class="mb-3">
                         <label for="hourly_rate" class="form-label"
                             >Hourly Rate</label
                         >
@@ -94,6 +96,29 @@
                             type="text"
                             class="form-control"
                             id="hourly_rate"
+                            placeholder=""
+                            require
+                        />
+                    </div> --}}
+                    <div class="mb-3">
+                        <label for="overtime_multiplier" class="form-label"
+                            >Overtime Multiplier</label
+                        >
+                        <select class="form-select" name="overtime_multiplier" id="overtime_multiplier">
+                            <option value="1">1x</option>
+                            <option value="1.5">1.5x</option>
+                            <option value="2">2x</option>
+                            <option value="3">3x</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="standard_monthly_hours" class="form-label"
+                            >Standard Monthly Hours</label
+                        >
+                        <input
+                            type="number"
+                            class="form-control"
+                            id="standard_monthly_hours"
                             placeholder=""
                             require
                         />
@@ -170,13 +195,24 @@
                         ></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="edit_hourly_rate" class="form-label"
-                            >Hourly Rate</label
+                        <label for="edit_overtime_multiplier" class="form-label"
+                            >Overtime Multiplier</label
+                        >
+                        <select class="form-select" name="edit_overtime_multiplier" id="edit_overtime_multiplier">
+                            <option value="1.00">1x</option>
+                            <option value="1.50">1.5x</option>
+                            <option value="2.00">2x</option>
+                            <option value="3.00">3x</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_standard_monthly_hours" class="form-label"
+                            >Standard Monthly Hours</label
                         >
                         <input
-                            type="text"
+                            type="number"
                             class="form-control"
-                            id="edit_hourly_rate"
+                            id="edit_standard_monthly_hours"
                             placeholder=""
                             require
                         />

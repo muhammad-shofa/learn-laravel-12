@@ -102,49 +102,57 @@ $(document).ready(function () {
     // tampilkan data history time off request untuk employee tertentu
     function loadHistoryTimeOffRequestData() {
         let employee_id = $("#time_off_employee_id_hidden").val();
+        $("#historyTimeOffRequestData").DataTable({
+            destroy: true,
+            paging: true,
+            info: true,
+            ordering: false,
+            ajax: {
+                url: "/api/time-off/get-time-off-request-employee-id/" + employee_id,
+                type: "GET",
+                dataSrc: function (response) {
+                    if (response.success) {
+                        return response.data;
+                    } else {
+                        console.error(response.error);
+                        return [];
+                    }
+                },
+            },
+            columns: [
+                {
+                    data: null,
+                    render: (data, type, row, meta) => meta.row + 1,
+                },
+                { data: "request_date" },
+                { data: "start_date" },
+                { data: "end_date" },
+                {
+                    data: "status",
+                    render: function (data, type, row) {
+                        if (type === "display") {
+                            // Tentukan warna badge berdasar isi status
+                            let badgeClass = "text-bg-secondary"; // default abu-abu
+                            if (data === "approved")
+                                badgeClass = "text-bg-success";
+                            if (data === "rejected")
+                                badgeClass = "text-bg-danger";
+                            if (data === "pending")
+                                badgeClass = "text-bg-warning";
 
-        $.ajax({
-            url:
-                "/api/time-off/get-time-off-request-employee-id/" + employee_id,
-            type: "GET",
-            dataType: "json",
-            success: (response) => {
-                if (response.success) {
-                    let historyTimeOffRequestTable = $(
-                        "#historyTimeOffRequestData tbody"
-                    );
-                    let no = 0;
-                    historyTimeOffRequestTable.empty();
-                    $.each(response.data, (index, time_off) => {
-                        no++;
-
-                        // Pilih warna badge berdasarkan status
-                        let statusBadge = "-";
-                        if (time_off.status === "approved") {
-                            statusBadge = `<span class="badge bg-success">Approved</span>`;
-                        } else if (time_off.status === "pending") {
-                            statusBadge = `<span class="badge bg-warning text-dark">Pending</span>`;
-                        } else if (time_off.status === "rejected") {
-                            statusBadge = `<span class="badge bg-danger">Rejected</span>`;
+                            return `<span class="badge ${badgeClass}">${data}</span>`;
                         }
-
-                        historyTimeOffRequestTable.append(`
-                            <tr>
-                                <td>${no}</td>
-                                <td>${time_off.request_date}</td>
-                                <td>${time_off.start_date}</td>
-                                <td>${time_off.end_date}</td>
-                                <td>${statusBadge}</td>
-                            </tr>
-                        `);
-                    });
-                } else {
-                    console.log(response.error);
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("AJAX Error: " + status + error);
-            },
+                        // untuk sorting / searching gunakan nilai mentah
+                        return data;
+                    },
+                },
+            ],
+            columnDefs: [
+                {
+                    targets: "_all", // semua kolom
+                    className: "text-start align-middle",
+                },
+            ],
         });
     }
 

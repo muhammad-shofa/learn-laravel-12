@@ -80,10 +80,38 @@ class PagesController extends Controller
         // $employee = PositionModel::where('id', $user->employee_id)->first();
 
         // Check if the user role is an admin
-        if ($user->role == 'admin') {
-            return view('pages.admin.position', ['user' => $user]);
-        }
+        // if ($user->role == 'admin') {
+        return view('pages.admin.position', ['user' => $user]);
+        // }
 
-        return view('pages.employee.position', ['user' => $user]);
+        // return view('pages.employee.position', ['user' => $user]);
+    }
+
+    // salary setting
+    public function salarySetting()
+    {
+        $user = Auth::user();
+        // $employee = PositionModel::where('id', $user->employee_id)->first();
+
+        // Check if the user role is an admin
+        // if ($user->role == 'admin') {
+        return view('pages.admin.salary-setting', ['user' => $user]);
+        // }
+
+        // return view('pages.employee.salary-setting', ['user' => $user]);
+    }
+
+    // salary
+    public function salary()
+    {
+        $user = Auth::user();
+        // $employee = PositionModel::where('id', $user->employee_id)->first();
+
+        // Check if the user role is an admin
+        // if ($user->role == 'admin') {
+        return view('pages.admin.salary', ['user' => $user]);
+        // }
+
+        // return view('pages.employee.salary', ['user' => $user]);
     }
 }

@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AttendanceModel;
 use App\Models\EmployeeModel;
+use App\Models\PositionModel;
+use App\Models\SalarySettingModel;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
@@ -30,6 +34,57 @@ class EmployeeController extends Controller
         ], 200);
     }
 
+    // get employee for salary
+    public function getEmployeeForSalary($employee_id)
+    {
+        // Ambil data employee beserta posisi
+        $employeeData = EmployeeModel::with('position')->findOrFail($employee_id);
+
+        // Tentukan rentang tanggal awal dan akhir bulan (misalnya Mei 2025)
+        $startDate = Carbon::create(2025, 5, 1)->startOfDay();
+        $endDate = Carbon::create(2025, 5, 31)->endOfDay();
+
+        // Ambil data absensi berdasarkan rentang tanggal
+        $attendanceData = AttendanceModel::where('employee_id', $employee_id)
+            ->whereBetween('date', [$startDate, $endDate])
+            ->get();
+
+        // total work duration
+        $totalWorkDuration = $attendanceData->sum('work_duration');
+
+        // hitung standard menit
+        $positionData = PositionModel::where('id', $employeeData->position_id)->firstOrFail();
+        $standardMinutes = $positionData->standard_monthly_hours * 60;
+
+        // hitung selisih menit lembur
+        $overtimeMinutes = max(0, $totalWorkDuration - $standardMinutes);
+        // $overtimeMinutes = $totalWorkDuration - $standardMinutes);
+
+        // hitung gaji per menit
+        $rate_per_minute = $positionData->hourly_rate / 60;
+
+        // hitung bonus lembur
+        $overtimeBonus = $overtimeMinutes * $rate_per_minute * $positionData->overtime_multiplier;
+        // overtime_pay = overtime_minutes * rate_per_minute * overtime_multiplier
+
+        // tambahkan pengecekan jika waktu kerja lebih atau kurang dari yang ditargetkan
+
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data retrieved successfully',
+            'employee' => $employeeData,
+            'attendance' => $attendanceData,
+            'total_work_duration' => $totalWorkDuration,
+            'standard_minutes' => $standardMinutes,
+            'overtime_minutes' => $overtimeMinutes,
+            'rate_per_minute' => $rate_per_minute,
+            'overtime_bonus' => $overtimeBonus,
+
+        ], 200);
+    }
+
     // search employee
     public function searchEmployees(Request $request)
     {
@@ -49,9 +104,57 @@ class EmployeeController extends Controller
             'success' => true,
             'data' => $employees
         ]);
-
     }
 
+    // search employee for salary setting
+    public function searchEmployeesSalarySetting(Request $request)
+    {
+        $search = $request->query('q');
+
+        // Ambil semua employee_id yang sudah ada di salary_settings
+        $excludedEmployeeIds = SalarySettingModel::pluck('employee_id')->toArray();
+
+        $employees = EmployeeModel::where('has_account', true)
+            ->whereNotIn('id', $excludedEmployeeIds)
+            ->when($search, function ($query, $search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('employee_code', 'like', "%{$search}%")
+                        ->orWhere('full_name', 'like', "%{$search}%");
+                });
+            })
+            ->limit(5)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $employees
+        ]);
+    }
+
+    // search employee for salary
+    public function searchEmployeesSalary(Request $request)
+    {
+        $search = $request->query('q');
+
+        // Ambil semua employee_id yang sudah ada di salary_settings
+        $excludedEmployeeIds = SalarySettingModel::pluck('employee_id')->toArray();
+
+        $employees = EmployeeModel::where('has_account', true)
+            ->whereIn('id', $excludedEmployeeIds)
+            ->when($search, function ($query, $search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('employee_code', 'like', "%{$search}%")
+                        ->orWhere('full_name', 'like', "%{$search}%");
+                });
+            })
+            ->limit(5)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $employees
+        ]);
+    }
 
     // add employee
     public function addEmployee(Request $request)

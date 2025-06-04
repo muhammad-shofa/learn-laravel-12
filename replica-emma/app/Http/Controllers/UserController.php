@@ -68,7 +68,6 @@ class UserController extends Controller
         $user = UserModel::findOrFail($id);
 
         $user->update([
-            'employee_id' => $request->input('employee_id'),
             'username' => $request->input('username'),
             'role' => $request->input('role'),
             'try_login' => $request->input('try_login'),
@@ -79,6 +78,27 @@ class UserController extends Controller
             'success' => true,
             'message' => 'User updated successfully'
         ]);
+    }
+
+    // reset user password
+    public function updateUserPassword(Request $request, $user_id)
+    {
+        $user = UserModel::findOrFail($user_id);
+
+        // Validate the new password
+        $request->validate([
+            'password' => 'required|min:6',
+        ]);
+
+        // Update the user's password
+        $user->update([
+            'password' => bcrypt($request->input('password')),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password updated successfully'
+        ], 200);
     }
 
     // delete user

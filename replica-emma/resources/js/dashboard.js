@@ -26,6 +26,7 @@ $(document).ready(function () {
                             <tr>
                                 <td>${no}</td>
                                 <td>${attendance_latest.employee.full_name}</td>
+                                <td>${attendance_latest.date}</td>
                                 <td>${attendance_latest.clock_in}</td>
                                 <td>${
                                     attendance_latest.clock_in_status ==
@@ -35,6 +36,16 @@ $(document).ready(function () {
                                           "</span>"
                                         : '<span class="badge text-bg-danger">' +
                                           attendance_latest.clock_in_status +
+                                          "</span>"
+                                }</td>
+                                <td>${
+                                    attendance_latest.clock_out_status ==
+                                    "ontime"
+                                        ? '<span class="badge text-bg-success">' +
+                                          attendance_latest.clock_out_status +
+                                          "</span>"
+                                        : '<span class="badge text-bg-danger">' +
+                                          attendance_latest.clock_out_status +
                                           "</span>"
                                 }</td>
                             <tr>
@@ -270,6 +281,7 @@ $(document).ready(function () {
                             <tr>
                                 <td>${no}</td>
                                 <td>${attendance_latest.employee.full_name}</td>
+                                <td>${attendance_latest.date}</td>
                                 <td>${attendance_latest.clock_in}</td>
                                 <td>${
                                     attendance_latest.clock_in_status ==
@@ -279,6 +291,16 @@ $(document).ready(function () {
                                           "</span>"
                                         : '<span class="badge text-bg-danger">' +
                                           attendance_latest.clock_in_status +
+                                          "</span>"
+                                }</td>
+                                <td>${
+                                    attendance_latest.clock_out_status ==
+                                    "ontime"
+                                        ? '<span class="badge text-bg-success">' +
+                                          attendance_latest.clock_out_status +
+                                          "</span>"
+                                        : '<span class="badge text-bg-danger">' +
+                                          attendance_latest.clock_out_status +
                                           "</span>"
                                 }</td>
                             </tr>

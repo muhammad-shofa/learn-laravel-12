@@ -12,6 +12,8 @@ class PositionModel extends Model
         'position_name',
         'description',
         'hourly_rate',
+        'overtime_multiplier',
+        'standard_monthly_hours',
         'annual_salary_increase',
         'base_salary',
         'status',

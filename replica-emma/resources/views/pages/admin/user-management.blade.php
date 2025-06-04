@@ -54,7 +54,6 @@
                     <div class="mb-3">
                         <label for="employee_code" class="form-label">Employee Code</label>
                         <select id="employee_code">
-                            <!-- <option selected value="#">- None -</option> -->
                         </select>
                     </div>
                     <div class="mb-3">
@@ -81,14 +80,7 @@
             @endphp
             <x-modal id="editModal" title="Edit User" :footer="$modalFooter">
                 <form id="addUserForm">
-                    <!-- Employee code digenerate otomatis dari backend -->
                     <input type="hidden" name="user_id" id="edit_user_id">
-                    {{-- <div class="mb-3">
-                        <label for="edit_employee_code" class="form-label">Employee Code</label>
-                        <select class="form-select" id="edit_employee_code">
-                            <option selected value="#">- None -</option>
-                        </select>
-                    </div> --}}
                     <div class="mb-3">
                         <label for="edit_username" class="form-label">Username</label>
                         <input type="text" class="form-control" id="edit_username" require />
@@ -111,7 +103,30 @@
                             <option value="nonactive">Nonactive</option>
                         </select>
                     </div>
+                </form>
+            </x-modal>
 
+            <!-- reset password modal start -->
+            @php
+            $modalFooter = '<button type="button" class="save-new-password btn btn-success">Save</button>';
+            @endphp
+            <x-modal id="resetPasswordModal" title="Reset User Password" :footer="$modalFooter">
+                <form id="resetPasswordForm">
+                    <input type="hidden" name="user_id" id="reset_user_id">
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">New Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="new_password" require />
+                            <span class="input-group-text" id="show-new-password"><i class="fa-solid fa-eye"></i></span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label">Confirm Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="confirm_password" require />
+                            <span class="input-group-text" id="show-confirm-password"><i class="fa-solid fa-eye"></i></span>
+                        </div>
+                    </div>
                 </form>
             </x-modal>
 

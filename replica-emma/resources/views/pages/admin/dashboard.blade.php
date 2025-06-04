@@ -104,8 +104,10 @@
                                         <tr>
                                             <th>No</th>
                                             <th>Name</th>
+                                            <th>Date</th>
                                             <th>Clock in</th>
-                                            <th>Status Clock In</th>
+                                            <th>Clock In Status</th>
+                                            <th>Clock Out Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
