@@ -10,9 +10,18 @@
         <div class="container-fluid">
             <!--begin::Row-->
             <div class="row">
-                <div class="col-sm-6">
-                    <h3 class="mb-0">Attendance</h3>
+                <!--begin::Row-->
+                <div class="row">
+                    <div class="col-sm">
+                        <h3 class="mb-0">Attendance</h3>
+                    </div>
+                    <div class="col-sm text-end">
+                        <a href="/api/auth/logout" class="btn btn-danger">
+                            <i class="nav-icon fa-solid fa-right-from-bracket"></i>
+                        </a>
+                    </div>
                 </div>
+                <!--end::Row-->
             </div>
             <!--end::Row-->
         </div>

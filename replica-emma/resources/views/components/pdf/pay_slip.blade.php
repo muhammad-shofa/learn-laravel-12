@@ -37,7 +37,10 @@
 <body>
     <h2>Employee Payslip</h2>
     <p><strong>Name:</strong> {{ $salary->employee->full_name }}</p>
-    <p><strong>Month:</strong> {{ \Carbon\Carbon::parse($salary->month)->format('F Y') }}</p>
+    @php
+    $monthName = \Carbon\Carbon::createFromDate(null, $salary->month, 1)->format('F');
+    @endphp
+    <p><strong>Month:</strong> {{ $monthName }} {{ $salary->year }}</p>
 
     <table>
         <tr>

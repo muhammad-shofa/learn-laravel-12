@@ -7,7 +7,6 @@
         <div class="container-fluid">
             <!--begin::Row-->
             <div class="row">
-                {{-- <div class="col-sm-6"> --}}
                 <div class="col-sm">
                     <h3 class="mb-0">Dashboard</h3>
                 </div>
@@ -28,7 +27,7 @@
          <x-menu/>
 
             <!-- Start cards row -->
-            <div class="row mt-5">
+            <div class="row mt-1">
                 <!-- Employee Profile Card -->
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-sm h-100">
@@ -184,6 +183,30 @@
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reset Password Card -->
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">Reset Password</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="old_password">Old Password</label>
+                                <input type="password" id="old_password" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="new_password">New Password</label>
+                                <input type="password" id="new_password" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirm_password">Confirm Password</label>
+                                <input type="password" id="confirm_password" class="form-control" />
+                            </div>
+                            <button class="btn btn-warning float-end">Reset</button>
                         </div>
                     </div>
                 </div>

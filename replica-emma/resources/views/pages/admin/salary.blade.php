@@ -39,6 +39,7 @@
                                 <th>Employee Code</th>
                                 <th>Full Name</th>
                                 <th>Position Name</th>
+                                <th>Year</th>
                                 <th>Month</th>
                                 <th>Deduction</th>
                                 <th>Bonus</th>
@@ -60,7 +61,7 @@
             {{-- add modal start --}}
             @php $modalFooter = '<button
                 type="button"
-                class="save-add btn btn-success"
+                class="generate-salary-btn btn btn-success"
             >
                 Generate Salary</button
             >'; @endphp
@@ -69,6 +70,15 @@
                     <div class="mb-3">
                         <label for="employee_code" class="form-label">Employee Code</label>
                         <select id="employee_code">
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="year" class="form-label">Year</label>
+                        <select class="form-select" id="year" name="year" required>
+                            <option value="">-- Select Year --</option>
+                            @for ($year = 2020; $year <= now()->year; $year++)
+                                <option value="{{ $year }}">{{ $year }}</option>
+                                @endfor
                         </select>
                     </div>
                     <div class="mb-3">
@@ -116,6 +126,7 @@
                             class="form-control"
                             id="total_salary"
                             placeholder=""
+                            disabled
                         />
                     </div>
                 </form>

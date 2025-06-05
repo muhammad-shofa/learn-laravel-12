@@ -50,6 +50,12 @@ $(document).ready(function () {
                     },
                 },
                 {
+                    data: "year",
+                    render: function (data, type, row) {
+                        return data ?? "-";
+                    },
+                },
+                {
                     data: "month",
                     render: function (data, type, row) {
                         return data ?? "-";
@@ -133,29 +139,63 @@ $(document).ready(function () {
             },
         });
 
+        // inisialisasi variable untuk option yang dipilih
+        let selected_employee_id = null;
+        let selected_year = null;
+        let selected_month = null;
+
+        // cek dan ambil data salary yang dibutuhan untuk menambah salary
+        function checkAndFetchSalary() {
+            if (selected_employee_id && selected_year && selected_month) {
+                $.ajax({
+                    url: `/api/employee/get-employee-for-salary/${selected_employee_id}/${selected_year}/${selected_month}`,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.success) {
+                            deduction_numeric.set(
+                                response.deduction_amount || 0
+                            );
+                            bonus_numeric.set(response.overtime_bonus || 0);
+                            total_salary_numeric.set(
+                                response.total_salary || 0
+                            );
+                        } else {
+                            // console.error(
+                            //     "Failed to retrieve data:",
+                            //     response.message
+                            // );
+                            deduction_numeric.set(0);
+                            bonus_numeric.set(0);
+                            total_salary_numeric.set(0);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX Error:", status, error);
+                    },
+                });
+            }
+        }
+
         // jika ada option yang dipilih
         employeeCodeSelect.on("select2:select", function (e) {
-            const employeeId = e.params.data.id;
+            selected_employee_id = e.params.data.id;
+            checkAndFetchSalary();
+            console.log(selected_employee_id);
+        });
 
-            // Panggil API untuk ambil detail employee
-            $.ajax({
-                url: `/api/employee/get-employee-for-salary/${employeeId}`,
-                type: "GET",
-                dataType: "json",
-                success: function (response) {
-                    if (response.success) {
-                        
-                    } else {
-                        console.error(
-                            "Failed to retrieved data:",
-                            response.message
-                        );
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("AJAX Error:", status, error);
-                },
-            });
+        // ketika tahun dipilih
+        $("#year").on("change", function () {
+            selected_year = $("#year").val();
+            checkAndFetchSalary();
+            console.log(selected_year);
+        });
+
+        // ketika bulan dipilih
+        $("#month").on("change", function () {
+            selected_month = $("#month").val();
+            checkAndFetchSalary();
+            console.log(selected_month);
         });
     }
 
@@ -170,6 +210,95 @@ $(document).ready(function () {
 
     loadSalaryData();
     selectEmployeeCode();
+
+    const deduction_numeric = new AutoNumeric("#deduction", {
+        digitGroupSeparator: ".",
+        decimalCharacter: ",",
+        decimalPlaces: 0,
+        currencySymbol: "Rp ",
+        currencySymbolPlacement: "p",
+        modifyValueOnWheel: false,
+    });
+
+    const bonus_numeric = new AutoNumeric("#bonus", {
+        digitGroupSeparator: ".",
+        decimalCharacter: ",",
+        decimalPlaces: 0,
+        currencySymbol: "Rp ",
+        currencySymbolPlacement: "p",
+        modifyValueOnWheel: false,
+    });
+
+    const total_salary_numeric = new AutoNumeric("#total_salary", {
+        digitGroupSeparator: ".",
+        decimalCharacter: ",",
+        decimalPlaces: 0,
+        currencySymbol: "Rp ",
+        currencySymbolPlacement: "p",
+        modifyValueOnWheel: false,
+    });
+
+    // ketika tombol generate salary diklik
+    $(document).on("click", ".generate-salary-btn", function () {
+        // ambil data dari form
+        let employee_id = $("#employee_code").val();
+        let year = $("#year").val();
+        let month = $("#month").val();
+        let deduction = deduction_numeric.getNumericString();
+        let bonus = bonus_numeric.getNumericString();
+        let total_salary = total_salary_numeric.getNumericString();
+        let payment_date = new Date();
+        let formatted_payment_date = payment_date.toISOString().split("T")[0];
+
+        $.ajax({
+            url: "/api/salary/generate-salary",
+            type: "POST",
+            dataType: "json",
+            data: {
+                employee_id: employee_id,
+                year: year,
+                month: month,
+                deduction: deduction,
+                bonus: bonus,
+                total_salary: total_salary,
+                payment_date: formatted_payment_date,
+            },
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success",
+                        text: response.message,
+                    });
+                    // reload data table
+                    loadSalaryData();
+                    // reset form
+                    $("#addModal").modal("hide");
+                    $("#employee_code").val(null).trigger("change");
+                    deduction_numeric.set(0);
+                    bonus_numeric.set(0);
+                    total_salary_numeric.set(0);
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: response.message,
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error:", status, error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Failed to generate salary. Please try again.",
+                });
+            },
+        });
+    });
 
     // ketika tomobl download pdf diklik
     $(document).on("click", ".btn-download-pdf", function () {

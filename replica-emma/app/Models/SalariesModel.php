@@ -11,6 +11,7 @@ class SalariesModel extends Model
     protected $fillable = [
         'employee_id',
         'salary_setting_id',
+        'year',
         'month',
         'deduction',
         'bonus',

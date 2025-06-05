@@ -133,16 +133,6 @@ $(document).ready(function () {
         });
     });
 
-    // auto numeric library untuk inputan add currency
-    // const hourly_rate_numeric = new AutoNumeric("#hourly_rate", {
-    //     digitGroupSeparator: ".",
-    //     decimalCharacter: ",",
-    //     decimalPlaces: 0,
-    //     currencySymbol: "Rp ",
-    //     currencySymbolPlacement: "p",
-    //     modifyValueOnWheel: false,
-    // });
-
     const base_salary_numeric = new AutoNumeric("#base_salary", {
         digitGroupSeparator: ".",
         decimalCharacter: ",",

@@ -35,53 +35,76 @@ class EmployeeController extends Controller
     }
 
     // get employee for salary
-    public function getEmployeeForSalary($employee_id)
+    public function getEmployeeForSalary($employee_id, $year, $month)
     {
         // Ambil data employee beserta posisi
-        $employeeData = EmployeeModel::with('position')->findOrFail($employee_id);
+        $employee_data = EmployeeModel::with('position')->findOrFail($employee_id);
 
-        // Tentukan rentang tanggal awal dan akhir bulan (misalnya Mei 2025)
-        $startDate = Carbon::create(2025, 5, 1)->startOfDay();
-        $endDate = Carbon::create(2025, 5, 31)->endOfDay();
+        // Tentukan rentang tanggal awal dan akhir bulan
+        $startDate = Carbon::create($year, $month, 1)->startOfDay();
+        $endDate = Carbon::create($year, $month, 1)->endOfMonth()->endOfDay();
 
         // Ambil data absensi berdasarkan rentang tanggal
-        $attendanceData = AttendanceModel::where('employee_id', $employee_id)
+        $attendance_data = AttendanceModel::where('employee_id', $employee_id)
             ->whereBetween('date', [$startDate, $endDate])
             ->get();
 
-        // total work duration
-        $totalWorkDuration = $attendanceData->sum('work_duration');
+        if ($attendance_data->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No attendance data found for this employee in the specified month.',
+            ], 200);
+        }
+
+        // ambil salary settings user
+        $salary_settings = SalarySettingModel::where('employee_id', $employee_id)->firstOrFail();
+
+        // total work duration (minutes)
+        $total_work_duration = $attendance_data->sum('work_duration');
+        // $total_work_duration = 12060; // just for testing
 
         // hitung standard menit
-        $positionData = PositionModel::where('id', $employeeData->position_id)->firstOrFail();
-        $standardMinutes = $positionData->standard_monthly_hours * 60;
-
-        // hitung selisih menit lembur
-        $overtimeMinutes = max(0, $totalWorkDuration - $standardMinutes);
-        // $overtimeMinutes = $totalWorkDuration - $standardMinutes);
+        $position_data = PositionModel::where('id', $employee_data->position_id)->firstOrFail();
+        $standard_minutes = $position_data->standard_monthly_hours * 60;
 
         // hitung gaji per menit
-        $rate_per_minute = $positionData->hourly_rate / 60;
+        $rate_per_minute = $position_data->hourly_rate / 60;
 
-        // hitung bonus lembur
-        $overtimeBonus = $overtimeMinutes * $rate_per_minute * $positionData->overtime_multiplier;
-        // overtime_pay = overtime_minutes * rate_per_minute * overtime_multiplier
+        // inisialisasi variable 
+        $overtime_minutes = 0;
+        $overtime_bonus = 0;
+        $deduction_amount = 0;
+        $total_salary = 0;
 
-        // tambahkan pengecekan jika waktu kerja lebih atau kurang dari yang ditargetkan
-
-
+        // cek apakah total work duration lebih besar, kurang, atau sama dengan standard_minutes
+        if ($total_work_duration > $standard_minutes) {
+            $overtime_minutes = $total_work_duration - $standard_minutes;
+            $overtime_bonus = floor($overtime_minutes * $rate_per_minute * $position_data->overtime_multiplier);
+            $deduction_amount = 0;
+            $total_salary = $salary_settings->default_salary + $overtime_bonus - $deduction_amount;
+        } elseif ($total_work_duration < $standard_minutes) {
+            $deduction_minutes = $standard_minutes - $total_work_duration;
+            $deduction_amount = floor($deduction_minutes * $rate_per_minute);
+            $overtime_bonus = 0;
+            $total_salary = $salary_settings->default_salary + $overtime_bonus - $deduction_amount;
+        } else {
+            $overtime_bonus = 0;
+            $deduction_amount = 0;
+            $total_salary = 0;
+        }
 
         return response()->json([
             'success' => true,
             'message' => 'Data retrieved successfully',
-            'employee' => $employeeData,
-            'attendance' => $attendanceData,
-            'total_work_duration' => $totalWorkDuration,
-            'standard_minutes' => $standardMinutes,
-            'overtime_minutes' => $overtimeMinutes,
-            'rate_per_minute' => $rate_per_minute,
-            'overtime_bonus' => $overtimeBonus,
-
+            'employee' => $employee_data,
+            'attendance' => $attendance_data,
+            'total_work_duration' => $total_work_duration,
+            // 'standard_minutes' => $standard_minutes,
+            // 'overtime_minutes' => $overtime_minutes,
+            // 'rate_per_minute' => $rate_per_minute,
+            'deduction_amount' => $deduction_amount,
+            'overtime_bonus' => $overtime_bonus,
+            'total_salary' => $total_salary,
         ], 200);
     }
 

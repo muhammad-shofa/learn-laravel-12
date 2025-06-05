@@ -54,7 +54,7 @@ Route::prefix('/api/user')->controller(UserController::class)->group(function ()
 Route::prefix('/api/employee')->controller(EmployeeController::class)->group(function () {
     Route::get('/get-employees', 'getEmployees');
     Route::get('/get-employee/{id}', 'getEmployee');
-    Route::get('/get-employee-for-salary/{employee_id}', 'getEmployeeForSalary');
+    Route::get('/get-employee-for-salary/{employee_id}/{year}/{month}', 'getEmployeeForSalary');
     Route::get('/search', 'searchEmployees');
     Route::get('/search-for-salary-setting', 'searchEmployeesSalarySetting');
     Route::get('/search-for-salary', 'searchEmployeesSalary');
@@ -107,5 +107,6 @@ Route::prefix('/api/salary-setting')->controller(SalarySettingController::class)
 // Salary endpoint
 Route::prefix('/api/salary')->controller(SalariesController::class)->group(function () {
     Route::get('/get-salaries', 'getSalaries');
+    Route::post('/generate-salary', 'generateSalary');
     Route::get('/download-pdf/{salary_id}', 'downloadPdf');
 });
