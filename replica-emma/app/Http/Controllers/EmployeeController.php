@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\AttendanceModel;
 use App\Models\EmployeeModel;
 use App\Models\PositionModel;
+use App\Models\SalariesModel;
 use App\Models\SalarySettingModel;
 use Carbon\Carbon;
+use DeepCopy\Filter\Filter;
 use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
@@ -37,6 +39,20 @@ class EmployeeController extends Controller
     // get employee for salary
     public function getEmployeeForSalary($employee_id, $year, $month)
     {
+        // Cek apakah sudah ada data salary untuk kombinasi ini
+        $existing_salary = SalariesModel::where('employee_id', $employee_id)
+            ->where('year', $year)
+            ->where('month', $month)
+            ->first();
+
+        if ($existing_salary) {
+            return response()->json([
+                'success' => false,
+                'isDoubleData' => true,
+                'message' => 'Salary data already exists for this employee, year, and month.',
+            ], 200);
+        }
+
         // Ambil data employee beserta posisi
         $employee_data = EmployeeModel::with('position')->findOrFail($employee_id);
 
@@ -155,29 +171,81 @@ class EmployeeController extends Controller
     }
 
     // search employee for salary
+    // v1
+    // public function searchEmployeesSalary(Request $request)
+    // {
+    //     $search = $request->query('q');
+
+    //     // Ambil semua employee_id yang sudah ada di salary_settings
+    //     $excludedEmployeeIds = SalarySettingModel::pluck('employee_id')->toArray();
+
+    //     $employees = EmployeeModel::where('has_account', true)
+    //         ->whereIn('id', $excludedEmployeeIds)
+    //         ->when($search, function ($query, $search) {
+    //             return $query->where(function ($q) use ($search) {
+    //                 $q->where('employee_code', 'like', "%{$search}%")
+    //                     ->orWhere('full_name', 'like', "%{$search}%");
+    //             });
+    //         })
+    //         ->limit(5)
+    //         ->get();
+
+    //     return response()->json([
+    //         'success' => true,
+    //         'data' => $employees
+    //     ]);
+    // }
+
+    // v2
     public function searchEmployeesSalary(Request $request)
     {
         $search = $request->query('q');
+        $year = $request->query('year');
+        $month = $request->query('month');
 
         // Ambil semua employee_id yang sudah ada di salary_settings
         $excludedEmployeeIds = SalarySettingModel::pluck('employee_id')->toArray();
 
-        $employees = EmployeeModel::where('has_account', true)
+        $query = EmployeeModel::where('has_account', true)
             ->whereIn('id', $excludedEmployeeIds)
             ->when($search, function ($query, $search) {
-                return $query->where(function ($q) use ($search) {
+                $query->where(function ($q) use ($search) {
                     $q->where('employee_code', 'like', "%{$search}%")
                         ->orWhere('full_name', 'like', "%{$search}%");
                 });
-            })
-            ->limit(5)
-            ->get();
+            });
+
+        // Tambahkan logika untuk disable jika sudah ada salary pada year & month yang dipilih
+        $employees = $query->get()->map(function ($employee) use ($year, $month) {
+            $isExist = false;
+            if ($year && $month) {
+                $isExist = SalariesModel::where('employee_id', $employee->id)
+                    ->where('year', $year)
+                    ->where('month', $month)
+                    ->exists();
+            }
+
+            return [
+                'id' => $employee->id,
+                'employee_code' => $employee->employee_code,
+                'full_name' => $employee->full_name,
+                'has_account' => $employee->has_account,
+                'disabled' => $isExist
+            ];
+
+            // if ($isExist) return null;
+            // return [
+            //     'id' => $employee->id,
+            //     'text' => "{$employee->employee_code} - {$employee->full_name}",
+            // ];
+        });
 
         return response()->json([
             'success' => true,
             'data' => $employees
         ]);
     }
+
 
     // add employee
     public function addEmployee(Request $request)

@@ -220,7 +220,8 @@ $(document).ready(function () {
     function loadEmployeeTimeOffData() {
         let employee_id = $("#edit_employee_id").val();
         $.ajax({
-            url: "/api/time-off/get-time-off-request-employee-id/" + employee_id,
+            url:
+                "/api/time-off/get-time-off-request-employee-id/" + employee_id,
             type: "GET",
             dataType: "json",
             success: (response) => {
@@ -229,11 +230,15 @@ $(document).ready(function () {
                     $("#employee_total_quota").text(
                         response.data[0].employee.time_off_quota
                     );
-                    $("#employee_used_quota").text(response.data[0].employee.time_off_used);
+                    $("#employee_used_quota").text(
+                        response.data[0].employee.time_off_used
+                    );
                     $("#employee_remaining_quota").text(
                         response.data[0].employee.time_off_remaining
                     );
-                    $('#employee_last_time_off').text(response.data[0].end_date);
+                    $("#employee_last_time_off").text(
+                        response.data[0].end_date
+                    );
                 }
             },
         });
@@ -380,5 +385,39 @@ $(document).ready(function () {
                 console.error("Edit Employee AJAX Error: " + status + error);
             },
         });
+    });
+
+    // ketika show password diklik
+    $(document).on("click", "#show-old-password", function () {
+        let oldPasswordInput = $("#old_password");
+        if (oldPasswordInput.attr("type") === "password") {
+            oldPasswordInput.attr("type", "text");
+            $(this).html('<i class="fa-solid fa-eye-slash"></i>');
+        } else {
+            oldPasswordInput.attr("type", "password");
+            $(this).html('<i class="fa-solid fa-eye"></i>');
+        }
+    });
+
+    $(document).on("click", "#show-new-password", function () {
+        let newPasswordInput = $("#new_password");
+        if (newPasswordInput.attr("type") === "password") {
+            newPasswordInput.attr("type", "text");
+            $(this).html('<i class="fa-solid fa-eye-slash"></i>');
+        } else {
+            newPasswordInput.attr("type", "password");
+            $(this).html('<i class="fa-solid fa-eye"></i>');
+        }
+    });
+
+    $(document).on("click", "#show-confirm-password", function () {
+        let confirmPasswordInput = $("#confirm_password");
+        if (confirmPasswordInput.attr("type") === "password") {
+            confirmPasswordInput.attr("type", "text");
+            $(this).html('<i class="fa-solid fa-eye-slash"></i>');
+        } else {
+            confirmPasswordInput.attr("type", "password");
+            $(this).html('<i class="fa-solid fa-eye"></i>');
+        }
     });
 });

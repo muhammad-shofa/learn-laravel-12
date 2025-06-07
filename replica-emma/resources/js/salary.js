@@ -124,6 +124,8 @@ $(document).ready(function () {
                 data: function (params) {
                     return {
                         q: params.term, // kata kunci pencarian
+                        year: $("#year").val(),
+                        month: $("#month").val(),
                     };
                 },
                 processResults: function (response) {
@@ -131,7 +133,8 @@ $(document).ready(function () {
                         results: response.data.map((employee) => ({
                             id: employee.id,
                             text: `${employee.employee_code} - ${employee.full_name}`,
-                            disabled: employee.has_account == 0,
+                            disabled: employee.disabled,
+                            // disabled: employee.has_account == 0,
                         })),
                     };
                 },
@@ -161,13 +164,23 @@ $(document).ready(function () {
                                 response.total_salary || 0
                             );
                         } else {
-                            // console.error(
-                            //     "Failed to retrieve data:",
-                            //     response.message
-                            // );
                             deduction_numeric.set(0);
                             bonus_numeric.set(0);
                             total_salary_numeric.set(0);
+
+                            if (response.isDoubleData) {
+                                // Kosongkan select employee
+                                employeeCodeSelect.val(null).trigger("change");
+
+                                // Optional: tampilkan notifikasi ke admin
+                                Swal.fire({
+                                    icon: "warning",
+                                    title: "Error",
+                                    text:
+                                        response.message ||
+                                        "Failed to fetch salary data.",
+                                });
+                            }
                         }
                     },
                     error: function (xhr, status, error) {
