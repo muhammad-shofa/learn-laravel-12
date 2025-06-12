@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AttendanceModel;
+use App\Models\EmployeeModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\PositionModel;
 use App\Models\SalariesModel;
 use App\Models\SalarySettingModel;
+use App\Models\TimeOffModel;
+use Illuminate\Container\Attributes\DB;
 use Illuminate\Http\Request;
 
 class SalariesController extends Controller
@@ -20,6 +24,99 @@ class SalariesController extends Controller
             'message' => 'Salaries retrieved successfully',
             'data' => $salaries,
         ], 200);
+    }
+
+    public function getSalaryByEmployeeId($employee_id)
+    {
+        $salaries = SalariesModel::with(['employee.position', 'salarySetting'])
+            ->where('employee_id', $employee_id)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Salaries retrieved successfully',
+            'data' => $salaries,
+        ], 200);
+    }
+
+    // ambil persentae target work duration berdasarkan employee_id
+    public function getPercentageTargetWorkDuration($employee_id)
+    {
+        try {
+            // Ambil data employee + posisi
+            $employee = EmployeeModel::with('position')->find($employee_id);
+
+            if (!$employee || !$employee->position) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Employee or position not found',
+                ]);
+            }
+
+            // Total work_duration dalam menit
+            $completedMinutes = AttendanceModel::where('employee_id', $employee_id)
+                ->sum('work_duration');
+
+            // Ubah ke jam
+            $completedHours = round($completedMinutes / 60, 2);
+
+            // Target jam kerja bulanan dari posisi
+            $targetHours = $employee->position->standard_monthly_hours;
+
+            // Hitung persentase
+            $percentage = $targetHours > 0
+                ? round(($completedHours / $targetHours) * 100, 2)
+                : 0;
+
+            // Hitung sisa jam
+            $remaining = max(0, round($targetHours - $completedHours, 2));
+
+            return response()->json([
+                'success' => true,
+                'percentage' => $percentage,
+                'completed_hours' => $completedHours,
+                'target_hours' => $targetHours,
+                'remaining_hours' => $remaining,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Server error: ' . $e->getMessage(),
+            ]);
+        }
+    }
+
+    // ambil data time off berdasarkan employee_id untuk ditampilkan pada halaman salaries
+    public function getSalaryTimeOff($employee_id)
+    {
+        $requests = TimeOffModel::where('employee_id', $employee_id)->get();
+
+        $months = range(1, 12);
+        $statuses = ['approved', 'rejected', 'pending'];
+
+        $result = [];
+
+        foreach ($statuses as $status) {
+            $data = [];
+
+            foreach ($months as $month) {
+                $count = $requests->filter(function ($item) use ($month, $status) {
+                    return $item->status === $status && $item->created_at->month == $month;
+                })->count();
+
+                $data[] = $count;
+            }
+
+            $result[] = [
+                'name' => ucfirst($status),
+                'data' => $data,
+            ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $result,
+        ]);
     }
 
     // generate salary for employee

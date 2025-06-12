@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\PositionController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SalariesController;
 use App\Http\Controllers\SalarySettingController;
 use App\Http\Controllers\TimeOffController;
@@ -24,7 +25,8 @@ Route::get('/attendance', [PagesController::class, 'attendance'])->middleware('r
 Route::get('/time-off', [PagesController::class, 'timeOff'])->middleware('role:admin,employee');
 Route::get('/position', [PagesController::class, 'position'])->middleware('role:admin');
 Route::get('/salary-settings', [PagesController::class, 'salarySetting'])->middleware('role:admin');
-Route::get('/salary', [PagesController::class, 'salary'])->middleware('role:admin');
+Route::get('/salary', [PagesController::class, 'salary'])->middleware('role:admin,employee');
+Route::get('/report', [PagesController::class, 'report'])->middleware('role:admin');
 
 // Auth endpoint
 Route::prefix('/api/auth')->controller(AuthController::class)->group(function () {
@@ -38,6 +40,7 @@ Route::prefix('/api/dashboard')->controller(DashboardController::class)->group(f
     Route::get('/filter-dashboard-data', 'filterDashboardData');
     Route::get('/monthly-chart', 'getMonthlyChart');
     Route::put('/edit-employee-data', 'editEmployeeData');
+    Route::post('/reset-employee-password', 'resetEmployeePassword');
 });
 
 // User Management endpoint
@@ -73,6 +76,7 @@ Route::prefix('/api/attendance')->controller(AttendanceController::class)->group
     Route::get('/get-clock-io-attendance/{employee_id}', 'checkBtnClockIO');
     Route::put('/clock-out/{employee_id}', 'clockOut');
     Route::post('/add-attendance', 'clockIn');
+    Route::get('/by-date/{date_clicked}', 'getByCalenderDate');
 });
 
 // Time Off endpoint
@@ -107,6 +111,14 @@ Route::prefix('/api/salary-setting')->controller(SalarySettingController::class)
 // Salary endpoint
 Route::prefix('/api/salary')->controller(SalariesController::class)->group(function () {
     Route::get('/get-salaries', 'getSalaries');
+    Route::get('/get-salary/{employee_id}', 'getSalaryByEmployeeId');
+    Route::get('/get-percentage-target-work-duration/{employee_id}', 'getPercentageTargetWorkDuration');
+    Route::get('/get-salary-time-off/{employee_id}', 'getSalaryTimeOff');
     Route::post('/generate-salary', 'generateSalary');
     Route::get('/download-pdf/{salary_id}', 'downloadPdf');
+});
+
+// Report endpoint
+Route::prefix('/api/report')->controller(ReportController::class)->group(function () {
+    Route::post('/attendances/pdf', 'attendancesPdf');   
 });

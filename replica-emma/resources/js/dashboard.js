@@ -420,4 +420,68 @@ $(document).ready(function () {
             $(this).html('<i class="fa-solid fa-eye"></i>');
         }
     });
+
+    // ketika tomgol reset diklilk
+    $(document).on("click", ".btn-reset-password", function (e) {
+        e.preventDefault();
+        let employee_id = $("#employee_id").val();
+        let old_password = $("#old_password").val();
+        let new_password = $("#new_password").val();
+        let confirm_password = $("#confirm_password").val();
+
+        // console.log({
+        //     employee_id: employee_id,
+        //     old_password: old_password,
+        //     new_password: new_password,
+        //     confirm_password: confirm_password,
+        // });
+
+        if (new_password != confirm_password) {
+            Swal.fire({
+                title: "Password do not match!",
+                text: "Please ensure the new password and confirmation match.",
+                icon: "error",
+                confirmButtonText: "Oke",
+            });
+
+            return;
+        }
+
+        $.ajax({
+            url: "/api/dashboard/reset-employee-password",
+            type: "POST",
+            dataType: "json",
+            data: {
+                employee_id: employee_id,
+                old_password: old_password,
+                new_password: new_password,
+                confirm_password: confirm_password,
+            },
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: (response) => {
+                if (response.success) {
+                    console.log(response.message);
+                    Swal.fire({
+                        title: "Success!",
+                        text: response.message,
+                        icon: "success",
+                        confirmButtonText: "Oke",
+                    });
+                    $("#resetPasswordForm")[0].reset();
+                } else {
+                    Swal.fire({
+                        title: "Error!",
+                        text: response.message,
+                        icon: "error",
+                        confirmButtonText: "Oke",
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Reset Password AJAX Error: " + status + error);
+            },
+        });
+    });
 });

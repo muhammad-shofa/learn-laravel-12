@@ -105,6 +105,247 @@ $(document).ready(function () {
         });
     }
 
+    function loadPercentageTargetWorkDuration() {
+        let employee_id = $("#salary_employee_id").val();
+
+        $.ajax({
+            url: `/api/salary/get-percentage-target-work-duration/${employee_id}`,
+            type: "GET",
+            dataType: "json",
+            success: (response) => {
+                if (response.success) {
+                    var options = {
+                        series: [response.percentage],
+                        chart: {
+                            width: 380,
+                            height: 400,
+                            type: "radialBar",
+                            offsetY: -10,
+                        },
+                        plotOptions: {
+                            radialBar: {
+                                startAngle: -135,
+                                endAngle: 135,
+                                dataLabels: {
+                                    name: {
+                                        fontSize: "16px",
+                                        color: undefined,
+                                        offsetY: 120,
+                                    },
+                                    value: {
+                                        offsetY: 76,
+                                        fontSize: "22px",
+                                        color: undefined,
+                                        formatter: function (val) {
+                                            return response.percentage + "%";
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        fill: {
+                            type: "gradient",
+                            gradient: {
+                                shade: "dark",
+                                shadeIntensity: 0.15,
+                                inverseColors: false,
+                                opacityFrom: 1,
+                                opacityTo: 1,
+                                stops: [0, 50, 65, 91],
+                            },
+                        },
+                        stroke: {
+                            dashArray: 4,
+                        },
+                        labels: ["Completed"],
+                    };
+
+                    var chart = new ApexCharts(
+                        document.querySelector("#salaryAttandanceChart"),
+                        options
+                    );
+                    chart.render();
+
+                    // update info tambahan
+                    // let status = "";
+                    $("#statusText").text(
+                        response.completed_hours < response.target_hours
+                            ? "Ongoing"
+                            : "Completed"
+                    );
+                    $("#percentageText").text(response.percentage + "%");
+                    $("#completedHours").text(
+                        response.completed_hours + " Hours"
+                    );
+                    $("#targetHours").text(response.target_hours + " Hours");
+                    $("#remainingHours").text(
+                        response.remaining_hours + " Hours"
+                    );
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error:", status, error);
+            },
+        });
+    }
+
+    function loadSalaryTimeOff() {
+        let employee_id = $("#salary_employee_id").val();
+
+        $.ajax({
+            url: `/api/salary/get-salary-time-off/${employee_id}`,
+            type: "GET",
+            dataType: "json",
+            success: (response) => {
+                if (response.success) {
+                    var options = {
+                        series: response.data,
+                        chart: {
+                            height: 430,
+                            type: "bar",
+                            stacked: true,
+                        },
+                        plotOptions: {
+                            bar: {
+                                borderRadius: 10,
+                                dataLabels: {
+                                    position: "top",
+                                },
+                            },
+                        },
+                        dataLabels: {
+                            enabled: false,
+                        },
+                        xaxis: {
+                            categories: [
+                                "Jan",
+                                "Feb",
+                                "Mar",
+                                "Apr",
+                                "May",
+                                "Jun",
+                                "Jul",
+                                "Aug",
+                                "Sep",
+                                "Oct",
+                                "Nov",
+                                "Dec",
+                            ],
+                        },
+                        yaxis: {
+                            title: {
+                                text: "Jumlah Time Off",
+                            },
+                        },
+                        legend: {
+                            position: "top",
+                        },
+                        title: {
+                            text: "Time Off Requests per Month",
+                            align: "center",
+                            style: { fontSize: "16px" },
+                        },
+                    };
+
+                    var chart = new ApexCharts(
+                        document.querySelector("#salaryTimeOffChart"),
+                        options
+                    );
+                    chart.render();
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error:", status, error);
+            },
+        });
+    }
+
+    function loadSalaryDataForEmployee() {
+        let employee_id = $("#salary_employee_id").val();
+        $("#employeeSalaryTableData").DataTable({
+            destroy: true, // agar bisa reload ulang
+            paging: true,
+            info: true,
+            ordering: false,
+            ajax: {
+                url: `/api/salary/get-salary/${employee_id}`,
+                type: "GET",
+                dataSrc: function (response) {
+                    if (response.success) {
+                        return response.data;
+                    } else {
+                        console.error(response.error);
+                        return [];
+                    }
+                },
+            },
+            columns: [
+                {
+                    data: null,
+                    render: (data, type, row, meta) => meta.row + 1,
+                },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        return data.employee ? data.employee.full_name : "-";
+                    },
+                },
+                {
+                    data: "year",
+                    render: function (data, type, row) {
+                        return data ?? "-";
+                    },
+                },
+                {
+                    data: "month",
+                    render: function (data, type, row) {
+                        return data ?? "-";
+                    },
+                },
+                {
+                    data: "deduction",
+                    render: function (data, type, row) {
+                        return data ? formatRupiah(data) : "-";
+                    },
+                },
+                {
+                    data: "bonus",
+                    render: function (data, type, row) {
+                        return data ? formatRupiah(data) : "-";
+                    },
+                },
+                {
+                    data: "total_salary",
+                    render: function (data, type, row) {
+                        return data ? formatRupiah(data) : "-";
+                    },
+                },
+                {
+                    data: "payment_date",
+                    render: function (data, type, row) {
+                        return data ?? "-";
+                    },
+                },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        return `
+                            <button class="btn-download-pdf btn btn-warning" data-salary_id="${row.id}" data-bs-toggle="modal">
+                                <i class="fa-solid fa-download"></i>
+                            </button>
+                        `;
+                    },
+                },
+            ],
+            columnDefs: [
+                {
+                    targets: "_all", // semua kolom
+                    className: "text-start align-middle",
+                },
+            ],
+        });
+    }
+
     // ambil data employee code untuk ditampilkan pada select
     function selectEmployeeCode(select_id) {
         // let employeeCodeSelect = $(select_id);
@@ -222,8 +463,12 @@ $(document).ready(function () {
     }
 
     loadSalaryData();
+    loadPercentageTargetWorkDuration();
+    loadSalaryTimeOff();
+    loadSalaryDataForEmployee();
     selectEmployeeCode();
 
+    // if ($("#deduction").length) {
     const deduction_numeric = new AutoNumeric("#deduction", {
         digitGroupSeparator: ".",
         decimalCharacter: ",",
@@ -232,7 +477,9 @@ $(document).ready(function () {
         currencySymbolPlacement: "p",
         modifyValueOnWheel: false,
     });
+    // }
 
+    // if ($("#bonus").length) {
     const bonus_numeric = new AutoNumeric("#bonus", {
         digitGroupSeparator: ".",
         decimalCharacter: ",",
@@ -241,7 +488,9 @@ $(document).ready(function () {
         currencySymbolPlacement: "p",
         modifyValueOnWheel: false,
     });
+    // }
 
+    // if ($("#total_salary").length) {
     const total_salary_numeric = new AutoNumeric("#total_salary", {
         digitGroupSeparator: ".",
         decimalCharacter: ",",
@@ -250,6 +499,7 @@ $(document).ready(function () {
         currencySymbolPlacement: "p",
         modifyValueOnWheel: false,
     });
+    // }
 
     // ketika tombol generate salary diklik
     $(document).on("click", ".generate-salary-btn", function () {
@@ -331,7 +581,7 @@ $(document).ready(function () {
                     url: `/api/salary/download-pdf/${salary_id}`,
                     type: "GET",
                     xhrFields: {
-                        responseType: "blob", // untuk menangani file binary
+                        responseType: "blob",
                     },
                     success: function (data, status, xhr) {
                         // buat link untuk download
@@ -357,4 +607,6 @@ $(document).ready(function () {
             }
         });
     });
+
+    // salary employee
 });

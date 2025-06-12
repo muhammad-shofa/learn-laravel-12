@@ -194,28 +194,31 @@
                             <h5 class="mb-0">Reset Password</h5>
                         </div>
                         <div class="card-body">
-                            <div class="mb-3">
-                                <label for="old_password">Old Password</label>
-                                <div class="input-group">
-                                    <input type="password" class="form-control" id="old_password" require />
-                                    <span class="input-group-text" id="show-old-password"><i class="fa-solid fa-eye"></i></span>
+                            <form id="resetPasswordForm">
+                                <input type="hidden" id="employee_id" value="{{ $employee->id }}" />
+                                <div class="mb-3">
+                                    <label for="old_password">Old Password</label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control" id="old_password" require />
+                                        <span class="input-group-text" id="show-old-password"><i class="fa-solid fa-eye"></i></span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="new_password">New Password</label>
-                                <div class="input-group">
-                                    <input type="password" class="form-control" id="new_password" require />
-                                    <span class="input-group-text" id="show-new-password"><i class="fa-solid fa-eye"></i></span>
+                                <div class="mb-3">
+                                    <label for="new_password">New Password</label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control" id="new_password" require />
+                                        <span class="input-group-text" id="show-new-password"><i class="fa-solid fa-eye"></i></span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="confirm_password">Confirm Password</label>
-                                <div class="input-group">
-                                    <input type="password" class="form-control" id="confirm_password" require />
-                                    <span class="input-group-text" id="show-confirm-password"><i class="fa-solid fa-eye"></i></span>
+                                <div class="mb-3">
+                                    <label for="confirm_password">Confirm Password</label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control" id="confirm_password" require />
+                                        <span class="input-group-text" id="show-confirm-password"><i class="fa-solid fa-eye"></i></span>
+                                    </div>
                                 </div>
-                            </div>
-                            <button class="btn btn-warning float-end">Reset</button>
+                                <button class="btn-reset-password btn btn-warning float-end">Reset</button>
+                            </form>
                         </div>
                     </div>
                 </div>

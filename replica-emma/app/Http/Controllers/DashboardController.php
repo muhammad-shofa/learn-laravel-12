@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\EmployeeModel;
 use App\Models\AttendanceModel;
 use App\Models\TimeOffModel;
+use App\Models\UserModel;
 use Carbon\Carbon;
 // use App\Models\EmployeeModel;
 use Illuminate\Http\Request;
@@ -124,5 +125,31 @@ class DashboardController extends Controller
             'success' => true,
             'message' => 'Your employee data updated successfully',
         ]);
+    }
+
+    // reset employee password
+    public function resetEmployeePassword(Request $request)
+    {
+        // Ambil user berdasarkan ID
+        $user = UserModel::where('employee_id', $request->employee_id)->firstOrFail();
+
+        // Validasi input dari request
+        $request->validate([
+            'old_password' => 'required|string',
+            'new_password' => 'required|string|min:8',
+            'confirm_password' => 'required|string|same:new_password',
+        ]);
+
+        // Cek apakah old_password cocok dengan password di database
+        if (!password_verify($request->old_password, $user->password)) {
+            return response()->json(['success' => false, 'message' => 'Old password is incorrect.']);
+        }
+
+        // Update password baru (dihash)
+        $user->update([
+            'password' => bcrypt($request->new_password),
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Password has been reset successfully.']);
     }
 }

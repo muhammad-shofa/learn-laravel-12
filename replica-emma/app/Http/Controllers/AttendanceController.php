@@ -172,4 +172,17 @@ class AttendanceController extends Controller
             'already_clocked_out' => $alreadyClockedOut
         ]);
     }
+
+    // ambil data attendaces berdasaran date yang dipilih pada halmaan report
+    public function getByCalenderDate($date_clicked)
+    {
+        $attendances = AttendanceModel::with('employee')
+            ->whereDate('date', $date_clicked)
+            ->get();
+            
+        return response()->json([
+            'success' => true,
+            'attendances' => $attendances
+        ]);
+    }
 }
