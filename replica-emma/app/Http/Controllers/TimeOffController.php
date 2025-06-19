@@ -156,4 +156,35 @@ class TimeOffController extends Controller
             'message' => 'Time off request approved successfully'
         ]);
     }
+
+    public function getSummary()
+    {
+        $year = Carbon::now()->year;
+
+        // Siapkan array kosong untuk 12 bulan
+        $months = range(1, 12);
+
+        $totalRequests = [];
+        $approvedRequests = [];
+        $rejectedRequests = [];
+        $pendingRequests = [];
+
+        foreach ($months as $month) {
+            $query = TimeOffModel::whereYear('request_date', $year)
+                ->whereMonth('request_date', $month);
+
+            $totalRequests[] = (clone $query)->count();
+            $approvedRequests[] = (clone $query)->where('status', 'approved')->count();
+            $rejectedRequests[] = (clone $query)->where('status', 'rejected')->count();
+            $pendingRequests[] = (clone $query)->where('status', 'pending')->count();
+        }
+
+        return response()->json([
+            'success' => true,
+            'total_requests' => $totalRequests,
+            'approved_requests' => $approvedRequests,
+            'rejected_requests' => $rejectedRequests,
+            'pending_requests' => $pendingRequests,
+        ]);
+    }
 }

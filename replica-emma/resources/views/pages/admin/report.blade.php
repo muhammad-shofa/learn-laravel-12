@@ -81,11 +81,34 @@
 
                 <!-- Time Off Report -->
                 <div class="tab-pane fade" id="timeoff" role="tabpanel">
-                    <div class="text-end">
-                        <button class="btn btn-danger my-3">
+                    <div class="d-flex gap-3 mt-3">
+                        <button
+                            class="btn btn-warning"
+                            data-bs-toggle="modal"
+                            data-bs-target="#filterModal"
+                        >
+                            <i class="fa-solid fa-filter"></i> Filter
+                        </button>
+                        <button class="btn-reset-filter btn btn-success">
+                            <i class="fa-solid fa-rotate"></i>
+                        </button>
+                    </div>
+                    <div
+                        class="d-flex justify-content-between align-items-center"
+                    >
+                        <h3><span id="currentMonth"></span> <span id="currentYear"></span></h3>
+                        <button
+                            class="btn btn-danger my-3"
+                            id="btnDownloadTimeOffReport"
+                        >
                             Download PDF
                         </button>
                     </div>
+                    {{-- <div class="text-end">
+                        <button class="btn btn-danger my-3">
+                            Download PDF
+                        </button>
+                    </div> --}}
                     <div id="timeOffChart" class="mb-4"></div>
                 </div>
 
@@ -106,7 +129,7 @@
                     <div
                         class="d-flex justify-content-between align-items-center"
                     >
-                        <h3 id="currentMonth"></h3>
+                        <h3><span id="currentMonth"></span> <span id="currentYear"></span></h3>
                         <button
                             class="btn btn-danger my-3"
                             id="btnDownloadSalaryReport"

@@ -91,6 +91,7 @@ Route::prefix('/api/time-off')->controller(TimeOffController::class)->group(func
     Route::post('/new-time-off', 'newTimeOff');
     Route::put('/approve-time-off', 'approveTimeOff');
     Route::put('/reject-time-off', 'rejectTimeOff');
+    Route::get('/summary', 'getSummary');
 });
 
 // Position endpoint
@@ -126,6 +127,7 @@ Route::prefix('/api/salary')->controller(SalariesController::class)->group(funct
 // Report endpoint
 Route::prefix('/api/report')->controller(ReportController::class)->group(function () {
     Route::post('/attendances/pdf', 'attendancesPdf');
+    Route::post('/time-off-request/pdf', 'timeOffPdf');
     Route::post('/salaries/pdf', 'salariesPdf');
     Route::get('/filter-salary-data', 'filterSalaryData');
 });

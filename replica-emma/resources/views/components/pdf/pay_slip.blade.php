@@ -52,6 +52,14 @@
             <td class="text-right">{{ number_format($salary->salarySetting->default_salary, 0, ',', '.') }}</td>
         </tr>
         <tr>
+            <td>Hour Deduction</td>
+            <td class="text-right">-{{ number_format($salary->hour_deduction, 0, ',', '.') }}</td>
+        </tr>
+        <tr>
+            <td>Absent Deduction</td>
+            <td class="text-right">-{{ number_format($salary->absent_deduction, 0, ',', '.') }}</td>
+        </tr>
+        <tr>
             <td>Bonus</td>
             <td class="text-right">{{ number_format($salary->bonus, 0, ',', '.') }}</td>
         </tr>

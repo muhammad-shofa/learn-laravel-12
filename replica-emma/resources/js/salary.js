@@ -425,7 +425,7 @@ $(document).ready(function () {
                                 response.overtime_bonus
                             );
                             $("#detail_absent_days").text(response.absent_days);
-                            absent_deduction_numeric.set(
+                            detail_absent_deduction_numeric.set(
                                 response.absent_deduction
                             );
                             detail_total_deduction_numeric.set(
@@ -498,18 +498,6 @@ $(document).ready(function () {
     loadSalaryDataForEmployee();
     selectEmployeeCode();
 
-    const absent_deduction_numeric = new AutoNumeric(
-        "#detail_absent_deduction",
-        {
-            digitGroupSeparator: ".",
-            decimalCharacter: ",",
-            decimalPlaces: 0,
-            currencySymbol: "Rp ",
-            currencySymbolPlacement: "p",
-            modifyValueOnWheel: false,
-        }
-    );
-
     const total_deduction_numeric = new AutoNumeric("#total_deduction", {
         digitGroupSeparator: ".",
         decimalCharacter: ",",
@@ -568,6 +556,19 @@ $(document).ready(function () {
         }
     );
 
+    // detail absent deduction
+    const detail_absent_deduction_numeric = new AutoNumeric(
+        "#detail_absent_deduction",
+        {
+            digitGroupSeparator: ".",
+            decimalCharacter: ",",
+            decimalPlaces: 0,
+            currencySymbol: "Rp ",
+            currencySymbolPlacement: "p",
+            modifyValueOnWheel: false,
+        }
+    );
+
     // detail total deduction
     const detail_total_deduction_numeric = new AutoNumeric(
         "#detail_total_deduction",
@@ -600,6 +601,10 @@ $(document).ready(function () {
         let employee_id = $("#employee_code").val();
         let year = $("#year").val();
         let month = $("#month").val();
+        let hour_deduction =
+            detail_missing_hours_deduction_numeric.getNumericString();
+        let absent_deduction =
+            detail_absent_deduction_numeric.getNumericString();
         let deduction = total_deduction_numeric.getNumericString();
         let bonus = bonus_numeric.getNumericString();
         let total_salary = total_salary_numeric.getNumericString();
@@ -614,6 +619,8 @@ $(document).ready(function () {
                 employee_id: employee_id,
                 year: year,
                 month: month,
+                hour_deduction: hour_deduction,
+                absent_deduction: absent_deduction,
                 deduction: deduction,
                 bonus: bonus,
                 total_salary: total_salary,

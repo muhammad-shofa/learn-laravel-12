@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AttendanceModel;
 use App\Models\SalariesModel;
+use App\Models\TimeOffModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -53,10 +54,38 @@ class ReportController extends Controller
         return response()->json([
             'success' => true,
             'current_month' => Carbon::create()->month($month)->format('F'),
+            'current_year' => Carbon::create()->year($year)->format('Y'),
             'total_paid' => (int) $summary->total_paid,
             'total_deduction' => (int) $summary->total_deduction,
             'total_bonus' => (int) $summary->total_bonus,
         ]);
+    }
+
+    // download time off request pdf report
+    public function timeOffPdf(Request $request)
+    {
+        $month = $request->input('month');
+        $year = $request->input('year');
+
+        $time_off_requests = TimeOffModel::with('employee')
+            ->whereYear('request_date', $year)
+            ->whereMonth('request_date', $month)
+            ->get();
+
+        $summary = [
+            'period' => Carbon::create($year, $month)->format('F Y'),
+            'total' => $time_off_requests->count(),
+            'approved' => $time_off_requests->where('status', 'approved')->count(),
+            'rejected' => $time_off_requests->where('status', 'rejected')->count(),
+            'pending' => $time_off_requests->where('status', 'pending')->count(),
+        ];
+
+        $pdf = Pdf::loadView('components.pdf.monthly_time_off', compact('time_off_requests', 'summary', 'month', 'year'));
+        $fileName = "time_off_report_{$month}_{$year}.pdf";
+
+        return response($pdf->output(), 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', "attachment; filename={$fileName}");
     }
 
     public function salariesPdf(Request $request)
@@ -73,7 +102,7 @@ class ReportController extends Controller
             ->get();
 
         $summary = [
-            'period' => Carbon::create()->month($month)->format('F'),
+            'period' => Carbon::create($year, $month)->format('F Y'),
             'paid' => $salaries->sum('total_salary'),
             'bonus' => $salaries->sum('bonus'),
             'deduction' => $salaries->sum('deduction'),

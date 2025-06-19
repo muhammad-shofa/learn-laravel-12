@@ -133,6 +133,7 @@ $(document).ready(function () {
                 if (response.success) {
                     $("#filterModal").modal("hide");
                     $("#currentMonth").text(response.current_month);
+                    $("#currentYear").text(response.current_year);
                     salary_paid_content_numeric.set(response.total_paid);
                     salary_deduction_content_numeric.set(
                         response.total_deduction
@@ -185,8 +186,6 @@ $(document).ready(function () {
         });
     });
 
-    // ketika tombol download pdf salary diklik
-    // v3
     const monthMap = {
         January: 1,
         February: 2,
@@ -202,6 +201,44 @@ $(document).ready(function () {
         December: 12,
     };
 
+    // ketika tombol download pdf time off request diklik
+    $(document).on("click", "#btnDownloadTimeOffReport", function () {
+        const monthName = $("#currentMonth").text().trim();
+        const month = monthMap[monthName];
+        const year = new Date().getFullYear();
+
+        $.ajax({
+            url: "/api/report/time-off-request/pdf",
+            type: "POST",
+            data: { month, year },
+            xhrFields: {
+                responseType: "blob",
+            },
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: function (response, status, xhr) {
+                const blob = new Blob([response], { type: "application/pdf" });
+                const link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+
+                const filename =
+                    xhr
+                        .getResponseHeader("Content-Disposition")
+                        ?.split("filename=")[1] ||
+                    `time_off_report_${month}_${year}.pdf`;
+
+                link.download = filename.replaceAll('"', "");
+                link.click();
+            },
+            error: function (xhr, status, error) {
+                alert("Failed to download monthly report. Please try again.");
+                console.error(error);
+            },
+        });
+    });
+
+    // ketika tombol download pdf salary diklik
     $(document).on("click", "#btnDownloadSalaryReport", function () {
         const monthName = $("#currentMonth").text().trim();
         const month = monthMap[monthName];
@@ -222,7 +259,6 @@ $(document).ready(function () {
                 const link = document.createElement("a");
                 link.href = window.URL.createObjectURL(blob);
 
-                // Nama file dari header jika tersedia
                 const filename =
                     xhr
                         .getResponseHeader("Content-Disposition")
@@ -233,85 +269,11 @@ $(document).ready(function () {
                 link.click();
             },
             error: function (xhr, status, error) {
-                alert("Gagal mengunduh laporan. Silakan coba lagi.");
+                alert("Failed to download monthly report. Please try again.");
                 console.error(error);
             },
         });
     });
-
-    // v2
-    // $(document).on("click", "#download-salary-pdf", function () {
-    //     let month = $("#filter_month").val();
-    //     let year = $("#filter_year").val();
-
-    //     if (!month || !year) {
-    //         alert("Please select both month and year.");
-    //         return;
-    //     }
-
-    //     $.ajax({
-    //         url: "/api/report/salaries/pdf",
-    //         method: "POST",
-    //         data: {
-    //             month: month,
-    //             year: year,
-    //         },
-    //         xhrFields: {
-    //             responseType: "blob", // agar bisa mendownload file PDF
-    //         },
-    //         success: function (response, status, xhr) {
-    //             // Buat link download dari blob
-    //             const blob = new Blob([response], { type: "application/pdf" });
-    //             const link = document.createElement("a");
-    //             link.href = window.URL.createObjectURL(blob);
-    //             link.download = `salary-report-${year}-${month}.pdf`;
-    //             link.click();
-    //         },
-    //         error: function (xhr, status, error) {
-    //             alert("Failed to download PDF, please try again.");
-    //             console.error(error);
-    //         },
-    //     });
-    // });
-
-    // v1
-    // $(document).on("click", "#btnDownloadSalaryReport", function () {
-    //     let currentDate = calendar.getDate();
-    //     let month = currentDate.getMonth() + 1;
-    //     let year = currentDate.getFullYear();
-
-    //     $.ajax({
-    //         url: "/api/report/salaries/pdf",
-    //         method: "POST",
-    //         data: {
-    //             month: month,
-    //             year: year,
-    //         },
-    //         xhrFields: {
-    //             responseType: "blob",
-    //         },
-    //         headers: {
-    //             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-    //         },
-    //         success: function (response, status, xhr) {
-    //             // Buat blob dan unduh file
-    //             let blob = new Blob([response], { type: "application/pdf" });
-    //             let downloadUrl = URL.createObjectURL(blob);
-    //             let a = document.createElement("a");
-
-    //             // Nama file default
-    //             a.href = downloadUrl;
-    //             a.download = `attendances-report-${month}-${year}.pdf`;
-    //             document.body.appendChild(a);
-    //             a.click();
-    //             a.remove();
-    //         },
-    //         error: function (xhr, status, error) {
-    //             alert("Failed to download PDF, please try again.");
-    //             console.error(error);
-    //         },
-    //     });
-    // });
 
     // auto numeric library untuk inputan
     const salary_paid_content_numeric = new AutoNumeric(
@@ -352,6 +314,103 @@ $(document).ready(function () {
         }
     );
 
+    // ketika tombol time off-tab diklik
+    $(document).on("click", "#timeoff-tab", function () {
+        loadReportTimeOffSummary();
+    });
+
+    function loadReportTimeOffSummary() {
+        $.ajax({
+            url: "/api/time-off/summary",
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    var options = {
+                        series: [
+                            {
+                                name: "Total Request",
+                                data: response.total_requests,
+                            },
+                            {
+                                name: "Approved",
+                                data: response.approved_requests,
+                            },
+                            {
+                                name: "Rejected",
+                                data: response.rejected_requests,
+                            },
+                            {
+                                name: "Pending",
+                                data: response.pending_requests,
+                            },
+                        ],
+                        chart: {
+                            height: 350,
+                            type: "bar",
+                        },
+                        plotOptions: {
+                            bar: {
+                                horizontal: false,
+                                columnWidth: "55%",
+                                endingShape: "rounded",
+                            },
+                        },
+                        dataLabels: {
+                            enabled: false,
+                        },
+                        stroke: {
+                            show: true,
+                            width: 2,
+                            colors: ["transparent"],
+                        },
+                        xaxis: {
+                            categories: [
+                                "Jan",
+                                "Feb",
+                                "Mar",
+                                "Apr",
+                                "May",
+                                "Jun",
+                                "Jul",
+                                "Aug",
+                                "Sep",
+                                "Oct",
+                                "Nov",
+                                "Dec",
+                            ],
+                        },
+                        yaxis: {
+                            title: {
+                                text: "Total Requests",
+                            },
+                        },
+                        fill: {
+                            opacity: 1,
+                        },
+                        tooltip: {
+                            y: {
+                                formatter: function (val) {
+                                    return val + " requests";
+                                },
+                            },
+                        },
+                    };
+
+                    var chart = new ApexCharts(
+                        document.querySelector("#timeOffChart"),
+                        options
+                    );
+                    chart.render();
+                }
+            },
+            error: function (xhr, status, error) {
+                alert("Failed to load summary chart.");
+                console.error(error);
+            },
+        });
+    }
+
     // ketika tombol salary-tab diklik
     $(document).on("click", "#salary-tab", loadReportSalarySummary());
 
@@ -363,6 +422,7 @@ $(document).ready(function () {
             success: function (response) {
                 if (response.success) {
                     $("#currentMonth").text(response.current_month);
+                    $("#currentYear").text(response.current_year);
                     salary_paid_content_numeric.set(response.salary_paid);
                     salary_deduction_content_numeric.set(
                         response.salary_deduction

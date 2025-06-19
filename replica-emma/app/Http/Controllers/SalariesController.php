@@ -135,6 +135,8 @@ class SalariesController extends Controller
             'salary_setting_id' => $salarySetting->id,
             'year' => $request->input('year'),
             'month' => $request->input('month'),
+            'hour_deduction' => $request->input('hour_deduction'),
+            'absent_deduction' => $request->input('absent_deduction'),
             'deduction' => $request->input('deduction'),
             'bonus' => $request->input('bonus'),
             'total_salary' => $request->input('total_salary'),
@@ -176,6 +178,7 @@ class SalariesController extends Controller
         return response()->json([
             'success' => true,
             'current_month' => Carbon::create()->month($currentMonth)->format('F'),
+            'current_year' => Carbon::create()->year($currentYear)->format('Y'),
             'salary_paid' => $summary->salary_paid,
             'salary_deduction' => $summary->salary_deduction,
             'salary_bonus' => $summary->salary_bonus,

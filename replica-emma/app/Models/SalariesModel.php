@@ -13,6 +13,8 @@ class SalariesModel extends Model
         'salary_setting_id',
         'year',
         'month',
+        'hour_deduction',
+        'absent_deduction',
         'deduction',
         'bonus',
         'total_salary',
