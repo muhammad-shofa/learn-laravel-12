@@ -149,13 +149,11 @@
                         <!-- /.card-header -->
                         <div class="card-body p-0">
                             <div id="monthlyAttendanceChart"></div>
-                            <!-- <canvas id="monthlyAttendanceChart" height="100"></canvas> -->
                         </div>
                     </div>
                 </div>
             </div>
             <!--end::Row-->
-
 
             <!-- filter modal start -->
             @php

@@ -65,9 +65,14 @@
 .card-time-off {
   width: 650px;
 }
+
 .reason-textarea {
   resize: none;
   height: 200px;
+}
+
+.offcanvas {
+  z-index: 1060 !important; /* lebih tinggi dari modal */
 }
 
 @media (min-width: 768px) {

@@ -1,6 +1,9 @@
 /* @import 'tailwindcss'; */
 @import './main.css';
 
+@import "admin-lte/dist/css/adminlte.min.css";
+/* @import "admin-lte/plugins/fontawesome-free/css/all.min.css"; */
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';

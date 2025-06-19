@@ -82,7 +82,7 @@
                 <!-- Time Off Report -->
                 <div class="tab-pane fade" id="timeoff" role="tabpanel">
                     <div class="text-end">
-                        <button class="btn btn-outline-danger my-3">
+                        <button class="btn btn-danger my-3">
                             Download PDF
                         </button>
                     </div>
@@ -91,8 +91,26 @@
 
                 <!-- Salary Report -->
                 <div class="tab-pane fade" id="salary" role="tabpanel">
-                    <div class="text-end">
-                        <button class="btn btn-outline-danger my-3">
+                    <div class="d-flex gap-3 mt-3">
+                        <button
+                            class="btn btn-warning"
+                            data-bs-toggle="modal"
+                            data-bs-target="#filterModal"
+                        >
+                            <i class="fa-solid fa-filter"></i> Filter
+                        </button>
+                        <button class="btn-reset-filter btn btn-success">
+                            <i class="fa-solid fa-rotate"></i>
+                        </button>
+                    </div>
+                    <div
+                        class="d-flex justify-content-between align-items-center"
+                    >
+                        <h3 id="currentMonth"></h3>
+                        <button
+                            class="btn btn-danger my-3"
+                            id="btnDownloadSalaryReport"
+                        >
                             Download PDF
                         </button>
                     </div>
@@ -104,7 +122,10 @@
                                         Total salary paid this month
                                     </h5>
                                     <br />
-                                    <p class="card-text fs-4">Rp 8.000.000</p>
+                                    <p
+                                        class="card-text fs-4"
+                                        id="salary-paid-content"
+                                    ></p>
                                 </div>
                             </div>
                         </div>
@@ -115,7 +136,10 @@
                                         Total salary deductions this month
                                     </h5>
                                     <br />
-                                    <p class="card-text fs-4">Rp 1.500.000</p>
+                                    <p
+                                        class="card-text fs-4"
+                                        id="salary-deduction-content"
+                                    ></p>
                                 </div>
                             </div>
                         </div>
@@ -126,7 +150,10 @@
                                         Total salary bonus this month
                                     </h5>
                                     <br />
-                                    <p class="card-text fs-4">Rp 500.000</p>
+                                    <p
+                                        class="card-text fs-4"
+                                        id="salary-bonus-content"
+                                    ></p>
                                 </div>
                             </div>
                         </div>
@@ -135,6 +162,16 @@
                     <div id="salaryChart" class="mb-4"></div>
                 </div>
             </div>
+
+            <!-- Tombol trigger offcanvas, hidden -->
+            <button
+                type="button"
+                class="d-none"
+                id="triggerOffcanvasAttendance"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasAttendance"
+                aria-controls="offcanvasAttendance"
+            ></button>
 
             <!-- Offcanvas Attendance Detail -->
             <div
@@ -158,6 +195,51 @@
                     <p>Loading attendances data...</p>
                 </div>
             </div>
+
+            <!-- filter modal start -->
+            @php $modalFooter = '<button
+                type="button"
+                class="btn-apply-filter btn btn-primary"
+            >
+                Apply Filter</button
+            >'; @endphp
+            <x-modal id="filterModal" title="Filter" :footer="$modalFooter">
+                <form id="filterForm">
+                    <div class="mb-3">
+                        <label for="filter_month" class="form-label"
+                            >Month</label
+                        >
+                        <select
+                            class="form-select"
+                            id="filter_month"
+                            name="month"
+                            required
+                        >
+                            <option value="">-- Select Month --</option>
+                            <!-- Buat dari 1–12 -->
+                            @for ($i = 1; $i <= 12; $i++)
+                            <option value="{{ $i }}">
+                                {{ DateTime::createFromFormat('!m', $i)->format('F') }}
+                            </option>
+                            @endfor
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="filter_year" class="form-label">Year</label>
+                        <select
+                            class="form-select"
+                            id="filter_year"
+                            name="year"
+                            required
+                        >
+                            <option value="">-- Select Year --</option>
+                            @for ($year = 2020; $year <= now()->year; $year++)
+                            <option value="{{ $year }}">{{ $year }}</option>
+                            @endfor
+                        </select>
+                    </div>
+                </form>
+            </x-modal>
         </div>
     </div>
 </main>

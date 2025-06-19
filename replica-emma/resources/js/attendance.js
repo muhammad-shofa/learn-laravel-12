@@ -35,7 +35,7 @@ $(document).ready(function () {
                     data: "employee",
                     render: function (data) {
                         return data ? data.full_name : "-";
-                    }
+                    },
                 },
                 { data: "date" },
                 {
@@ -47,38 +47,44 @@ $(document).ready(function () {
                     render: (data) => data ?? "-",
                 },
                 {
-                    data: 'clock_in_status',
+                    data: "clock_in_status",
                     render: function (data, type, row) {
-                        if (type === 'display') {
+                        if (type === "display") {
                             // Tentukan warna badge berdasar isi status
-                            let badgeClass = 'text-bg-secondary';   // default abu-abu
-                            if (data === 'ontime') badgeClass  = 'text-bg-success';
-                            if (data === 'late')   badgeClass  = 'text-bg-danger';
-                            if (data === 'absent')badgeClass  = 'text-bg-danger';
-                            if (data === 'leave')badgeClass  = 'text-bg-warning';
-        
+                            let badgeClass = "text-bg-secondary"; // default abu-abu
+                            if (data === "ontime")
+                                badgeClass = "text-bg-success";
+                            if (data === "late") badgeClass = "text-bg-danger";
+                            if (data === "absent")
+                                badgeClass = "text-bg-danger";
+                            if (data === "leave")
+                                badgeClass = "text-bg-warning";
+
                             return `<span class="badge ${badgeClass}">${data}</span>`;
                         }
                         // untuk sorting / searching gunakan nilai mentah
                         return data;
-                    }
+                    },
                 },
                 {
-                    data: 'clock_out_status',
+                    data: "clock_out_status",
                     render: function (data, type, row) {
-                        if (type === 'display') {
+                        if (type === "display") {
                             // Tentukan warna badge berdasar isi status
-                            let badgeClass = 'text-bg-secondary';   // default abu-abu
-                            if (data === 'ontime') badgeClass  = 'text-bg-success';
-                            if (data === 'early')   badgeClass  = 'text-bg-warning';
-                            if (data === 'late')badgeClass  = 'text-bg-danger';
-                            if (data === 'no_clock_out')badgeClass  = 'text-bg-danger';
-        
+                            let badgeClass = "text-bg-secondary"; // default abu-abu
+                            if (data === "ontime")
+                                badgeClass = "text-bg-success";
+                            if (data === "early")
+                                badgeClass = "text-bg-warning";
+                            if (data === "late") badgeClass = "text-bg-danger";
+                            if (data === "no_clock_out")
+                                badgeClass = "text-bg-danger";
+
                             return `<span class="badge ${badgeClass}">${data}</span>`;
                         }
                         // untuk sorting / searching gunakan nilai mentah
                         return data;
-                    }
+                    },
                 },
                 {
                     data: "work_duration",
@@ -102,7 +108,49 @@ $(document).ready(function () {
                 },
             ],
         });
+
+        $.ajax({
+            url: "/api/attendance/get-holidays",
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    $("#content-max-holidays").text(
+                        "Max Weekly Holidays : " + response.max_weekly_holidays
+                    );
+                    $("#content-days").text("Days : " + response.days);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error: " + status + error);
+            },
+        });
     }
+
+    // check weekly holiday
+    // function checkWeeklyHoliday() {
+    //     $.ajax({
+    //         url: "/api/attendance/check-weekly-holiday",
+    //         type: "GET",
+    //         dataType: "json",
+    //         success: function (response) {
+    //             if (response.success && response.holiday) {
+    //                 // Disable tombol jika hari ini libur
+    //                 $("#btn-clock-in").attr("disabled", true);
+    //                 $("#btn-clock-out").attr("disabled", true);
+
+    //                 $("#alert-dayoff").html(
+    //                     `<div class="alert alert-info">
+    //                         Today is <strong>${response.day}</strong>, it's a scheduled day off.
+    //                     </div>`
+    //                 );
+    //             }
+    //         },
+    //         error: function () {
+    //             console.error("Failed to check weekly holiday.");
+    //         },
+    //     });
+    // }
 
     loadAttendancesData();
 
@@ -243,8 +291,81 @@ $(document).ready(function () {
     updateDateTime();
 
     // disable clock in button
+    // v1
+    // function checkDisableClockIO() {
+    //     let attendance_employee_id = $("#attendance_employee_id").val();
+    //     $.ajax({
+    //         url:
+    //             "/api/attendance/get-clock-io-attendance/" +
+    //             attendance_employee_id,
+    //         type: "GET",
+    //         dataType: "json",
+    //         success: (response) => {
+    //             console.log(response.already_clocked_in);
+    //             console.log(response.already_clocked_out);
+
+    //             if (
+    //                 !response.already_clocked_in &&
+    //                 !response.already_clocked_out
+    //             ) {
+    //                 // Kondisi ketika employee belum clock in dan belum clock out
+    //                 $("#btn-clock-in")
+    //                     .prop("disabled", false)
+    //                     .text("Clock In")
+    //                     .addClass("btn-clock-in");
+
+    //                 $("#btn-clock-out")
+    //                     .prop("disabled", true)
+    //                     .text("Clock Out")
+    //                     .addClass("btn-nonactive");
+    //             } else if (
+    //                 response.already_clocked_in &&
+    //                 !response.already_clocked_out
+    //             ) {
+    //                 // Kondisi ketika employee sudah clock in dan belum clock out
+    //                 $("#btn-clock-in")
+    //                     .prop("disabled", true)
+    //                     .text("Clock In")
+    //                     .removeClass("btn-clock-in")
+    //                     .addClass("btn-nonactive");
+
+    //                 $("#btn-clock-out")
+    //                     .prop("disabled", false)
+    //                     .text("Clock Out")
+    //                     .removeClass("btn-nonactive")
+    //                     .addClass("btn-clock-out");
+    //             } else {
+    //                 // Kondisi ketika employee sudah clock in dan sudah clock out
+    //                 $("#btn-clock-in")
+    //                     .prop("disabled", true)
+    //                     .text("Clock In")
+    //                     .removeClass("btn-clock-in")
+    //                     .addClass("btn-nonactive");
+
+    //                 $("#btn-clock-out")
+    //                     .prop("disabled", true)
+    //                     .text("Clock Out")
+    //                     .removeClass("btn-clock-out")
+    //                     .addClass("btn-nonactive");
+    //             }
+    //         },
+    //         error: function (xhr, status, error) {
+    //             console.error("AJAX Error: " + status + error);
+    //             Swal.fire({
+    //                 title: "Error!",
+    //                 text: "Your attendance failed to be recorded.",
+    //                 icon: "Error",
+    //                 confirmButtonText: "Oke",
+    //             });
+    //         },
+    //     });
+    // }
+
+    // v2
     function checkDisableClockIO() {
         let attendance_employee_id = $("#attendance_employee_id").val();
+
+        // Langkah 1: Ambil status Clock In/Out
         $.ajax({
             url:
                 "/api/attendance/get-clock-io-attendance/" +
@@ -252,53 +373,88 @@ $(document).ready(function () {
             type: "GET",
             dataType: "json",
             success: (response) => {
-                console.log(response.already_clocked_in);
-                console.log(response.already_clocked_out);
+                // Langkah 2: Cek apakah hari ini hari libur mingguan
+                $.ajax({
+                    url: "/api/attendance/check-weekly-holiday",
+                    type: "GET",
+                    dataType: "json",
+                    success: function (holidayRes) {
+                        const isDayOff =
+                            holidayRes.success && holidayRes.holiday;
 
-                if (
-                    !response.already_clocked_in &&
-                    !response.already_clocked_out
-                ) {
-                    // Kondisi ketika employee belum clock in dan belum clock out
-                    $("#btn-clock-in")
-                        .prop("disabled", false)
-                        .text("Clock In")
-                        .addClass("btn-clock-in");
+                        // Jika hari libur, disable semua tombol
+                        if (isDayOff) {
+                            $("#btn-clock-in")
+                                .prop("disabled", true)
+                                .text("Clock In")
+                                .removeClass("btn-clock-in")
+                                .addClass("btn-nonactive");
 
-                    $("#btn-clock-out")
-                        .prop("disabled", true)
-                        .text("Clock Out")
-                        .addClass("btn-nonactive");
-                } else if (
-                    response.already_clocked_in &&
-                    !response.already_clocked_out
-                ) {
-                    // Kondisi ketika employee sudah clock in dan belum clock out
-                    $("#btn-clock-in")
-                        .prop("disabled", true)
-                        .text("Clock In")
-                        .removeClass("btn-clock-in")
-                        .addClass("btn-nonactive");
+                            $("#btn-clock-out")
+                                .prop("disabled", true)
+                                .text("Clock Out")
+                                .removeClass("btn-clock-out")
+                                .addClass("btn-nonactive");
 
-                    $("#btn-clock-out")
-                        .prop("disabled", false)
-                        .text("Clock Out")
-                        .removeClass("btn-nonactive")
-                        .addClass("btn-clock-out");
-                } else {
-                    // Kondisi ketika employee sudah clock in dan sudah clock out
-                    $("#btn-clock-in")
-                        .prop("disabled", true)
-                        .text("Clock In")
-                        .removeClass("btn-clock-in")
-                        .addClass("btn-nonactive");
+                            // Tampilkan pesan info kalau hari ini libur
+                            $("#alert-dayoff").html(`
+                                <div class="alert alert-info mt-2">
+                                    Today is <strong>${holidayRes.day}</strong>, it's your weekly holiday.
+                                </div>
+                            `);
+                            return; // berhenti di sini jika libur
+                        }
 
-                    $("#btn-clock-out")
-                        .prop("disabled", true)
-                        .text("Clock Out")
-                        .removeClass("btn-clock-out")
-                        .addClass("btn-nonactive");
-                }
+                        // Jika tidak libur, lanjutkan logika seperti biasa
+                        if (
+                            !response.already_clocked_in &&
+                            !response.already_clocked_out
+                        ) {
+                            $("#btn-clock-in")
+                                .prop("disabled", false)
+                                .text("Clock In")
+                                .addClass("btn-clock-in");
+
+                            $("#btn-clock-out")
+                                .prop("disabled", true)
+                                .text("Clock Out")
+                                .addClass("btn-nonactive");
+                        } else if (
+                            response.already_clocked_in &&
+                            !response.already_clocked_out
+                        ) {
+                            $("#btn-clock-in")
+                                .prop("disabled", true)
+                                .text("Clock In")
+                                .removeClass("btn-clock-in")
+                                .addClass("btn-nonactive");
+
+                            $("#btn-clock-out")
+                                .prop("disabled", false)
+                                .text("Clock Out")
+                                .removeClass("btn-nonactive")
+                                .addClass("btn-clock-out");
+                        } else {
+                            $("#btn-clock-in")
+                                .prop("disabled", true)
+                                .text("Clock In")
+                                .removeClass("btn-clock-in")
+                                .addClass("btn-nonactive");
+
+                            $("#btn-clock-out")
+                                .prop("disabled", true)
+                                .text("Clock Out")
+                                .removeClass("btn-clock-out")
+                                .addClass("btn-nonactive");
+                        }
+
+                        // Kosongkan alert jika bukan hari libur
+                        $("#alert-dayoff").html("");
+                    },
+                    error: function () {
+                        console.error("Failed to check weekly holiday.");
+                    },
+                });
             },
             error: function (xhr, status, error) {
                 console.error("AJAX Error: " + status + error);
@@ -482,6 +638,57 @@ $(document).ready(function () {
                     text: "Your attendance failed to be recorded.",
                     icon: "Error",
                     confirmButtonText: "Oke",
+                });
+            },
+        });
+    });
+
+    // settings weekly holidays
+    $(".save-weekly-setting").on("click", function (e) {
+        e.preventDefault();
+
+        let max = parseInt(
+            $("input[name='max_holidays_per_week']:checked").val()
+        );
+        let selectedDays = $("input[name='days[]']:checked").length;
+
+        if (selectedDays > max) {
+            Swal.fire({
+                icon: "warning",
+                title: "Too many holidays",
+                text: `Make sure the day you choose does not exceed the max holiday.`,
+                confirmButtonColor: "#3085d6",
+            });
+            return;
+        }
+
+        let formData = $("#formHolidaySetting").serialize();
+
+        $.ajax({
+            url: "/api/attendance/weekly-holiday-setting",
+            type: "POST",
+            data: formData,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: function (response) {
+                if (response.success) {
+                    loadAttendancesData();
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success!",
+                        text: "Weekly holiday setting saved.",
+                        timer: 1500,
+                        confirmButtonText: "Oke",
+                    });
+                    $("#modalHolidaySetting").modal("hide");
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: "error",
+                    title: "Fail!",
+                    text: "Failed to update weekly holiday setting.",
                 });
             },
         });

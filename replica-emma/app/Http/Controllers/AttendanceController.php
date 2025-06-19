@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\AttendanceModel;
+use App\Models\WeeklyHolidayModel;
 use Carbon\Carbon;
+use Dotenv\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -179,10 +181,121 @@ class AttendanceController extends Controller
         $attendances = AttendanceModel::with('employee')
             ->whereDate('date', $date_clicked)
             ->get();
-            
+
         return response()->json([
             'success' => true,
             'attendances' => $attendances
+        ]);
+    }
+
+    // save weekly holiday setting
+    public function saveWeeklyHolidaySetting(Request $request)
+    {
+        // Validasi input
+        // $validator = Validator::make($request->all(), [
+        //     'max_holidays_per_week' => 'required|integer|min:1|max:7',
+        //     'days' => 'required|array',
+        //     'days.*' => 'in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday', // sesuaikan dengan value checkbox kamu
+        // ]);
+
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'errors' => $validator->errors(),
+        //     ], 422);
+        // }
+
+        $maxHolidays = $request->input('max_holidays_per_week');
+        $selectedDays = $request->input('days');
+
+        // Simpan ke tabel weekly_holidays
+        // Jika hanya ada satu pengaturan yang perlu disimpan, update yang pertama atau buat baru
+        $setting = WeeklyHolidayModel::first();
+
+        if ($setting) {
+            $setting->update([
+                'max_holidays_per_week' => $maxHolidays,
+                'days' => json_encode($selectedDays),
+            ]);
+        } else {
+            WeeklyHolidayModel::create([
+                'max_holidays_per_week' => $maxHolidays,
+                'days' => json_encode($selectedDays),
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Weekly holiday setting saved.',
+        ]);
+    }
+
+    // check weekly holiday
+    public function checkWeeklyHoliday()
+    {
+        $today = Carbon::now()->locale('en')->isoFormat('dddd'); // "Monday"
+
+        $setting = WeeklyHolidayModel::latest()->first();
+
+        if (!$setting) {
+            return response()->json([
+                'success' => false,
+                'holiday' => false,
+                'message' => 'No holiday setting found.',
+            ]);
+        }
+
+        $holidays = json_decode($setting->days, true);
+
+        $isHoliday = in_array($today, $holidays);
+
+        return response()->json([
+            'success' => true,
+            'holiday' => $isHoliday,
+            'day' => $today,
+        ]);
+    }
+
+    // get holidays
+    public function getHolidays()
+    {
+        $holidays = WeeklyHolidayModel::first();
+
+        // Jika kolom days adalah array (format json), ubah ke string
+        $daysArray = is_array($holidays->days) ? $holidays->days : json_decode($holidays->days, true);
+        $daysString = is_array($daysArray) ? implode(', ', $daysArray) : '';
+
+        return response()->json([
+            'success' => true,
+            'max_weekly_holidays' => $holidays->max_holidays_per_week,
+            'days' => $daysString,
+            'message' => 'Data retrieved successfully'
+        ]);
+    }
+
+    public function getSummary($start_date)
+    {
+        // Bersihkan format tanggal ISO agar hanya ambil tanggal saja
+        $cleanDate = substr($start_date, 0, 10); // Ambil '2025-06-01'
+
+        $start = Carbon::parse($cleanDate)->startOfMonth();
+        $end = $start->copy()->endOfMonth();
+
+        $attendances = AttendanceModel::whereBetween('date', [$start, $end])->get();
+
+        $summary = [];
+
+        foreach ($attendances as $attendance) {
+            $date = Carbon::parse($attendance->date)->toDateString(); // Pastikan ini tanggal
+            if (!isset($summary[$date])) {
+                $summary[$date] = 0;
+            }
+            $summary[$date]++;
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $summary,
         ]);
     }
 }

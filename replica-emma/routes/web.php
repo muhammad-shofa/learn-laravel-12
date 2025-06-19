@@ -77,6 +77,10 @@ Route::prefix('/api/attendance')->controller(AttendanceController::class)->group
     Route::put('/clock-out/{employee_id}', 'clockOut');
     Route::post('/add-attendance', 'clockIn');
     Route::get('/by-date/{date_clicked}', 'getByCalenderDate');
+    Route::post('/weekly-holiday-setting', 'saveWeeklyHolidaySetting');
+    Route::get('/check-weekly-holiday', 'checkWeeklyHoliday');
+    Route::get('/get-holidays', 'getHolidays');
+    Route::get('/summary/{start_date}', 'getSummary');
 });
 
 // Time Off endpoint
@@ -116,9 +120,12 @@ Route::prefix('/api/salary')->controller(SalariesController::class)->group(funct
     Route::get('/get-salary-time-off/{employee_id}', 'getSalaryTimeOff');
     Route::post('/generate-salary', 'generateSalary');
     Route::get('/download-pdf/{salary_id}', 'downloadPdf');
+    Route::get('/summary', 'getSummary');
 });
 
 // Report endpoint
 Route::prefix('/api/report')->controller(ReportController::class)->group(function () {
-    Route::post('/attendances/pdf', 'attendancesPdf');   
+    Route::post('/attendances/pdf', 'attendancesPdf');
+    Route::post('/salaries/pdf', 'salariesPdf');
+    Route::get('/filter-salary-data', 'filterSalaryData');
 });

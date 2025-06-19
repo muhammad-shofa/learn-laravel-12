@@ -397,15 +397,45 @@ $(document).ready(function () {
                     dataType: "json",
                     success: function (response) {
                         if (response.success) {
-                            deduction_numeric.set(
+                            total_deduction_numeric.set(
                                 response.deduction_amount || 0
                             );
                             bonus_numeric.set(response.overtime_bonus || 0);
                             total_salary_numeric.set(
                                 response.total_salary || 0
                             );
+
+                            // detail offcanvas
+                            $("#detail_total_work_duration").text(
+                                response.total_work_duration + " hours"
+                            );
+                            $("#detail_standard_duration").text(
+                                response.standard_duration + " hours"
+                            );
+                            $("#detail_difference").text(
+                                response.difference + " hours"
+                            );
+                            detail_missing_hours_deduction_numeric.set(
+                                response.missing_hours_deduction
+                            );
+                            $("#detail_overtime_hours").text(
+                                response.overtime_hours + " hours"
+                            );
+                            detail_overtime_bonus_numeric.set(
+                                response.overtime_bonus
+                            );
+                            $("#detail_absent_days").text(response.absent_days);
+                            absent_deduction_numeric.set(
+                                response.absent_deduction
+                            );
+                            detail_total_deduction_numeric.set(
+                                response.deduction_amount
+                            );
+                            detail_total_salary_numeric.set(
+                                response.total_salary
+                            );
                         } else {
-                            deduction_numeric.set(0);
+                            total_deduction_numeric.set(0);
                             bonus_numeric.set(0);
                             total_salary_numeric.set(0);
 
@@ -468,8 +498,19 @@ $(document).ready(function () {
     loadSalaryDataForEmployee();
     selectEmployeeCode();
 
-    // if ($("#deduction").length) {
-    const deduction_numeric = new AutoNumeric("#deduction", {
+    const absent_deduction_numeric = new AutoNumeric(
+        "#detail_absent_deduction",
+        {
+            digitGroupSeparator: ".",
+            decimalCharacter: ",",
+            decimalPlaces: 0,
+            currencySymbol: "Rp ",
+            currencySymbolPlacement: "p",
+            modifyValueOnWheel: false,
+        }
+    );
+
+    const total_deduction_numeric = new AutoNumeric("#total_deduction", {
         digitGroupSeparator: ".",
         decimalCharacter: ",",
         decimalPlaces: 0,
@@ -477,7 +518,6 @@ $(document).ready(function () {
         currencySymbolPlacement: "p",
         modifyValueOnWheel: false,
     });
-    // }
 
     // if ($("#bonus").length) {
     const bonus_numeric = new AutoNumeric("#bonus", {
@@ -501,13 +541,66 @@ $(document).ready(function () {
     });
     // }
 
+    // value detail modal
+    // detail ovettime bonus
+    const detail_missing_hours_deduction_numeric = new AutoNumeric(
+        "#detail_missing_hours_deduction",
+        {
+            digitGroupSeparator: ".",
+            decimalCharacter: ",",
+            decimalPlaces: 0,
+            currencySymbol: "Rp ",
+            currencySymbolPlacement: "p",
+            modifyValueOnWheel: false,
+        }
+    );
+
+    // detail ovettime bonus
+    const detail_overtime_bonus_numeric = new AutoNumeric(
+        "#detail_overtime_bonus",
+        {
+            digitGroupSeparator: ".",
+            decimalCharacter: ",",
+            decimalPlaces: 0,
+            currencySymbol: "Rp ",
+            currencySymbolPlacement: "p",
+            modifyValueOnWheel: false,
+        }
+    );
+
+    // detail total deduction
+    const detail_total_deduction_numeric = new AutoNumeric(
+        "#detail_total_deduction",
+        {
+            digitGroupSeparator: ".",
+            decimalCharacter: ",",
+            decimalPlaces: 0,
+            currencySymbol: "Rp ",
+            currencySymbolPlacement: "p",
+            modifyValueOnWheel: false,
+        }
+    );
+
+    // detail total salary
+    const detail_total_salary_numeric = new AutoNumeric(
+        "#detail_total_salary",
+        {
+            digitGroupSeparator: ".",
+            decimalCharacter: ",",
+            decimalPlaces: 0,
+            currencySymbol: "Rp ",
+            currencySymbolPlacement: "p",
+            modifyValueOnWheel: false,
+        }
+    );
+
     // ketika tombol generate salary diklik
     $(document).on("click", ".generate-salary-btn", function () {
         // ambil data dari form
         let employee_id = $("#employee_code").val();
         let year = $("#year").val();
         let month = $("#month").val();
-        let deduction = deduction_numeric.getNumericString();
+        let deduction = total_deduction_numeric.getNumericString();
         let bonus = bonus_numeric.getNumericString();
         let total_salary = total_salary_numeric.getNumericString();
         let payment_date = new Date();
@@ -540,8 +633,15 @@ $(document).ready(function () {
                     loadSalaryData();
                     // reset form
                     $("#addModal").modal("hide");
+
+                    // Sembunyikan elemen offcanvas
+                    $("#offcanvasSalaryDetail").hide();
+
+                    // Hapus backdrop secara manual
+                    $(".offcanvas-backdrop").remove();
+                    // $("#offcanvasSalaryDetail").hide();
                     $("#employee_code").val(null).trigger("change");
-                    deduction_numeric.set(0);
+                    total_deduction_numeric.set(0);
                     bonus_numeric.set(0);
                     total_salary_numeric.set(0);
                 } else {

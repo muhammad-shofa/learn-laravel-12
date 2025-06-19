@@ -32,6 +32,7 @@
         <div class="container-fluid">
             {{-- navigation menu --}}
             <x-menu/>
+            <div id="alert-dayoff"></div>
             <div class="d-flex gap-5 justify-content-evenly flex-wrap mt-5">
                 <div class="row border border-5 border-dark rounded p-0">
                     <div class="p-3 col">

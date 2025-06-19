@@ -274,6 +274,8 @@ $(document).ready(function () {
                     );
                     let no = 0;
 
+                    $("#filterModal").modal("hide");
+
                     attendacesDashboardTable.empty();
                     $("#employee_counts").text(response.employee_counts);
                     $("#late_counts").text(response.late_counts);
@@ -312,8 +314,6 @@ $(document).ready(function () {
                         `);
                         }
                     );
-
-                    $("#filterModal").modal("hide");
                 }
             },
             error: function (xhr, status, error) {

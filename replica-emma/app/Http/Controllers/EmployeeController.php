@@ -86,6 +86,10 @@ class EmployeeController extends Controller
         // hitung gaji per menit
         $rate_per_minute = $position_data->hourly_rate / 60;
 
+        // Hitung total hari absen
+        $total_absent_days = $attendance_data->where('clock_in_status', 'absent')->count();
+        $absent_deduction = floor($total_absent_days * $position_data->hourly_rate * 8); // 8 jam per absen
+
         // inisialisasi variable 
         $overtime_minutes = 0;
         $overtime_bonus = 0;
@@ -97,29 +101,47 @@ class EmployeeController extends Controller
             $overtime_minutes = $total_work_duration - $standard_minutes;
             $overtime_bonus = floor($overtime_minutes * $rate_per_minute * $position_data->overtime_multiplier);
             $deduction_amount = 0;
-            $total_salary = $salary_settings->default_salary + $overtime_bonus - $deduction_amount;
-        } elseif ($total_work_duration < $standard_minutes) {
+            $total_salary = $salary_settings->default_salary + $overtime_bonus - $deduction_amount - $absent_deduction;
+        } else if ($total_work_duration < $standard_minutes) {
             $deduction_minutes = $standard_minutes - $total_work_duration;
-            $deduction_amount = floor($deduction_minutes * $rate_per_minute);
+            $deduction_amount = floor($deduction_minutes * $rate_per_minute) + $absent_deduction;
             $overtime_bonus = 0;
-            $total_salary = $salary_settings->default_salary + $overtime_bonus - $deduction_amount;
+            $total_salary = $salary_settings->default_salary + $overtime_bonus - $deduction_amount - $absent_deduction;
         } else {
             $overtime_bonus = 0;
             $deduction_amount = 0;
             $total_salary = 0;
         }
 
+        // return response()->json([
+        //     'success' => true,
+        //     'message' => 'Data retrieved successfully',
+        //     'employee' => $employee_data,
+        //     'attendance' => $attendance_data,
+        //     'total_work_duration' => $total_work_duration,
+        //     'overtime_bonus' => $overtime_bonus,
+        //     'absent_days' => $total_absent_days,
+        //     'absent_deduction' => $absent_deduction,
+        //     'deduction_amount' => $deduction_amount,
+        //     'total_salary' => $total_salary,
+        // ], 200);
+
         return response()->json([
             'success' => true,
             'message' => 'Data retrieved successfully',
             'employee' => $employee_data,
             'attendance' => $attendance_data,
-            'total_work_duration' => $total_work_duration,
-            // 'standard_minutes' => $standard_minutes,
-            // 'overtime_minutes' => $overtime_minutes,
-            // 'rate_per_minute' => $rate_per_minute,
-            'deduction_amount' => $deduction_amount,
+            'total_work_duration' => round($total_work_duration / 60, 2),
+            'standard_duration' => round($standard_minutes / 60, 2),
+            'difference' => round(abs($total_work_duration - $standard_minutes) / 60, 2),
+            'missing_hours_deduction' => $total_work_duration < $standard_minutes
+                ? floor(($standard_minutes - $total_work_duration) * $rate_per_minute)
+                : 0,
+            'overtime_hours' => $overtime_minutes > 0 ? round($overtime_minutes / 60, 2) : 0,
             'overtime_bonus' => $overtime_bonus,
+            'absent_days' => $total_absent_days,
+            'absent_deduction' => $absent_deduction,
+            'deduction_amount' => $deduction_amount,
             'total_salary' => $total_salary,
         ], 200);
     }

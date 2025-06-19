@@ -38,14 +38,14 @@
 </head>
 <body>
 
-    <h2>Laporan Kehadiran Karyawan<br>Bulan {{ $month }} / {{ $year }}</h2>
+    <h2>Monthly Attendances Employee Report <br>Month {{ $month }} / {{ $year }}</h2>
 
     <table>
         <thead>
             <tr>
                 <th>No</th>
-                <th>Nama Karyawan</th>
-                <th>Tanggal</th>
+                <th>Employee Name</th>
+                <th>Date</th>
                 <th>Clock In</th>
                 <th>Clock Out</th>
                 <th>Status Clock In</th>
@@ -83,14 +83,14 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="7" style="text-align: center;">Tidak ada data kehadiran.</td>
+                    <td colspan="7" style="text-align: center;">No attendance data.</td>
                 </tr>
             @endforelse
         </tbody>
     </table>
 
     <div class="footer">
-        Dicetak pada {{ now()->format('d-m-Y H:i') }}
+        Printed in {{ now()->format('d-m-Y H:i') }}
     </div>
 
 </body>

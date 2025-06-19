@@ -9,6 +9,7 @@ use App\Models\PositionModel;
 use App\Models\SalariesModel;
 use App\Models\SalarySettingModel;
 use App\Models\TimeOffModel;
+use Carbon\Carbon;
 use Illuminate\Container\Attributes\DB;
 use Illuminate\Http\Request;
 
@@ -122,11 +123,6 @@ class SalariesController extends Controller
     // generate salary for employee
     public function generateSalary(Request $request)
     {
-        // $request->validate([
-        //     'employee_id' => 'required|exists:employees,id',
-        //     'year' => 'required|integer',
-        //     'month' => 'required|integer|min:1|max:12',
-        // ]); 
         $employee_id = $request->input('employee_id');
         // $year = $request->input('year');
         // $month = $request->input('month');
@@ -160,5 +156,29 @@ class SalariesController extends Controller
         $pdf = Pdf::loadView('components.pdf.pay_slip', compact('salary'));
 
         return $pdf->download('pay-slip-' . $salary->employee->name . '-' . $salary->month . '.pdf');
+    }
+
+    public function getSummary()
+    {
+        $now = Carbon::now();
+        $currentMonth = $now->month;
+        $currentYear = $now->year;
+
+        $summary = SalariesModel::where('month', $currentMonth)
+            ->where('year', $currentYear)
+            ->selectRaw('
+                SUM(total_salary) as salary_paid,
+                SUM(deduction) as salary_deduction,
+                SUM(bonus) as salary_bonus
+            ')
+            ->first();
+
+        return response()->json([
+            'success' => true,
+            'current_month' => Carbon::create()->month($currentMonth)->format('F'),
+            'salary_paid' => $summary->salary_paid,
+            'salary_deduction' => $summary->salary_deduction,
+            'salary_bonus' => $summary->salary_bonus,
+        ]);
     }
 }
