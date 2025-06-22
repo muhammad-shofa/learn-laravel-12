@@ -113,19 +113,6 @@ class EmployeeController extends Controller
             $total_salary = 0;
         }
 
-        // return response()->json([
-        //     'success' => true,
-        //     'message' => 'Data retrieved successfully',
-        //     'employee' => $employee_data,
-        //     'attendance' => $attendance_data,
-        //     'total_work_duration' => $total_work_duration,
-        //     'overtime_bonus' => $overtime_bonus,
-        //     'absent_days' => $total_absent_days,
-        //     'absent_deduction' => $absent_deduction,
-        //     'deduction_amount' => $deduction_amount,
-        //     'total_salary' => $total_salary,
-        // ], 200);
-
         return response()->json([
             'success' => true,
             'message' => 'Data retrieved successfully',

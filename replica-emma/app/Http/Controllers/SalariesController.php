@@ -121,33 +121,146 @@ class SalariesController extends Controller
     }
 
     // generate salary for employee
+    // v2
     public function generateSalary(Request $request)
     {
-        $employee_id = $request->input('employee_id');
-        // $year = $request->input('year');
-        // $month = $request->input('month');
+        $method = $request->input('method');
 
-        $salarySetting = SalarySettingModel::where('employee_id', $employee_id)->first();
+        if ($method === 'manual') {
+            $employee_id = $request->input('employee_id');
+            $salarySetting = SalarySettingModel::where('employee_id', $employee_id)->first();
 
-        // create new salary
-        SalariesModel::create([
-            'employee_id' => $employee_id,
-            'salary_setting_id' => $salarySetting->id,
-            'year' => $request->input('year'),
-            'month' => $request->input('month'),
-            'hour_deduction' => $request->input('hour_deduction'),
-            'absent_deduction' => $request->input('absent_deduction'),
-            'deduction' => $request->input('deduction'),
-            'bonus' => $request->input('bonus'),
-            'total_salary' => $request->input('total_salary'),
-            'payment_date' => $request->input('payment_date'),
-        ]);
+            SalariesModel::create([
+                'employee_id' => $employee_id,
+                'salary_setting_id' => $salarySetting->id,
+                'year' => $request->input('year'),
+                'month' => $request->input('month'),
+                'hour_deduction' => $request->input('hour_deduction'),
+                'absent_deduction' => $request->input('absent_deduction'),
+                'deduction' => $request->input('deduction'),
+                'bonus' => $request->input('bonus'),
+                'total_salary' => $request->input('total_salary'),
+                'payment_date' => $request->input('payment_date'),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Salary (Manual) generated successfully',
+            ]);
+        } else if ($method === 'auto') {
+            $month = now()->month;
+            $year = now()->year;
+
+            $employees = EmployeeModel::with('position')->get();
+            $generatedCount = 0;
+
+            foreach ($employees as $employee) {
+                $existing = SalariesModel::where('employee_id', $employee->id)
+                    ->where('month', $month)
+                    ->where('year', $year)
+                    ->first();
+
+                if ($existing) {
+                    continue;
+                }
+
+                // Ambil semua data attendance dalam bulan ini
+                $attendance_data = AttendanceModel::where('employee_id', $employee->id)
+                    ->whereMonth('date', $month)
+                    ->whereYear('date', $year)
+                    ->get();
+
+                $salary_settings = SalarySettingModel::where('employee_id', $employee->id)->first();
+                $position_data = $employee->position;
+
+                if (!$salary_settings || !$position_data) {
+                    continue;
+                }
+
+                $total_work_duration = $attendance_data->sum('work_duration'); // menit
+                $standard_minutes = $position_data->standard_monthly_hours * 60;
+                $rate_per_minute = $position_data->hourly_rate / 60;
+
+                $total_absent_days = $attendance_data->where('clock_in_status', 'absent')->count();
+                $absent_deduction = floor($total_absent_days * $position_data->hourly_rate * 8);
+                $overtime_minutes = 0;
+                $overtime_bonus = 0;
+                $deduction_amount = 0;
+                $total_salary = 0;
+
+                if ($total_work_duration > $standard_minutes) {
+                    $overtime_minutes = $total_work_duration - $standard_minutes;
+                    $overtime_bonus = floor($overtime_minutes * $rate_per_minute * $position_data->overtime_multiplier);
+                    $deduction_amount = 0;
+                    $total_salary = $salary_settings->default_salary + $overtime_bonus - $deduction_amount - $absent_deduction;
+                } else if ($total_work_duration < $standard_minutes) {
+                    $deduction_minutes = $standard_minutes - $total_work_duration;
+                    $deduction_amount = floor($deduction_minutes * $rate_per_minute) + $absent_deduction;
+                    $overtime_bonus = 0;
+                    $total_salary = $salary_settings->default_salary + $overtime_bonus - $deduction_amount - $absent_deduction;
+                } else {
+                    $overtime_bonus = 0;
+                    $deduction_amount = 0;
+                    $total_salary = 0;
+                }
+
+                SalariesModel::create([
+                    'employee_id' => $employee->id,
+                    'salary_setting_id' => $salary_settings->id,
+                    'year' => $year,
+                    'month' => $month,
+                    'hour_deduction' => $deduction_amount,
+                    'absent_deduction' => $absent_deduction,
+                    'deduction' => $deduction_amount + $absent_deduction,
+                    'bonus' => $overtime_bonus,
+                    'total_salary' => $total_salary,
+                    'payment_date' => $request->input('payment_date'),
+                ]);
+
+                $generatedCount++;
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => "$generatedCount salaries generated automatically for $month/$year.",
+            ]);
+        }
 
         return response()->json([
-            'success' => true,
-            'message' => 'Salary generated successfully',
-        ], 201);
+            'success' => false,
+            'message' => 'Invalid method selected',
+        ], 400);
     }
+
+
+    // v1
+    // public function generateSalary(Request $request)
+    // {
+    //     $employee_id = $request->input('employee_id');
+    //     // $year = $request->input('year');
+    //     // $month = $request->input('month');
+
+    //     $salarySetting = SalarySettingModel::where('employee_id', $employee_id)->first();
+
+    //     // create new salary
+    //     SalariesModel::create([
+    //         'employee_id' => $employee_id,
+    //         'salary_setting_id' => $salarySetting->id,
+    //         'year' => $request->input('year'),
+    //         'month' => $request->input('month'),
+    //         'hour_deduction' => $request->input('hour_deduction'),
+    //         'absent_deduction' => $request->input('absent_deduction'),
+    //         'deduction' => $request->input('deduction'),
+    //         'bonus' => $request->input('bonus'),
+    //         'total_salary' => $request->input('total_salary'),
+    //         'payment_date' => $request->input('payment_date'),
+    //     ]);
+
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Salary generated successfully',
+    //     ], 201);
+    // }
 
     // download salary pdf
     public function downloadPdf($salary_id)

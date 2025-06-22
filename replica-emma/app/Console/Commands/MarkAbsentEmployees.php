@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use App\Models\AttendanceModel;
 use App\Models\EmployeeModel;
 use App\Models\TimeOffModel;
+use App\Models\WeeklyHolidayModel;
 use Carbon\Carbon;
 use Illuminate\Container\Attributes\Log;
 
@@ -19,12 +20,23 @@ class MarkAbsentEmployees extends Command
         $today = Carbon::today();
         $now = Carbon::now();
 
+        // Cek apakah hari ini adalah hari libur
+        $holidaySetting = WeeklyHolidayModel::latest()->first();
+        $holidayDays = $holidaySetting ? json_decode($holidaySetting->days, true) : [];
+
+        $todayName = $today->format('l'); // format 'Sunday' etc
+
+        if (in_array($todayName, $holidayDays)) {
+            $this->info("Today ($todayName) is a holiday. Skip checking.");
+            return;
+        }
+
         // Jalankan hanya jika sudah lewat jam 16:00
         if ($now->hour < 16) {
             $this->info("It's not yet 4pm. Skip checking.");
             return;
         }
-        
+
         // Ambil semua ID employee
         $employeeIds = EmployeeModel::pluck('id');
 

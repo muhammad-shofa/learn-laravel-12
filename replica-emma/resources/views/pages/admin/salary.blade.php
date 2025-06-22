@@ -67,87 +67,105 @@
             >'; @endphp
             <x-modal id="addModal" title="Add Salary" :footer="$modalFooter">
                 <form id="addSalaryForm">
+                    {{-- select generate type --}}
                     <div class="mb-3">
-                        <label for="employee_code" class="form-label"
-                            >Employee Code</label
+                        <label for="salary_method" class="form-label"
+                            >Input Method</label
                         >
-                        <select id="employee_code"></select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="year" class="form-label">Year</label>
                         <select
                             class="form-select"
-                            id="year"
-                            name="year"
+                            id="salary_method"
+                            name="salary_method"
                             required
                         >
-                            <option value="">-- Select Year --</option>
-                            @for ($year = 2020; $year <= now()->year; $year++)
-                            <option value="{{ $year }}">{{ $year }}</option>
-                            @endfor
+                            <option value="manual">Manual</option>
+                            <option value="auto">Auto</option>
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label for="month" class="form-label">Month</label>
-                        <select
-                            class="form-select"
-                            id="month"
-                            name="month"
-                            required
+                    <div id="manualSalaryFields">
+                        <div class="mb-3">
+                            <label for="employee_code" class="form-label"
+                                >Employee Code</label
+                            >
+                            <select id="employee_code"></select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="year" class="form-label">Year</label>
+                            <select
+                                class="form-select"
+                                id="year"
+                                name="year"
+                                required
+                            >
+                                <option value="">-- Select Year --</option>
+                                @for ($year = 2020; $year <= now()->year;
+                                $year++)
+                                <option value="{{ $year }}">{{ $year }}</option>
+                                @endfor
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="month" class="form-label">Month</label>
+                            <select
+                                class="form-select"
+                                id="month"
+                                name="month"
+                                required
+                            >
+                                <option value="">-- Select Month --</option>
+                                <!-- Buat dari 1–12 -->
+                                @for ($i = 1; $i <= 12; $i++)
+                                <option value="{{ $i }}">
+                                    {{ DateTime::createFromFormat('!m', $i)->format('F') }}
+                                </option>
+                                @endfor
+                            </select>
+                        </div>
+                        <!--  -->
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-secondary mb-2"
+                            id="triggerOffcanvasSalaryDetailll"
+                            data-bs-toggle="offcanvas"
+                            data-bs-target="#offcanvasSalaryDetail"
+                            aria-controls="offcanvasAttendance"
                         >
-                            <option value="">-- Select Month --</option>
-                            <!-- Buat dari 1–12 -->
-                            @for ($i = 1; $i <= 12; $i++)
-                            <option value="{{ $i }}">
-                                {{ DateTime::createFromFormat('!m', $i)->format('F') }}
-                            </option>
-                            @endfor
-                        </select>
-                    </div>
-                    <!--  -->
-                    <button
-                        type="button"
-                        class="btn btn-sm btn-secondary mb-2"
-                        id="triggerOffcanvasSalaryDetailll"
-                        data-bs-toggle="offcanvas"
-                        data-bs-target="#offcanvasSalaryDetail"
-                        aria-controls="offcanvasAttendance"
-                    >
-                        View calculation details
-                    </button>
-                    <div class="mb-3">
-                        <label for="total_deduction" class="form-label"
-                            >Total Deduction</label
-                        >
-                        <input
-                            type="text"
-                            class="form-control"
-                            id="total_deduction"
-                            placeholder=""
-                            disabled
-                        />
-                    </div>
-                    <div class="mb-3">
-                        <label for="bonus" class="form-label">Bonus</label>
-                        <input
-                            type="text"
-                            class="form-control"
-                            id="bonus"
-                            placeholder=""
-                            disabled
-                        />
-                    </div>
-                    <div class="mb-3">
-                        <label for="total_salary" class="form-label"
-                            >Total Salary</label
-                        >
-                        <input
-                            type="text"
-                            class="form-control"
-                            id="total_salary"
-                            placeholder=""
-                            disabled
-                        />
+                            View calculation details
+                        </button>
+                        <div class="mb-3">
+                            <label for="total_deduction" class="form-label"
+                                >Total Deduction</label
+                            >
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="total_deduction"
+                                placeholder=""
+                                disabled
+                            />
+                        </div>
+                        <div class="mb-3">
+                            <label for="bonus" class="form-label">Bonus</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="bonus"
+                                placeholder=""
+                                disabled
+                            />
+                        </div>
+                        <div class="mb-3">
+                            <label for="total_salary" class="form-label"
+                                >Total Salary</label
+                            >
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="total_salary"
+                                placeholder=""
+                                disabled
+                            />
+                        </div>
                     </div>
                 </form>
             </x-modal>

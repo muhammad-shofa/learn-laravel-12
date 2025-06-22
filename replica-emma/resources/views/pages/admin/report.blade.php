@@ -154,6 +154,7 @@
                             <div class="card text-white border border-danger">
                                 <div class="card-body text-danger">
                                     <h5 class="card-title">
+
                                         Total salary deductions this month
                                     </h5>
                                     <br />
