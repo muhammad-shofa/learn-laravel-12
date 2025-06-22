@@ -159,32 +159,50 @@ class TimeOffController extends Controller
 
     public function getSummary()
     {
-        $year = Carbon::now()->year;
+        $now = Carbon::now();
+        $currentMonth = $now->month;
+        $currentYear = $now->year;
 
-        // Siapkan array kosong untuk 12 bulan
-        $months = range(1, 12);
-
-        $totalRequests = [];
-        $approvedRequests = [];
-        $rejectedRequests = [];
-        $pendingRequests = [];
-
-        foreach ($months as $month) {
-            $query = TimeOffModel::whereYear('request_date', $year)
-                ->whereMonth('request_date', $month);
-
-            $totalRequests[] = (clone $query)->count();
-            $approvedRequests[] = (clone $query)->where('status', 'approved')->count();
-            $rejectedRequests[] = (clone $query)->where('status', 'rejected')->count();
-            $pendingRequests[] = (clone $query)->where('status', 'pending')->count();
-        }
+        $query = TimeOffModel::whereYear('request_date', $currentYear)
+            ->whereMonth('request_date', $currentMonth);
 
         return response()->json([
             'success' => true,
-            'total_requests' => $totalRequests,
-            'approved_requests' => $approvedRequests,
-            'rejected_requests' => $rejectedRequests,
-            'pending_requests' => $pendingRequests,
+            'current_month' => Carbon::create()->month($currentMonth)->format('F'),
+            'current_year' => Carbon::create()->year($currentYear)->format('Y'),
+            'total_requests' => [(clone $query)->count()],
+            'approved_requests' => [(clone $query)->where('status', 'approved')->count()],
+            'rejected_requests' => [(clone $query)->where('status', 'rejected')->count()],
+            'pending_requests' => [(clone $query)->where('status', 'pending')->count()],
         ]);
+
+
+        // $year = Carbon::now()->year;
+
+        // // Siapkan array kosong untuk 12 bulan
+        // $months = range(1, 12);
+
+        // $totalRequests = [];
+        // $approvedRequests = [];
+        // $rejectedRequests = [];
+        // $pendingRequests = [];
+
+        // foreach ($months as $month) {
+        //     $query = TimeOffModel::whereYear('request_date', $year)
+        //         ->whereMonth('request_date', $month);
+
+        //     $totalRequests[] = (clone $query)->count();
+        //     $approvedRequests[] = (clone $query)->where('status', 'approved')->count();
+        //     $rejectedRequests[] = (clone $query)->where('status', 'rejected')->count();
+        //     $pendingRequests[] = (clone $query)->where('status', 'pending')->count();
+        // }
+
+        // return response()->json([
+        //     'success' => true,
+        //     'total_requests' => $totalRequests,
+        //     'approved_requests' => $approvedRequests,
+        //     'rejected_requests' => $rejectedRequests,
+        //     'pending_requests' => $pendingRequests,
+        // ]);
     }
 }

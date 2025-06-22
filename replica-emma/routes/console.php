@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Artisan;
 // })->purpose('Display an inspiring quote');
 
 Artisan::command('mark:absent', function () {
-    // kamu bisa taruh logics testing di sini kalau mau
     $this->comment('Marked absent!');
 })->purpose('Mark absent employees');
 

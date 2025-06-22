@@ -273,20 +273,43 @@ class AttendanceController extends Controller
         ]);
     }
 
-    public function getSummary($start_date)
-    {
-        // Bersihkan format tanggal ISO agar hanya ambil tanggal saja
-        $cleanDate = substr($start_date, 0, 10); // Ambil '2025-06-01'
+    // public function getSummary($start_date)
+    // {
+    //     // Bersihkan format tanggal ISO agar hanya ambil tanggal saja
+    //     $cleanDate = substr($start_date, 0, 10); // Ambil '2025-06-01'
 
-        $start = Carbon::parse($cleanDate)->startOfMonth();
-        $end = $start->copy()->endOfMonth();
+    //     $start = Carbon::parse($cleanDate)->startOfMonth();
+    //     $end = $start->copy()->endOfMonth();
+
+    //     $attendances = AttendanceModel::whereBetween('date', [$start, $end])->get();
+
+    //     $summary = [];
+
+    //     foreach ($attendances as $attendance) {
+    //         $date = Carbon::parse($attendance->date)->toDateString(); // Pastikan ini tanggal
+    //         if (!isset($summary[$date])) {
+    //             $summary[$date] = 0;
+    //         }
+    //         $summary[$date]++;
+    //     }
+
+    //     return response()->json([
+    //         'success' => true,
+    //         'data' => $summary,
+    //     ]);
+    // }
+
+    public function getSummary(Request $request)
+    {
+        $start = Carbon::parse($request->input('start'))->startOfDay();
+        $end = Carbon::parse($request->input('end'))->endOfDay();
 
         $attendances = AttendanceModel::whereBetween('date', [$start, $end])->get();
 
         $summary = [];
 
         foreach ($attendances as $attendance) {
-            $date = Carbon::parse($attendance->date)->toDateString(); // Pastikan ini tanggal
+            $date = Carbon::parse($attendance->date)->toDateString();
             if (!isset($summary[$date])) {
                 $summary[$date] = 0;
             }

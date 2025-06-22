@@ -83,9 +83,8 @@
                 <div class="tab-pane fade" id="timeoff" role="tabpanel">
                     <div class="d-flex gap-3 mt-3">
                         <button
-                            class="btn btn-warning"
-                            data-bs-toggle="modal"
-                            data-bs-target="#filterModal"
+                            class="btn-show-filter btn btn-warning"
+                            data-target="timeoff"
                         >
                             <i class="fa-solid fa-filter"></i> Filter
                         </button>
@@ -96,7 +95,7 @@
                     <div
                         class="d-flex justify-content-between align-items-center"
                     >
-                        <h3><span id="currentMonth"></span> <span id="currentYear"></span></h3>
+                        <h3><span id="currentMonthTimeOff"></span> <span id="currentYearTimeOff"></span></h3>
                         <button
                             class="btn btn-danger my-3"
                             id="btnDownloadTimeOffReport"
@@ -116,9 +115,8 @@
                 <div class="tab-pane fade" id="salary" role="tabpanel">
                     <div class="d-flex gap-3 mt-3">
                         <button
-                            class="btn btn-warning"
-                            data-bs-toggle="modal"
-                            data-bs-target="#filterModal"
+                            class="btn-show-filter btn btn-warning"
+                            data-target="salary"
                         >
                             <i class="fa-solid fa-filter"></i> Filter
                         </button>

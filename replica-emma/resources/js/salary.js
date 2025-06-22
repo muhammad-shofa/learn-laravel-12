@@ -498,102 +498,123 @@ $(document).ready(function () {
     loadSalaryDataForEmployee();
     selectEmployeeCode();
 
-    const total_deduction_numeric = new AutoNumeric("#total_deduction", {
-        digitGroupSeparator: ".",
-        decimalCharacter: ",",
-        decimalPlaces: 0,
-        currencySymbol: "Rp ",
-        currencySymbolPlacement: "p",
-        modifyValueOnWheel: false,
-    });
+    // Masih ada maslah pada bagian numeric input karena file js ini digunakan untuk 2 halaman yang berbeda
+    // jadi pada halaman salary employee itu tidak memiliki id tertentu yang ada di halmaan salary admin
+    let total_deduction_numeric = null;
+    if ($("#total_salary").length) {
+        total_deduction_numeric = new AutoNumeric("#total_deduction", {
+            digitGroupSeparator: ".",
+            decimalCharacter: ",",
+            decimalPlaces: 0,
+            currencySymbol: "Rp ",
+            currencySymbolPlacement: "p",
+            modifyValueOnWheel: false,
+        });
+    }
 
-    // if ($("#bonus").length) {
-    const bonus_numeric = new AutoNumeric("#bonus", {
-        digitGroupSeparator: ".",
-        decimalCharacter: ",",
-        decimalPlaces: 0,
-        currencySymbol: "Rp ",
-        currencySymbolPlacement: "p",
-        modifyValueOnWheel: false,
-    });
-    // }
+    // UNTUK TESTING SAJA APKAAH WORK UNTUK 2 HALAMAN
+    let bonus_numeric = null;
+    if ($("#bonus").length) {
+        bonus_numeric = new AutoNumeric("#bonus", {
+            digitGroupSeparator: ".",
+            decimalCharacter: ",",
+            decimalPlaces: 0,
+            currencySymbol: "Rp ",
+            currencySymbolPlacement: "p",
+            modifyValueOnWheel: false,
+        });
+    }
 
-    // if ($("#total_salary").length) {
-    const total_salary_numeric = new AutoNumeric("#total_salary", {
-        digitGroupSeparator: ".",
-        decimalCharacter: ",",
-        decimalPlaces: 0,
-        currencySymbol: "Rp ",
-        currencySymbolPlacement: "p",
-        modifyValueOnWheel: false,
-    });
-    // }
+    let total_salary_numeric = null;
+    if ($("#total_deduction").length) {
+         total_salary_numeric = new AutoNumeric("#total_salary", {
+            digitGroupSeparator: ".",
+            decimalCharacter: ",",
+            decimalPlaces: 0,
+            currencySymbol: "Rp ",
+            currencySymbolPlacement: "p",
+            modifyValueOnWheel: false,
+        });
+    }
 
     // value detail modal
     // detail ovettime bonus
-    const detail_missing_hours_deduction_numeric = new AutoNumeric(
-        "#detail_missing_hours_deduction",
-        {
-            digitGroupSeparator: ".",
-            decimalCharacter: ",",
-            decimalPlaces: 0,
-            currencySymbol: "Rp ",
-            currencySymbolPlacement: "p",
-            modifyValueOnWheel: false,
-        }
-    );
+
+    let detail_missing_hours_deduction_numeric = null;
+    if ($("#detail_total_work_duration").length) {
+        detail_missing_hours_deduction_numeric = new AutoNumeric(
+            "#detail_missing_hours_deduction",
+            {
+                digitGroupSeparator: ".",
+                decimalCharacter: ",",
+                decimalPlaces: 0,
+                currencySymbol: "Rp ",
+                currencySymbolPlacement: "p",
+                modifyValueOnWheel: false,
+            }
+        );
+    }
 
     // detail ovettime bonus
-    const detail_overtime_bonus_numeric = new AutoNumeric(
-        "#detail_overtime_bonus",
-        {
-            digitGroupSeparator: ".",
-            decimalCharacter: ",",
-            decimalPlaces: 0,
-            currencySymbol: "Rp ",
-            currencySymbolPlacement: "p",
-            modifyValueOnWheel: false,
-        }
-    );
+    let detail_overtime_bonus_numeric = null;
+    if ($("#detail_overtime_bonus").length) {
+        detail_overtime_bonus_numeric = new AutoNumeric(
+            "#detail_overtime_bonus",
+            {
+                digitGroupSeparator: ".",
+                decimalCharacter: ",",
+                decimalPlaces: 0,
+                currencySymbol: "Rp ",
+                currencySymbolPlacement: "p",
+                modifyValueOnWheel: false,
+            }
+        );
+    }
 
     // detail absent deduction
-    const detail_absent_deduction_numeric = new AutoNumeric(
-        "#detail_absent_deduction",
-        {
-            digitGroupSeparator: ".",
-            decimalCharacter: ",",
-            decimalPlaces: 0,
-            currencySymbol: "Rp ",
-            currencySymbolPlacement: "p",
-            modifyValueOnWheel: false,
-        }
-    );
+    let detail_absent_deduction_numeric = null;
+    if ($("#detail_absent_deduction").length) {
+        detail_absent_deduction_numeric = new AutoNumeric(
+            "#detail_absent_deduction",
+            {
+                digitGroupSeparator: ".",
+                decimalCharacter: ",",
+                decimalPlaces: 0,
+                currencySymbol: "Rp ",
+                currencySymbolPlacement: "p",
+                modifyValueOnWheel: false,
+            }
+        );
+    }
 
     // detail total deduction
-    const detail_total_deduction_numeric = new AutoNumeric(
-        "#detail_total_deduction",
-        {
-            digitGroupSeparator: ".",
-            decimalCharacter: ",",
-            decimalPlaces: 0,
-            currencySymbol: "Rp ",
-            currencySymbolPlacement: "p",
-            modifyValueOnWheel: false,
-        }
-    );
+    let detail_total_deduction_numeric = null;
+    if ($("#detail_total_deduction").length) {
+        detail_total_deduction_numeric = new AutoNumeric(
+            "#detail_total_deduction",
+            {
+                digitGroupSeparator: ".",
+                decimalCharacter: ",",
+                decimalPlaces: 0,
+                currencySymbol: "Rp ",
+                currencySymbolPlacement: "p",
+                modifyValueOnWheel: false,
+            }
+        );
+    }
 
     // detail total salary
-    const detail_total_salary_numeric = new AutoNumeric(
-        "#detail_total_salary",
-        {
+    let detail_total_salary_numeric = null;
+    if ($("#detail_total_salary").length) {
+        detail_total_salary_numeric = new AutoNumeric("#detail_total_salary", {
             digitGroupSeparator: ".",
             decimalCharacter: ",",
             decimalPlaces: 0,
             currencySymbol: "Rp ",
             currencySymbolPlacement: "p",
             modifyValueOnWheel: false,
-        }
-    );
+        });
+    }
 
     // ketika tombol generate salary diklik
     $(document).on("click", ".generate-salary-btn", function () {

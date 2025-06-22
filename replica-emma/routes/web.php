@@ -80,7 +80,8 @@ Route::prefix('/api/attendance')->controller(AttendanceController::class)->group
     Route::post('/weekly-holiday-setting', 'saveWeeklyHolidaySetting');
     Route::get('/check-weekly-holiday', 'checkWeeklyHoliday');
     Route::get('/get-holidays', 'getHolidays');
-    Route::get('/summary/{start_date}', 'getSummary');
+    Route::get('/summary', 'getSummary');
+    // Route::get('/summary/{start_date}', 'getSummary');
 });
 
 // Time Off endpoint
@@ -129,5 +130,6 @@ Route::prefix('/api/report')->controller(ReportController::class)->group(functio
     Route::post('/attendances/pdf', 'attendancesPdf');
     Route::post('/time-off-request/pdf', 'timeOffPdf');
     Route::post('/salaries/pdf', 'salariesPdf');
+    Route::get('/filter-time-off-data', 'filterTimeOffData');
     Route::get('/filter-salary-data', 'filterSalaryData');
 });

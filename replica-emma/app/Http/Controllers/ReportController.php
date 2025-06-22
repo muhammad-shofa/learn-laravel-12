@@ -28,6 +28,34 @@ class ReportController extends Controller
             ->header('Content-Disposition', 'attachment; filename="laporan-kehadiran-' . $month . '-' . $year . '.pdf"');
     }
 
+    // filter time off data
+    public function filterTimeOffData(Request $request)
+    {
+        $month = (int) $request->input('month');
+        $year = (int) $request->input('year');
+
+        // Validasi
+        if (!$month || !$year) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Month and year are required.',
+            ], 400);
+        }
+
+        $query = TimeOffModel::whereYear('request_date', $year)
+            ->whereMonth('request_date', $month);
+
+        return response()->json([
+            'success' => true,
+            'current_month' => Carbon::create()->month($month)->format('F'),
+            'current_year' => Carbon::create()->year($year)->format('Y'),
+            'total_requests'   => [(clone $query)->count()],
+            'approved_requests' => [(clone $query)->where('status', 'approved')->count()],
+            'rejected_requests' => [(clone $query)->where('status', 'rejected')->count()],
+            'pending_requests' => [(clone $query)->where('status', 'pending')->count()],
+        ]);
+    }
+
     // filter salary data
     public function filterSalaryData(Request $request)
     {

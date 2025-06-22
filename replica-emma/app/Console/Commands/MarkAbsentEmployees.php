@@ -14,7 +14,6 @@ class MarkAbsentEmployees extends Command
     protected $signature = 'attendance:mark-absent';
     protected $description = 'Mark employees as absent if they have not clocked in by 4 PM';
 
-    // v3
     public function handle()
     {
         $today = Carbon::today();
@@ -25,7 +24,7 @@ class MarkAbsentEmployees extends Command
             $this->info("It's not yet 4pm. Skip checking.");
             return;
         }
-
+        
         // Ambil semua ID employee
         $employeeIds = EmployeeModel::pluck('id');
 

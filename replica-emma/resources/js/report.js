@@ -88,9 +88,13 @@ $(document).ready(function () {
         },
         events: function (info, successCallback, failureCallback) {
             $.ajax({
-                url: `/api/attendance/summary/${info.startStr}`,
+                url: "/api/attendance/summary",
                 type: "GET",
                 dataType: "json",
+                data: {
+                    start: info.startStr,
+                    end: info.endStr,
+                },
                 success: function (response) {
                     if (response.success) {
                         let events = [];
@@ -115,37 +119,138 @@ $(document).ready(function () {
     // reset filter
     $(document).on("click", ".btn-reset-filter", () => {
         loadReportSalarySummary();
+        loadReportTimeOffSummary();
+    });
+
+    // global variable untuk menyimpan target filter
+    let filterTarget = null;
+
+    $(document).on("click", ".btn-show-filter", function () {
+        filterTarget = $(this).data("target");
+
+        const now = new Date();
+        $("#filter_month").val(now.getMonth() + 1);
+        $("#filter_year").val(now.getFullYear());
+
+        $("#filterModal").modal("show");
     });
 
     // apply filter
+    // v2
     $(document).on("click", ".btn-apply-filter", () => {
         const month = $("#filter_month").val();
         const year = $("#filter_year").val();
-        // console.log(month);
-        // console.log(year);
 
+        if (!filterTarget) {
+            alert("Unknown filter target.");
+            return;
+        }
+
+        let url = "";
+        let successHandler;
+
+        if (filterTarget === "salary") {
+            url = "/api/report/filter-salary-data";
+            successHandler = (response) => {
+                $("#currentMonth").text(response.current_month);
+                $("#currentYear").text(response.current_year);
+                salary_paid_content_numeric.set(response.total_paid);
+                salary_deduction_content_numeric.set(response.total_deduction);
+                salary_bonus_content_numeric.set(response.total_bonus);
+            };
+        } else if (filterTarget === "timeoff") {
+            url = "/api/report/filter-time-off-data";
+            successHandler = (response) => {
+                $("#currentMonthTimeOff").text(response.current_month);
+                $("#currentYearTimeOff").text(response.current_year);
+                const options = {
+                    series: [
+                        {
+                            name: "Total Request",
+                            data: response.total_requests,
+                        },
+                        { name: "Approved", data: response.approved_requests },
+                        { name: "Rejected", data: response.rejected_requests },
+                        { name: "Pending", data: response.pending_requests },
+                    ],
+                    chart: {
+                        height: 350,
+                        type: "bar",
+                    },
+                    xaxis: {
+                        categories: [
+                            response.current_month +
+                                " " +
+                                response.current_year,
+                        ],
+                    },
+                    plotOptions: {
+                        bar: { columnWidth: "55%" },
+                    },
+                    dataLabels: { enabled: false },
+                    stroke: { show: true, width: 2 },
+                    fill: { opacity: 1 },
+                };
+
+                if (timeOffChartInstance) {
+                    timeOffChartInstance.destroy();
+                }
+
+                timeOffChartInstance = new ApexCharts(
+                    document.querySelector("#timeOffChart"),
+                    options
+                );
+                timeOffChartInstance.render();
+            };
+        }
+
+        // Lakukan AJAX
         $.ajax({
-            url: "/api/report/filter-salary-data",
+            url: url,
             type: "GET",
-            data: { month: month, year: year },
+            data: { month, year },
             dataType: "json",
-            success: (response) => {
+            success: function (response) {
                 if (response.success) {
                     $("#filterModal").modal("hide");
-                    $("#currentMonth").text(response.current_month);
-                    $("#currentYear").text(response.current_year);
-                    salary_paid_content_numeric.set(response.total_paid);
-                    salary_deduction_content_numeric.set(
-                        response.total_deduction
-                    );
-                    salary_bonus_content_numeric.set(response.total_bonus);
+                    successHandler(response);
                 }
             },
             error: function (xhr, status, error) {
-                console.error("Filter AJAX Error: " + status + error);
+                console.error("Filter AJAX Error:", error);
             },
         });
     });
+
+    // v1
+    // $(document).on("click", ".btn-apply-filter", () => {
+    //     const month = $("#filter_month").val();
+    //     const year = $("#filter_year").val();
+
+    //     $.ajax({
+    //         url: "/api/report/filter-salary-data",
+    //         type: "GET",
+    //         data: { month: month, year: year },
+    //         dataType: "json",
+    //         success: (response) => {
+    //             if (response.success) {
+    //                 $("#filterModal").modal("hide");
+    //                 $("#currentMonth").text(response.current_month);
+    //                 $("#currentYear").text(response.current_year);
+    //                 salary_paid_content_numeric.set(response.total_paid);
+    //                 salary_deduction_content_numeric.set(
+    //                     response.total_deduction
+    //                 );
+    //                 salary_bonus_content_numeric.set(response.total_bonus);
+    //             }
+    //         },
+    //         error: function (xhr, status, error) {
+    //             console.error("Filter AJAX Error: " + status + error);
+    //         },
+    //     });
+    // });
+
+    // ketika tombol download pdf attendances diklik
 
     // ketika tombol download pdf attendances diklik
     $(document).on("click", "#btnDownloadAttendanceReport", function () {
@@ -203,7 +308,7 @@ $(document).ready(function () {
 
     // ketika tombol download pdf time off request diklik
     $(document).on("click", "#btnDownloadTimeOffReport", function () {
-        const monthName = $("#currentMonth").text().trim();
+        const monthName = $("#currentMonthTimeOff").text().trim();
         const month = monthMap[monthName];
         const year = new Date().getFullYear();
 
@@ -319,6 +424,9 @@ $(document).ready(function () {
         loadReportTimeOffSummary();
     });
 
+    let timeOffChartInstance = null;
+
+    // v2
     function loadReportTimeOffSummary() {
         $.ajax({
             url: "/api/time-off/summary",
@@ -326,7 +434,13 @@ $(document).ready(function () {
             dataType: "json",
             success: function (response) {
                 if (response.success) {
-                    var options = {
+                    $("#currentMonthTimeOff").text(response.current_month);
+                    $("#currentYearTimeOff").text(response.current_year);
+                    const categories = [
+                        response.current_month + " " + response.current_year,
+                    ];
+
+                    const options = {
                         series: [
                             {
                                 name: "Total Request",
@@ -365,20 +479,7 @@ $(document).ready(function () {
                             colors: ["transparent"],
                         },
                         xaxis: {
-                            categories: [
-                                "Jan",
-                                "Feb",
-                                "Mar",
-                                "Apr",
-                                "May",
-                                "Jun",
-                                "Jul",
-                                "Aug",
-                                "Sep",
-                                "Oct",
-                                "Nov",
-                                "Dec",
-                            ],
+                            categories: categories,
                         },
                         yaxis: {
                             title: {
@@ -397,11 +498,17 @@ $(document).ready(function () {
                         },
                     };
 
-                    var chart = new ApexCharts(
+                    // Hapus chart lama jika ada
+                    if (timeOffChartInstance) {
+                        timeOffChartInstance.destroy();
+                    }
+
+                    // Buat chart baru
+                    timeOffChartInstance = new ApexCharts(
                         document.querySelector("#timeOffChart"),
                         options
                     );
-                    chart.render();
+                    timeOffChartInstance.render();
                 }
             },
             error: function (xhr, status, error) {
@@ -411,7 +518,6 @@ $(document).ready(function () {
         });
     }
 
-    // ketika tombol salary-tab diklik
     $(document).on("click", "#salary-tab", loadReportSalarySummary());
 
     function loadReportSalarySummary() {

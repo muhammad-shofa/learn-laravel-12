@@ -155,27 +155,27 @@
     
     <!-- Script Download CSV -->
     <script>
-        function downloadCSV() {
-            let table = document.getElementById("salaryTable");
-            let rows = table.querySelectorAll("tr");
-            let csv = [];
+        // function downloadCSV() {
+        //     let table = document.getElementById("salaryTable");
+        //     let rows = table.querySelectorAll("tr");
+        //     let csv = [];
     
-            rows.forEach(row => {
-                let cols = row.querySelectorAll("td, th");
-                let rowData = [];
-                cols.forEach(col => rowData.push('"' + col.innerText + '"'));
-                csv.push(rowData.join(","));
-            });
+        //     rows.forEach(row => {
+        //         let cols = row.querySelectorAll("td, th");
+        //         let rowData = [];
+        //         cols.forEach(col => rowData.push('"' + col.innerText + '"'));
+        //         csv.push(rowData.join(","));
+        //     });
     
-            let csvContent = "data:text/csv;charset=utf-8," + csv.join("\n");
-            let encodedUri = encodeURI(csvContent);
-            let link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "riwayat_gaji.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
+        //     let csvContent = "data:text/csv;charset=utf-8," + csv.join("\n");
+        //     let encodedUri = encodeURI(csvContent);
+        //     let link = document.createElement("a");
+        //     link.setAttribute("href", encodedUri);
+        //     link.setAttribute("download", "riwayat_gaji.csv");
+        //     document.body.appendChild(link);
+        //     link.click();
+        //     document.body.removeChild(link);
+        // }
     </script>
     
 </main>
