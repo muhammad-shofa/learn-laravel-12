@@ -1,12 +1,10 @@
 import Swal from "sweetalert2";
-// import AirDatepicker from "air-datepicker";
-// import localeEn from "air-datepicker/locale/en";
 
 $(document).ready(function () {
     // load all time off request data
     function loadSalaryData() {
         $("#salaryTableData").DataTable({
-            destroy: true, // agar bisa reload ulang
+            destroy: true,
             paging: true,
             info: true,
             ordering: false,
@@ -167,7 +165,6 @@ $(document).ready(function () {
                     chart.render();
 
                     // update info tambahan
-                    // let status = "";
                     $("#statusText").text(
                         response.completed_hours < response.target_hours
                             ? "Ongoing"
@@ -498,8 +495,7 @@ $(document).ready(function () {
     loadSalaryDataForEmployee();
     selectEmployeeCode();
 
-    // Masih ada maslah pada bagian numeric input karena file js ini digunakan untuk 2 halaman yang berbeda
-    // jadi pada halaman salary employee itu tidak memiliki id tertentu yang ada di halmaan salary admin
+    // menggunakan pengecekan if karena jika tidak ada elemen dengan id tersebut, AutoNumeric akan error
     let total_deduction_numeric = null;
     if ($("#total_salary").length) {
         total_deduction_numeric = new AutoNumeric("#total_deduction", {
@@ -512,7 +508,6 @@ $(document).ready(function () {
         });
     }
 
-    // UNTUK TESTING SAJA APKAAH WORK UNTUK 2 HALAMAN
     let bonus_numeric = null;
     if ($("#bonus").length) {
         bonus_numeric = new AutoNumeric("#bonus", {
@@ -538,7 +533,7 @@ $(document).ready(function () {
     }
 
     // value detail modal
-    // detail ovettime bonus
+    // detail mossoing hours deduction
     let detail_missing_hours_deduction_numeric = null;
     if ($("#detail_total_work_duration").length) {
         detail_missing_hours_deduction_numeric = new AutoNumeric(
@@ -695,81 +690,6 @@ $(document).ready(function () {
         });
     });
 
-    // v1
-    // $(document).on("click", ".generate-salary-btn", function () {
-    //     // ambil data dari form
-    //     let employee_id = $("#employee_code").val();
-    //     let year = $("#year").val();
-    //     let month = $("#month").val();
-    //     let hour_deduction =
-    //         detail_missing_hours_deduction_numeric.getNumericString();
-    //     let absent_deduction =
-    //         detail_absent_deduction_numeric.getNumericString();
-    //     let deduction = total_deduction_numeric.getNumericString();
-    //     let bonus = bonus_numeric.getNumericString();
-    //     let total_salary = total_salary_numeric.getNumericString();
-    //     let payment_date = new Date();
-    //     let formatted_payment_date = payment_date.toISOString().split("T")[0];
-
-    //     $.ajax({
-    //         url: "/api/salary/generate-salary",
-    //         type: "POST",
-    //         dataType: "json",
-    //         data: {
-    //             employee_id: employee_id,
-    //             year: year,
-    //             month: month,
-    //             hour_deduction: hour_deduction,
-    //             absent_deduction: absent_deduction,
-    //             deduction: deduction,
-    //             bonus: bonus,
-    //             total_salary: total_salary,
-    //             payment_date: formatted_payment_date,
-    //         },
-    //         headers: {
-    //             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-    //         },
-    //         success: function (response) {
-    //             if (response.success) {
-    //                 Swal.fire({
-    //                     icon: "success",
-    //                     title: "Success",
-    //                     text: response.message,
-    //                 });
-    //                 // reload data table
-    //                 loadSalaryData();
-    //                 // reset form
-    //                 $("#addModal").modal("hide");
-
-    //                 // Sembunyikan elemen offcanvas
-    //                 $("#offcanvasSalaryDetail").hide();
-
-    //                 // Hapus backdrop secara manual
-    //                 $(".offcanvas-backdrop").remove();
-    //                 // $("#offcanvasSalaryDetail").hide();
-    //                 $("#employee_code").val(null).trigger("change");
-    //                 total_deduction_numeric.set(0);
-    //                 bonus_numeric.set(0);
-    //                 total_salary_numeric.set(0);
-    //             } else {
-    //                 Swal.fire({
-    //                     icon: "error",
-    //                     title: "Error",
-    //                     text: response.message,
-    //                 });
-    //             }
-    //         },
-    //         error: function (xhr, status, error) {
-    //             console.error("AJAX Error:", status, error);
-    //             Swal.fire({
-    //                 icon: "error",
-    //                 title: "Error",
-    //                 text: "Failed to generate salary. Please try again.",
-    //             });
-    //         },
-    //     });
-    // });
-
     // ketika tomobl download pdf diklik
     $(document).on("click", ".btn-download-pdf", function () {
         const salary_id = $(this).data("salary_id");
@@ -815,5 +735,4 @@ $(document).ready(function () {
         });
     });
 
-    // salary employee
 });

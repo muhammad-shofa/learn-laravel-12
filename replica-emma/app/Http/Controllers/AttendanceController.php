@@ -191,20 +191,6 @@ class AttendanceController extends Controller
     // save weekly holiday setting
     public function saveWeeklyHolidaySetting(Request $request)
     {
-        // Validasi input
-        // $validator = Validator::make($request->all(), [
-        //     'max_holidays_per_week' => 'required|integer|min:1|max:7',
-        //     'days' => 'required|array',
-        //     'days.*' => 'in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday', // sesuaikan dengan value checkbox kamu
-        // ]);
-
-        // if ($validator->fails()) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'errors' => $validator->errors(),
-        //     ], 422);
-        // }
-
         $maxHolidays = $request->input('max_holidays_per_week');
         $selectedDays = $request->input('days');
 
@@ -273,38 +259,14 @@ class AttendanceController extends Controller
         ]);
     }
 
-    // public function getSummary($start_date)
-    // {
-    //     // Bersihkan format tanggal ISO agar hanya ambil tanggal saja
-    //     $cleanDate = substr($start_date, 0, 10); // Ambil '2025-06-01'
-
-    //     $start = Carbon::parse($cleanDate)->startOfMonth();
-    //     $end = $start->copy()->endOfMonth();
-
-    //     $attendances = AttendanceModel::whereBetween('date', [$start, $end])->get();
-
-    //     $summary = [];
-
-    //     foreach ($attendances as $attendance) {
-    //         $date = Carbon::parse($attendance->date)->toDateString(); // Pastikan ini tanggal
-    //         if (!isset($summary[$date])) {
-    //             $summary[$date] = 0;
-    //         }
-    //         $summary[$date]++;
-    //     }
-
-    //     return response()->json([
-    //         'success' => true,
-    //         'data' => $summary,
-    //     ]);
-    // }
-
     public function getSummary(Request $request)
     {
         $start = Carbon::parse($request->input('start'))->startOfDay();
         $end = Carbon::parse($request->input('end'))->endOfDay();
 
-        $attendances = AttendanceModel::whereBetween('date', [$start, $end])->get();
+        $attendances = AttendanceModel::whereBetween('date', [$start, $end])
+            ->whereIn('clock_in_status', ['ontime', 'late'])
+            ->get();
 
         $summary = [];
 

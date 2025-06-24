@@ -180,32 +180,6 @@ class EmployeeController extends Controller
     }
 
     // search employee for salary
-    // v1
-    // public function searchEmployeesSalary(Request $request)
-    // {
-    //     $search = $request->query('q');
-
-    //     // Ambil semua employee_id yang sudah ada di salary_settings
-    //     $excludedEmployeeIds = SalarySettingModel::pluck('employee_id')->toArray();
-
-    //     $employees = EmployeeModel::where('has_account', true)
-    //         ->whereIn('id', $excludedEmployeeIds)
-    //         ->when($search, function ($query, $search) {
-    //             return $query->where(function ($q) use ($search) {
-    //                 $q->where('employee_code', 'like', "%{$search}%")
-    //                     ->orWhere('full_name', 'like', "%{$search}%");
-    //             });
-    //         })
-    //         ->limit(5)
-    //         ->get();
-
-    //     return response()->json([
-    //         'success' => true,
-    //         'data' => $employees
-    //     ]);
-    // }
-
-    // v2
     public function searchEmployeesSalary(Request $request)
     {
         $search = $request->query('q');
@@ -242,11 +216,6 @@ class EmployeeController extends Controller
                 'disabled' => $isExist
             ];
 
-            // if ($isExist) return null;
-            // return [
-            //     'id' => $employee->id,
-            //     'text' => "{$employee->employee_code} - {$employee->full_name}",
-            // ];
         });
 
         return response()->json([
@@ -259,9 +228,6 @@ class EmployeeController extends Controller
     // add employee
     public function addEmployee(Request $request)
     {
-        // Tambahkan validasi nanti
-        // Tambahkan validasi nanti
-        // Tambahkan validasi nanti
 
         $employee_code = 'EMP-' . NOW()->format('Ymd') . mt_rand(1000, 9999);
 
@@ -285,9 +251,6 @@ class EmployeeController extends Controller
     // update employee
     public function updateEmployee(Request $request, $id)
     {
-        // Tambahkan validasi nanti
-        // Tambahkan validasi nanti
-        // Tambahkan validasi nanti
 
         $employee = EmployeeModel::findOrFail($id);
 

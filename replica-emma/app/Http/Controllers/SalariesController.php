@@ -121,7 +121,6 @@ class SalariesController extends Controller
     }
 
     // generate salary for employee
-    // v2
     public function generateSalary(Request $request)
     {
         $method = $request->input('method');
@@ -231,36 +230,6 @@ class SalariesController extends Controller
             'message' => 'Invalid method selected',
         ], 400);
     }
-
-
-    // v1
-    // public function generateSalary(Request $request)
-    // {
-    //     $employee_id = $request->input('employee_id');
-    //     // $year = $request->input('year');
-    //     // $month = $request->input('month');
-
-    //     $salarySetting = SalarySettingModel::where('employee_id', $employee_id)->first();
-
-    //     // create new salary
-    //     SalariesModel::create([
-    //         'employee_id' => $employee_id,
-    //         'salary_setting_id' => $salarySetting->id,
-    //         'year' => $request->input('year'),
-    //         'month' => $request->input('month'),
-    //         'hour_deduction' => $request->input('hour_deduction'),
-    //         'absent_deduction' => $request->input('absent_deduction'),
-    //         'deduction' => $request->input('deduction'),
-    //         'bonus' => $request->input('bonus'),
-    //         'total_salary' => $request->input('total_salary'),
-    //         'payment_date' => $request->input('payment_date'),
-    //     ]);
-
-    //     return response()->json([
-    //         'success' => true,
-    //         'message' => 'Salary generated successfully',
-    //     ], 201);
-    // }
 
     // download salary pdf
     public function downloadPdf($salary_id)

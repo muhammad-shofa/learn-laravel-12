@@ -1,9 +1,6 @@
 import Swal from "sweetalert2";
 
 $(document).ready(function () {
-    // load
-
-    // inisialisasi
     let calendarEl = document.getElementById("attendanceCalendar");
     // let calendarEl = $("#attendanceCalendar");
     let calendar = new FullCalendar.Calendar(calendarEl, {
@@ -114,6 +111,8 @@ $(document).ready(function () {
             });
         },
     });
+
+    // render attendance calendar
     calendar.render();
 
     // reset filter
@@ -122,7 +121,6 @@ $(document).ready(function () {
         loadReportTimeOffSummary();
     });
 
-    // global variable untuk menyimpan target filter
     let filterTarget = null;
 
     $(document).on("click", ".btn-show-filter", function () {
@@ -136,7 +134,6 @@ $(document).ready(function () {
     });
 
     // apply filter
-    // v2
     $(document).on("click", ".btn-apply-filter", () => {
         const month = $("#filter_month").val();
         const year = $("#filter_year").val();
@@ -204,7 +201,6 @@ $(document).ready(function () {
             };
         }
 
-        // Lakukan AJAX
         $.ajax({
             url: url,
             type: "GET",
@@ -221,36 +217,6 @@ $(document).ready(function () {
             },
         });
     });
-
-    // v1
-    // $(document).on("click", ".btn-apply-filter", () => {
-    //     const month = $("#filter_month").val();
-    //     const year = $("#filter_year").val();
-
-    //     $.ajax({
-    //         url: "/api/report/filter-salary-data",
-    //         type: "GET",
-    //         data: { month: month, year: year },
-    //         dataType: "json",
-    //         success: (response) => {
-    //             if (response.success) {
-    //                 $("#filterModal").modal("hide");
-    //                 $("#currentMonth").text(response.current_month);
-    //                 $("#currentYear").text(response.current_year);
-    //                 salary_paid_content_numeric.set(response.total_paid);
-    //                 salary_deduction_content_numeric.set(
-    //                     response.total_deduction
-    //                 );
-    //                 salary_bonus_content_numeric.set(response.total_bonus);
-    //             }
-    //         },
-    //         error: function (xhr, status, error) {
-    //             console.error("Filter AJAX Error: " + status + error);
-    //         },
-    //     });
-    // });
-
-    // ketika tombol download pdf attendances diklik
 
     // ketika tombol download pdf attendances diklik
     $(document).on("click", "#btnDownloadAttendanceReport", function () {
@@ -277,7 +243,7 @@ $(document).ready(function () {
                 let downloadUrl = URL.createObjectURL(blob);
                 let a = document.createElement("a");
 
-                // Nama file default
+                // Nama file
                 a.href = downloadUrl;
                 a.download = `attendances-report-${month}-${year}.pdf`;
                 document.body.appendChild(a);
@@ -529,11 +495,13 @@ $(document).ready(function () {
                 if (response.success) {
                     $("#currentMonth").text(response.current_month);
                     $("#currentYear").text(response.current_year);
-                    salary_paid_content_numeric.set(response.salary_paid);
+                    salary_paid_content_numeric.set(response.salary_paid ?? 0);
                     salary_deduction_content_numeric.set(
-                        response.salary_deduction
+                        response.salary_deduction ?? 0
                     );
-                    salary_bonus_content_numeric.set(response.salary_bonus);
+                    salary_bonus_content_numeric.set(
+                        response.salary_bonus ?? 0
+                    );
                 }
             },
             error: function (xhr, status, error) {

@@ -75,6 +75,10 @@
   z-index: 1060 !important; /* lebih tinggi dari modal */
 }
 
+.nav-link.active {
+  background-color: #007bff;
+}
+
 @media (min-width: 768px) {
   .btn-clock-in, .btn-clock-out {
     min-width: 120px;
