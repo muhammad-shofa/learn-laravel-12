@@ -10,6 +10,7 @@ use App\Models\SalarySettingModel;
 use Carbon\Carbon;
 use DeepCopy\Filter\Filter;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class EmployeeController extends Controller
 {
@@ -215,7 +216,6 @@ class EmployeeController extends Controller
                 'has_account' => $employee->has_account,
                 'disabled' => $isExist
             ];
-
         });
 
         return response()->json([
@@ -281,5 +281,21 @@ class EmployeeController extends Controller
             'success' => true,
             'message' => 'Employee data'
         ]);
+    }
+
+    // export pdf
+    public function exportPdf()
+    {
+        $employees = EmployeeModel::with('position')->get();
+
+        $pdf = Pdf::loadView('components.pdf.employee_export', [
+            'employees' => $employees,
+        ]);
+
+        $fileName = 'employee_report_' . now()->format('Y_m_d_H_i_s') . '.pdf';
+
+        return response($pdf->output(), 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', "attachment; filename={$fileName}");
     }
 }

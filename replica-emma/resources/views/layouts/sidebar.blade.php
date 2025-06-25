@@ -1,4 +1,5 @@
-@php $menus = [ 'admin' => [ ['label' => 'Dashboard', 'url' => '/dashboard',
+@php
+$menus = [ 'admin' => [ ['label' => 'Dashboard', 'url' => '/dashboard',
 'icon' => 'fa-solid fa-chart-simple'], ['label' => 'User Management', 'url' =>
 '/user-management', 'icon' => 'fa-solid fa-user'], ['label' => 'Employee
 Management', 'url' => '/employee-management', 'icon' => 'fa-solid fa-user-tie'],
@@ -14,7 +15,8 @@ fa-chart-simple'], ['label' => 'Attendance', 'url' => '/attendance', 'icon' =>
 'fa-solid fa-users-viewfinder'], ['label' => 'Time Off', 'url' => '/time-off',
 'icon' => 'fa-solid fa-calendar'], ['label' => 'Salary', 'url' => '/salary',
 'icon' => 'fa-solid fa-credit-card'], ] ]; $user = auth()->user(); $roleMenus =
-$menus[$user->role] ?? []; @endphp
+$menus[$user->role] ?? [];
+@endphp
 
 <!--begin::Sidebar-->
 <aside

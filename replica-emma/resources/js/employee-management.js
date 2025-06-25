@@ -300,4 +300,35 @@ $(document).ready(function () {
             },
         });
     });
+
+    // ketika tombol export PDF diklik
+    $(document).on("click", "#btnExportEmployee", function () {
+        $.ajax({
+            url: "/api/employee/export-pdf",
+            type: "GET",
+            xhrFields: {
+                responseType: "blob",
+            },
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: function (response, status, xhr) {
+                const blob = new Blob([response], { type: "application/pdf" });
+                const link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+
+                const filename =
+                    xhr
+                        .getResponseHeader("Content-Disposition")
+                        ?.split("filename=")[1] || `employee_report.pdf`;
+
+                link.download = filename.replaceAll('"', "");
+                link.click();
+            },
+            error: function (xhr, status, error) {
+                alert("Failed to download employee report. Please try again.");
+                console.error(error);
+            },
+        });
+    });
 });

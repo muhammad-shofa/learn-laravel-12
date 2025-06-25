@@ -64,6 +64,7 @@ Route::prefix('/api/employee')->controller(EmployeeController::class)->group(fun
     Route::post('/add-employee', 'addEmployee');
     Route::put('/update-employee/{id}', 'updateEmployee');
     Route::delete('/delete-employee/{id}', 'deleteEmployee');
+    Route::get('/export-pdf', 'exportPdf');
 });
 
 // Attendance endpoint
