@@ -6,7 +6,7 @@
     <style>
         body {
             font-family: DejaVu Sans, sans-serif;
-            font-size: 12px;
+            font-size: 11px;
             color: #333;
         }
         .header {
@@ -44,7 +44,7 @@
 </head>
 <body>
     <div class="header">
-        <h2>Employee Data Report</h2>
+        <h2>Employee Report</h2>
         <p>Generated on: {{ now()->format('d M Y') }}</p>
     </div>
 

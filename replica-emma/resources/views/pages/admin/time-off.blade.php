@@ -12,6 +12,7 @@
             <div class="row">
                 <div class="col-sm-6">
                     <h3 class="mb-0">Time Off</h3>
+                    
                 </div>
             </div>
             <!--end::Row-->
@@ -23,7 +24,10 @@
         <div class="container-fluid">
             <div class="card mb-4">
                 <div class="card-header">
-                    <h3 class="card-title">Time Off Requests Table</h3>
+                    <div class="d-flex flex-wrap justify-content-between align-items-center">
+                        <h3 class="card-title">Time Off Requests Table</h3>
+                        <button class="btn btn-danger" id="btnExportTimeOff">Export <i class="fa-solid fa-file-lines"></i></button>
+                    </div>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body p-0 px-4">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\EmployeeModel;
 use App\Models\TimeOffModel;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -204,5 +205,21 @@ class TimeOffController extends Controller
         //     'rejected_requests' => $rejectedRequests,
         //     'pending_requests' => $pendingRequests,
         // ]);
+    }
+
+    // export time off PDF
+    public function exportPdf()
+    {
+        $time_offs = TimeOffModel::with('employee')->orderBy('request_date', 'desc')->get();
+
+        $pdf = Pdf::loadView('components.pdf.timeoff_export', [
+            'time_offs' => $time_offs
+        ]);
+
+        $fileName = 'time_off_report_' . now()->format('Y_m_d_H_i_s') . '.pdf';
+
+        return response($pdf->output(), 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', "attachment; filename={$fileName}");
     }
 }

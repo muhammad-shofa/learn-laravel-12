@@ -108,7 +108,9 @@ $(document).ready(function () {
             info: true,
             ordering: false,
             ajax: {
-                url: "/api/time-off/get-time-off-request-employee-id/" + employee_id,
+                url:
+                    "/api/time-off/get-time-off-request-employee-id/" +
+                    employee_id,
                 type: "GET",
                 dataSrc: function (response) {
                     if (response.success) {
@@ -327,6 +329,37 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 console.error("AJAX Error: " + status + error);
+            },
+        });
+    });
+
+    // ketika tombol export PDF di klik
+    $(document).on("click", "#btnExportTimeOff", function () {
+        $.ajax({
+            url: "/api/time-off/export-pdf",
+            type: "GET",
+            xhrFields: {
+                responseType: "blob",
+            },
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: function (response, status, xhr) {
+                const blob = new Blob([response], { type: "application/pdf" });
+                const link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+
+                const filename =
+                    xhr
+                        .getResponseHeader("Content-Disposition")
+                        ?.split("filename=")[1] || `time_off_report.pdf`;
+
+                link.download = filename.replaceAll('"', "");
+                link.click();
+            },
+            error: function (xhr, status, error) {
+                alert("Failed to download time off report. Please try again.");
+                console.error(error);
             },
         });
     });

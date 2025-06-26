@@ -31,7 +31,10 @@
         <div class="container-fluid">
             <div class="card mb-4">
                 <div class="card-header">
-                    <h3 class="card-title">Attendance Table</h3>
+                    <div class="d-flex flex-wrap justify-content-between align-items-center">
+                        <h3 class="card-title">Attendance Table</h3>
+                        <button class="btn btn-danger" id="btnExportAttendance">Export <i class="fa-solid fa-file-lines"></i></button>
+                    </div>
                 </div>
 
                 <!-- Modal -->

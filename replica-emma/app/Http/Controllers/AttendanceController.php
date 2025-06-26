@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AttendanceModel;
 use App\Models\WeeklyHolidayModel;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Dotenv\Validator;
 use Illuminate\Http\Request;
@@ -282,5 +283,21 @@ class AttendanceController extends Controller
             'success' => true,
             'data' => $summary,
         ]);
+    }
+
+    // export pdf
+    public function exportPdf()
+    {
+        $attendances = AttendanceModel::with('employee')->orderBy('date')->get();
+
+        $pdf = Pdf::loadView('components.pdf.attendance_export', [
+            'attendances' => $attendances,
+        ]);
+
+        $fileName = 'attendance_report_' . now()->format('Y_m_d_H_i_s') . '.pdf';
+
+        return response($pdf->output(), 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', "attachment; filename={$fileName}");
     }
 }

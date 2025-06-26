@@ -82,6 +82,7 @@ Route::prefix('/api/attendance')->controller(AttendanceController::class)->group
     Route::get('/check-weekly-holiday', 'checkWeeklyHoliday');
     Route::get('/get-holidays', 'getHolidays');
     Route::get('/summary', 'getSummary');
+    Route::get('/export-pdf', 'exportPdf');
     // Route::get('/summary/{start_date}', 'getSummary');
 });
 
@@ -94,6 +95,7 @@ Route::prefix('/api/time-off')->controller(TimeOffController::class)->group(func
     Route::put('/approve-time-off', 'approveTimeOff');
     Route::put('/reject-time-off', 'rejectTimeOff');
     Route::get('/summary', 'getSummary');
+    Route::get('/export-pdf', 'exportPdf');
 });
 
 // Position endpoint
