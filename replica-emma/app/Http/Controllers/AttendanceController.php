@@ -15,7 +15,24 @@ class AttendanceController extends Controller
     // get all attendance data
     public function getAttendances()
     {
-        $attendance = AttendanceModel::with('employee')->orderBy('created_at', 'DESC')->get();
+        $rawattendance = AttendanceModel::with('employee')->orderBy('created_at', 'DESC')->get();
+
+        $attendance = $rawattendance->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'employee_id' => $item->employee_id,
+                'employee' => $item->employee,
+                'date' => Carbon::parse($item->date)->format('d-m-Y'),
+                'clock_in' => $item->clock_in,
+                'clock_out' => $item->clock_out,
+                'clock_in_status' => $item->clock_in_status,
+                'clock_out_status' => $item->clock_out_status,
+                'work_duration' => $item->work_duration,
+                'created_at' => $item->created_at,
+                'updated_at' => $item->updated_at,
+            ];
+        });
+
         return response()->json([
             'success' => true,
             'message' => 'Data retrieved successfully',
@@ -40,12 +57,28 @@ class AttendanceController extends Controller
     {
         $attendance = AttendanceModel::where('employee_id', $employee_id)->orderBy('created_at', 'DESC')->get();
 
+        // Format tanggal 'date' menjadi d-m-Y
+        $attendance->transform(function ($item) {
+            $item->date = Carbon::parse($item->date)->format('d-m-Y');
+            return $item;
+        });
+
         return response()->json([
             'success' => true,
             'message' => 'Attendance data retrieved successfully',
             'data' => $attendance
         ]);
     }
+    // public function getEmployeeAttendance($employee_id)
+    // {
+    //     $attendance = AttendanceModel::where('employee_id', $employee_id)->orderBy('created_at', 'DESC')->get();
+
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Attendance data retrieved successfully',
+    //         'data' => $attendance
+    //     ]);
+    // }
 
     // update attendace
     public function updateAttendance(Request $request, $attendance_id)

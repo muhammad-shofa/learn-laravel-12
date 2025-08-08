@@ -328,8 +328,23 @@ $(document).ready(function () {
                 }
             },
             error: function (xhr, status, error) {
-                console.error("AJAX Error: " + status + error);
-            },
+                let errorMessage = "An error occurred while sending the request.";
+
+                // Handle Laravel validation errors
+                if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                    const errors = xhr.responseJSON.errors;
+                    errorMessage = Object.values(errors).flat().join("\n");
+                }
+
+                Swal.fire({
+                    title: "Failed!",
+                    text: errorMessage,
+                    icon: "error",
+                    confirmButtonText: "OK",
+                });
+
+                console.error("AJAX Error:", xhr.responseText);
+            }
         });
     });
 

@@ -17,38 +17,41 @@
     <div class="app-content">
         <!--begin::Container-->
         <div class="container-fluid">
-            <button
-                type="button"
-                class="btn btn-success my-3"
-                data-bs-toggle="modal"
-                data-bs-target="#addModal"
-            >
-                Add Salary
-            </button>
-
             <div class="card mb-4">
                 <div class="card-header">
-                    <h3 class="card-title">Salary Table</h3>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h3 class="card-title">Salary Table</h3>
+                        <button
+                            type="button"
+                            class="btn btn-success mx-3"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addModal"
+                        >
+                            Add Salary
+                        </button>
+                    </div>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body p-0 px-4">
-                    <table class="display nowrap" id="salaryTableData">
-                        <thead>
-                            <tr>
-                                <th style="width: 10px">No</th>
-                                <th>Employee Code</th>
-                                <th>Full Name</th>
-                                <th>Position Name</th>
-                                <th>Year</th>
-                                <th>Month</th>
-                                <th>Deduction</th>
-                                <th>Bonus</th>
-                                <th>Total Salary</th>
-                                <th>Payment Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="display nowrap" id="salaryTableData">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10px">No</th>
+                                    <th>Employee Code</th>
+                                    <th>Full Name</th>
+                                    <th>Position Name</th>
+                                    <th>Year</th>
+                                    <th>Month</th>
+                                    <th>Deduction</th>
+                                    <th>Bonus</th>
+                                    <th>Total Salary</th>
+                                    <th>Payment Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
                 <!-- /.card-body -->
             </div>

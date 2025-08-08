@@ -17,37 +17,41 @@
     <div class="app-content">
         <!--begin::Container-->
         <div class="container-fluid">
-            <button
-                type="button"
-                class="btn btn-success my-3"
-                data-bs-toggle="modal"
-                data-bs-target="#addModal"
-            >
-                Add Position
-            </button>
-
             <div class="card mb-4">
                 <div class="card-header">
-                    <h3 class="card-title">Position Table</h3>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h3 class="card-title">Position Table</h3>
+                        <button
+                            type="button"
+                            class="btn btn-success mx-3"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addModal"
+                        >
+                            Add Position
+                        </button>
+                    </div>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body p-0 px-4">
-                    <table class="display nowrap" id="positionTableData">
-                        <thead>
-                            <tr>
-                                <th style="width: 10px">No</th>
-                                <th>Position Name</th>
-                                <th>Description</th>
-                                <th>Hourly Rate</th>
-                                <th>Overtime Multiplier</th>
-                                <th>Standard Monthly Hours</th>
-                                <th>Annual Salary Increase</th>
-                                <th>Base Salary</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="display nowrap" id="positionTableData">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10px">No</th>
+                                    <th>Position Name</th>
+                                    <th>Description</th>
+                                    <th>Hourly Rate</th>
+                                    <th>Overtime Multiplier</th>
+                                    <th>Standard Monthly Hours</th>
+                                    <th>Annual Salary Increase</th>
+                                    <th>Base Salary</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+
                 </div>
                 <!-- /.card-body -->
             </div>

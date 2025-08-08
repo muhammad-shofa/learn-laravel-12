@@ -21,33 +21,40 @@
     <div class="app-content">
         <!--begin::Container-->
         <div class="container-fluid">
-            <button type="button" class="btn-add btn btn-success my-3" data-bs-toggle="modal" data-bs-target="#addModal">Add Employee</button>
+            <!-- <button type="button" class="btn-add btn btn-success my-3" data-bs-toggle="modal" data-bs-target="#addModal">Add Employee</button> -->
             <!-- <button type="button" class="btn-add btn btn-success my-3" data-bs-toggle="modal" data-bs-target="#addModal">Add Employee</button> -->
             <div class="card mb-4">
                 <div class="card-header">
                     <div class="d-flex flex-wrap justify-content-between align-items-center">
-                        <h3 class="card-title">Employee Table</h3>
-                        <button class="btn btn-danger" id="btnExportEmployee">Export <i class="fa-solid fa-file-lines"></i></button>
+                        <!-- <div class="d-flex align-items-center"> -->
+                            <h3 class="card-title">Employee Table</h3>
+                        <!-- </div> -->
+                         <div>
+                             <button type="button" class="btn-add btn btn-success mx-3" data-bs-toggle="modal" data-bs-target="#addModal">Add Employee</button>
+                             <button class="btn btn-danger" id="btnExportEmployee">Export <i class="fa-solid fa-file-lines"></i></button>
+                        </div>
                     </div>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body p-0 px-4">
-                    <table class="display" id="employeeTableData">
-                        <thead>
-                            <tr>
-                                <th style="width: 10px">No</th>
-                                <th>Employee Code</th>
-                                <th>Full Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Position</th>
-                                <th>Gender</th>
-                                <th>Join Date</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="display" id="employeeTableData">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10px">No</th>
+                                    <th>Employee Code</th>
+                                    <th>Full Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Position</th>
+                                    <th>Gender</th>
+                                    <th>Join Date</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
                 <!-- /.card-body -->
             </div>

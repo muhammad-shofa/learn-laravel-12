@@ -17,13 +17,48 @@ class EmployeeController extends Controller
     // get all employees data
     public function getEmployees()
     {
-        $data = EmployeeModel::with('position')->get();
+        $rawEmployees = EmployeeModel::with('position')->get();
+
+        $employees = $rawEmployees->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'position_id' => $item->position_id,
+                'employee_code' => $item->employee_code,
+                'full_name' => $item->full_name,
+                'email' => $item->email,
+                'phone' => $item->phone,
+                'gender' => $item->gender,
+                'join_date' => Carbon::parse($item->join_date)->format('d-m-Y'),
+                'status' => $item->status,
+                'has_account' => $item->has_account,
+                'time_off_quota' => $item->time_off_quota,
+                'time_off_used' => $item->time_off_used,
+                'time_off_remaining' => $item->time_off_remaining,
+                'created_at' => $item->created_at,
+                'updated_at' => $item->updated_at,
+                'position' => $item->position,
+            ];
+        });
+
         return response()->json([
             'success' => true,
             'message' => 'Data retrieved successfully',
-            'data' => $data,
+            'data' => $employees,
         ], 200);
     }
+
+    // public function getEmployees()
+    // {
+    //     $data = EmployeeModel::with('position')->get();
+
+
+
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Data retrieved successfully',
+    //         'data' => $data,
+    //     ], 200);
+    // }
 
     // get employee by id
     public function getEmployee($id)

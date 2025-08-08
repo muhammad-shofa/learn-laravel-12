@@ -15,10 +15,26 @@ class DashboardController extends Controller
     // get all dashboard data
     public function getAllDashboardData()
     {
+        $month = Carbon::now()->format('m');
+        $year = Carbon::now()->format('Y');
+
+        $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+        $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+
         $employee_counts = EmployeeModel::count();
-        $late_counts = AttendanceModel::where('clock_in_status', 'late')->whereDate('created_at', Carbon::today())->count();
+        $late_counts = AttendanceModel::where('clock_in_status', 'late')->whereBetween('created_at', [$startDate, $endDate])->count();
         $time_off_counts = TimeOffModel::where('status', 'pending')->count();
-        $attendance_latest_three = AttendanceModel::with('employee')->whereDate('created_at', Carbon::today())->latest()->take(3)->get();
+        // $attendance_latest_three = AttendanceModel::with('employee')->whereBetween('created_at', [$startDate, $endDate])->latest()->take(3)->get();
+        $attendance_latest_three = AttendanceModel::with('employee')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->latest()
+            ->take(3)
+            ->get()
+            ->map(function ($attendance) {
+                $attendance->date = Carbon::parse($attendance->date)->format('d-m-Y');
+                return $attendance;
+            });
+
 
         return response()->json([
             'success' => true,
@@ -56,7 +72,11 @@ class DashboardController extends Controller
             ->whereBetween('created_at', [$startDate, $endDate])
             ->latest()
             ->take(3)
-            ->get();
+            ->get()
+            ->map(function ($attendance) {
+                $attendance->date = Carbon::parse($attendance->date)->format('d-m-Y');
+                return $attendance;
+            });
 
         return response()->json([
             'success' => true,

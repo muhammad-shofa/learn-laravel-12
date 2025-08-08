@@ -21,26 +21,30 @@
     <div class="app-content">
         <!--begin::Container-->
         <div class="container-fluid">
-            <button type="button" class="btn-add btn btn-success my-3">Add User</button>
+            <!-- <button type="button" class="btn-add btn btn-success my-3">Add User</button> -->
             <div class="card mb-4">
                 <div class="card-header">
-                    <h3 class="card-title">User Table</h3>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h3 class="card-title">User Table</h3>
+                        <button type="button" class="btn-add btn btn-success mx-3">Add User</button>
+                    </div>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body p-0 px-4">
-                    <table class="display text-start" id="userTableData">
-                        <thead>
-                            <tr>
-                                <th style="width: 10px">No</th>
-                                <th>Employee Code</th>
-                                <th>Username</th>
-                                <th>Role</th>
-                                <th>Try Login</th>
-                                <th>Status Login</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="display text-start" id="userTableData">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10px">No</th>
+                                    <th>Employee Code</th>
+                                    <th>Username</th>
+                                    <th>Try Login</th>
+                                    <th>Status Login</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
                 <!-- /.card-body -->
             </div>

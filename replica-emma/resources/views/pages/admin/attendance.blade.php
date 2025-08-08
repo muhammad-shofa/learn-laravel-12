@@ -126,22 +126,24 @@
                 {{--  --}}
                 <!-- /.card-header -->
                 <div class="card-body p-0 px-4">
-                    <table class="display nowrap" id="attendanceTableData">
-                        <thead>
-                            <tr>
-                                <th style="width: 10px">No</th>
-                                <th>Employee Code</th>
-                                <th>Full Name</th>
-                                <th>Date</th>
-                                <th>Clock In</th>
-                                <th>Clock Out</th>
-                                <th>Clock In Status</th>
-                                <th>Clock Out Status</th>
-                                <th>Work Duration (Min)</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="display nowrap" id="attendanceTableData">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10px">No</th>
+                                    <th>Employee Code</th>
+                                    <th>Full Name</th>
+                                    <th>Date</th>
+                                    <th>Clock In</th>
+                                    <th>Clock Out</th>
+                                    <th>Clock In Status</th>
+                                    <th>Clock Out Status</th>
+                                    <th>Work Duration (Min)</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
                 <!-- /.card-body -->
             </div>

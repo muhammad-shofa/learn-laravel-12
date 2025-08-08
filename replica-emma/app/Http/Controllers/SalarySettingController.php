@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SalarySettingModel;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class SalarySettingController extends Controller
@@ -10,8 +11,21 @@ class SalarySettingController extends Controller
     // get all salary settings data
     public function getSalarySettings()
     {
+        $salarySettingsRaw = SalarySettingModel::with('employee', 'position')->get();
 
-        $salarySettings = SalarySettingModel::with('employee', 'position')->get();
+        $salarySettings = $salarySettingsRaw->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'employee_id' => $item->employee_id,
+                'position_id' => $item->position_id,
+                'default_salary' => $item->default_salary,
+                'effective_date' => Carbon::parse($item->effective_date)->format('d-m-Y'),
+                'created_at' => $item->created_at,
+                'updated_at' => $item->updated_at,
+                'employee' => $item->employee,
+                'position' => $item->position
+            ];
+        });
 
         return response()->json([
             'success' => true,
@@ -19,6 +33,18 @@ class SalarySettingController extends Controller
             'data' => $salarySettings,
         ], 200);
     }
+
+    // public function getSalarySettings()
+    // {
+
+    //     $salarySettings = SalarySettingModel::with('employee', 'position')->get();
+
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Salary settings retrieved successfully',
+    //         'data' => $salarySettings,
+    //     ], 200);
+    // }
 
     // get salary setting by id
     public function getSalarySetting($salary_setting_id)

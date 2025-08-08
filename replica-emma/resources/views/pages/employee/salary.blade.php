@@ -47,9 +47,6 @@
         <div class="container-fluid">
             navigation menu
             <x-menu/>
-
-
-
         </div>
     </div> --}}
 
@@ -73,7 +70,8 @@
                                 {{-- <div> --}}
                                 <div id="salaryAttandanceChart"></div>
                                 <div class="text-dark my-5">
-                                    <h3>Target June 2025</h3>
+                                    <!-- <h3>Target June 2025</h3> -->
+                                    <h3>Target {{ \Carbon\Carbon::now()->translatedFormat('F Y') }}</h3>
                                     <table style="width: 100%; border-collapse: collapse;">
                                         <tbody>
                                             <tr>

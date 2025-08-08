@@ -28,20 +28,50 @@
                     data-accordion="false">
                     <li class="nav-item">
                         <a href="#" class="nav-link">
-                            <i class="nav-icon bi bi-circle"></i>
+                            <i class="nav-icon fa-solid fa-chart-simple"></i>
                             <p>Dashboard</p>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="#" class="nav-link">
-                            <i class="nav-icon bi bi-circle"></i>
-                            <p>Users Manage</p>
+                            <i class="nav-icon fa-solid fa-user"></i>
+                            <p>User Management</p>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="#" class="nav-link">
-                            <i class="nav-icon bi bi-circle"></i>
-                            <p>Employee Manage</p>
+                            <i class="nav-icon fa-solid fa-user-tie"></i>
+                            <p>Employee Management</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fa-solid fa-users-viewfinder"></i>
+                            <p>Attendance</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fa-solid fa-calendar"></i>
+                            <p>Time Off</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fa-solid fa-money-bill-wave"></i>
+                            <p>Salary Settings</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fa-solid fa-credit-card"></i>
+                            <p>Salary</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fa-solid fa-file-lines"></i>
+                            <p>Report</p>
                         </a>
                     </li>
                 </ul>

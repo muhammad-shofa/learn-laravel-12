@@ -13,7 +13,9 @@
 <body>
     <div class="container">
         <form class="w-50 mt-5 mx-auto border p-5 rounded" id="loginForm">
-            @csrf
+            <!-- @csrf
+            tidak perlu csrf di form karena menggunakan ajax 
+            -->
             <h2 class="text-center">Login</h2>
             <p class="text-center">Please login to access your dashboard</p>
             <div class="mb-3">

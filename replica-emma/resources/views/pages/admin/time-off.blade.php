@@ -31,22 +31,23 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body p-0 px-4">
-                    <table class="display nowrap" id="timeOffTableData">
-                        <thead>
-                            <tr>
-                                <th style="width: 10px">No</th>
-                                <th>Employee Code</th>
-                                <th>Full Name</th>
-                                <th>Request Date</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                                <th>Reason</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        
-                    </table>
+                    <div class="table-responsive">
+                        <table class="display nowrap" id="timeOffTableData">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10px">No</th>
+                                    <th>Employee Code</th>
+                                    <th>Full Name</th>
+                                    <th>Request Date</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Reason</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
                 <!-- /.card-body -->
             </div>

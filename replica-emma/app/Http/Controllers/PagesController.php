@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\EmployeeModel;
 use App\Models\PositionModel;
+use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,12 +13,26 @@ class PagesController extends Controller
     // unauthorized
     public function unauthorized()
     {
+        // Ambil dari session ATAU dari cookie
+        $userId = session('user_id') ?? request()->cookie('user_id_temp');
+
+        if ($userId) {
+            UserModel::where('id', $userId)->update(['is_login' => 0]);
+
+            session()->forget('user_id');
+            cookie()->queue(cookie()->forget('user_id_temp'));
+        }
+        
         return view('pages.unauthorized.unauthorized');
     }
 
     // login
     public function login()
     {
+        if (Auth::check()) {
+            return redirect('/dashboard');
+        }
+
         return view('auth.login');
     }
 

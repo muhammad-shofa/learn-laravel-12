@@ -228,13 +228,13 @@ $(document).ready(function () {
                 if (response.success) {
                     console.log(response.message);
                     $("#employee_total_quota").text(
-                        response.data[0].employee.time_off_quota
+                        response.data[0].employee.time_off_quota + " Day"
                     );
                     $("#employee_used_quota").text(
-                        response.data[0].employee.time_off_used
+                        response.data[0].employee.time_off_used + " Day"
                     );
                     $("#employee_remaining_quota").text(
-                        response.data[0].employee.time_off_remaining
+                        response.data[0].employee.time_off_remaining + " Day"
                     );
                     $("#employee_last_time_off").text(
                         response.data[0].end_date

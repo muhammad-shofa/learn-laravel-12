@@ -17,34 +17,37 @@
     <div class="app-content">
         <!--begin::Container-->
         <div class="container-fluid">
-            <button
-                type="button"
-                class="btn btn-success my-3"
-                data-bs-toggle="modal"
-                data-bs-target="#addModal"
-            >
-                Add Salary Setting
-            </button>
-
             <div class="card mb-4">
                 <div class="card-header">
-                    <h3 class="card-title">Salary Settings Table</h3>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h3 class="card-title">Salary Settings Table</h3>
+                        <button
+                            type="button"
+                            class="btn btn-success mx-3"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addModal"
+                        >
+                            Add Salary Setting
+                        </button>
+                    </div>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body p-0 px-4">
-                    <table class="display nowrap" id="salarySettingTableData">
-                        <thead>
-                            <tr>
-                                <th style="width: 10px">No</th>
-                                <th>Employee Code</th>
-                                <th>Full Name</th>
-                                <th>Position</th>
-                                <th>Default Salary</th>
-                                <th>Effective Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="display nowrap" id="salarySettingTableData">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10px">No</th>
+                                    <th>Employee Code</th>
+                                    <th>Full Name</th>
+                                    <th>Position</th>
+                                    <th>Default Salary</th>
+                                    <th>Effective Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
                 <!-- /.card-body -->
             </div>

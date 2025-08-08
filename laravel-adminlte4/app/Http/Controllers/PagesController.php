@@ -8,7 +8,7 @@ class PagesController extends Controller
 {
     public function login()
     {
-        return view('pages/login');
+        return view('pages/auth/login');
     }
 
     public function dashboard()

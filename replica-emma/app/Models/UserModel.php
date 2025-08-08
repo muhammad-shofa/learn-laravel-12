@@ -16,6 +16,7 @@ class UserModel extends Authenticatable
         'role',
         'try_login',
         'status_login',
+        'is_login',
         'created_at',
         'updated_at',
         'cooldown_until'

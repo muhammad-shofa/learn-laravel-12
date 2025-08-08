@@ -167,8 +167,14 @@
                             <option value="">-- Select Month --</option>
                             <!-- Buat dari 1–12 -->
                             @for ($i = 1; $i <= 12; $i++)
+                                <option value="{{ $i }}" {{ $i == now()->month ? 'selected' : '' }}>
+                                    {{ DateTime::createFromFormat('!m', $i)->format('F') }}
+                                </option>
+                            @endfor
+
+                            <!-- @for ($i = 1; $i <= 12; $i++)
                                 <option value="{{ $i }}">{{ DateTime::createFromFormat('!m', $i)->format('F') }}</option>
-                                @endfor
+                            @endfor -->
                         </select>
                     </div>
                     <div class="mb-3">
@@ -176,8 +182,14 @@
                         <select class="form-select" id="filter_year" name="year" required>
                             <option value="">-- Select Year --</option>
                             @for ($year = 2020; $year <= now()->year; $year++)
+                                <option value="{{ $year }}" {{ $year == now()->year ? 'selected' : '' }}>
+                                    {{ $year }}
+                                </option>
+                            @endfor
+
+                            <!-- @for ($year = 2020; $year <= now()->year; $year++)
                                 <option value="{{ $year }}">{{ $year }}</option>
-                                @endfor
+                            @endfor -->
                         </select>
                     </div>
                 </form>
